@@ -1,0 +1,66 @@
+# PageLinks — produto Vert Systems
+
+> Projeto criado em 25/08/2026. Instruções aqui sobrescrevem as da marca e da raiz.
+
+## Sobre
+
+Serviço de **páginas de links** vendido a clientes (o "link da bio"). Hoje cada página
+é um site WordPress separado — modelo que não escala: cada atualização vira trabalho
+manual, cada cliente é uma instalação para manter, atualizar e quebrar.
+
+O PageLinks substitui isso por **um sistema só**: as páginas de todos os clientes
+servidas pela mesma aplicação, e um painel próprio onde a Dunamis (e, se decidido, o
+próprio cliente) edita cards, links e informações sem tocar em código — o que o
+WordPress com Elementor fazia, sem o WordPress.
+
+## Tipo
+
+Produto interno da Vert Systems, vendido a clientes.
+
+## Entregas previstas
+
+- **Páginas públicas** — a página de links de cada cliente, rápida e responsiva
+- **Painel de gestão** — CRUD de clientes, páginas, cards, links, tema e informações
+- **Migração** — trazer as páginas que já existem no WordPress
+- **Editor visual** — edição direta, sem código, com preview
+
+## Onde salvar o que
+
+**Tudo do PageLinks vive nesta pasta** — ela é a raiz do produto, e cada produto novo
+da Vert Systems ganha a sua, no mesmo nível.
+
+```
+pagelinks/
+├── CLAUDE.md · briefing.md · arquitetura.md   contexto e decisões
+├── app/         rotas do Next (App Router): [slug], ir/, painel/
+├── lib/         prisma, tema e o que for compartilhado
+├── prisma/      schema, migrações e seed
+├── public/      arquivos estáticos
+└── dev.db       banco local (não versionar)
+```
+
+Conteúdo de cliente vive no banco, nunca em arquivo.
+
+## Contexto herdado
+
+Herda as skills e as regras do ViperOS da raiz do workspace, e o contexto da marca
+em `unidade-negocios/vertsystems/`. **Não usa a identidade da Dunamis** — nem no painel, nem nas páginas.
+
+## Específico deste projeto
+
+- **A página do cliente usa a marca do cliente**, nunca a da Vert Systems. Cor, fonte
+  e logo vêm do cadastro dele
+- **O painel usa a marca Vert Systems** (a definir)
+- Nenhuma página vai ao ar sem o cliente ver antes
+- Página de links é peça de conversão: velocidade de carregamento e legibilidade no
+  celular vêm antes de qualquer efeito visual
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

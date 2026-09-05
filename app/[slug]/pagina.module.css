@@ -1,0 +1,97 @@
+.tela {
+  min-height: 100dvh;
+  background: var(--fundo-camada);
+  color: var(--texto);
+  padding: 48px 20px 72px;
+  display: flex;
+  justify-content: center;
+}
+
+.conteudo {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--destaque);
+  margin-bottom: 18px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.bio {
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0.82;
+  margin: 0 0 32px;
+  max-width: 46ch;
+}
+
+.blocos { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+
+.botao {
+  display: block;
+  width: 100%;
+  background: var(--preenchimento);
+  border: var(--borda);
+  color: var(--cor-do-texto-do-botao);
+  border-radius: var(--raio);
+  padding: 17px 22px;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.botao:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.botao:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+.botao .sub { display: block; font-weight: 400; font-size: 13px; opacity: 0.72; margin-top: 3px; }
+
+.destaque { padding: 22px; font-size: 18px; box-shadow: 0 8px 28px rgb(0 0 0 / 0.22); }
+
+.secundario {
+  background: color-mix(in srgb, var(--texto) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--texto) 16%, transparent);
+  color: var(--texto);
+}
+
+.tituloSecao {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+  margin: 20px 0 -2px;
+  text-align: center;
+}
+
+.texto { font-size: 15px; line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
+
+.imagem { width: 100%; border-radius: var(--raio); display: block; }
+
+.video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }
+
+.separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
+
+.rodape { margin-top: 44px; font-size: 12px; opacity: 0.45; text-align: center; }
+.rodape a { color: inherit; }
+
+@media (max-width: 480px) {
+  .tela { padding: 36px 16px 56px; }
+  .titulo { font-size: 24px; }
+}

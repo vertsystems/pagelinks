@@ -1,0 +1,16 @@
+/* Tokens do painel — identidade Vert Systems.
+   Ficam aqui e não no módulo porque o iframe da prévia e os estilos globais
+   do painel precisam enxergar as mesmas variáveis. */
+.gestao-escopo, [class*="gestao-module"] { }
+
+:root {
+  --g-fundo: #0B0F0D;
+  --g-card: #121815;
+  --g-card-2: #171F1B;
+  --g-texto: #E8EDEA;
+  --g-suave: #9AA8A1;
+  --g-verde: #34D399;
+  --g-linha: rgba(232,237,234,.10);
+  --g-linha-forte: rgba(232,237,234,.20);
+  --g-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}

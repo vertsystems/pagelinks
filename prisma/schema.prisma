@@ -1,0 +1,144 @@
+// PageLinks — schema portátil
+//
+// Roda em SQLite no desenvolvimento e migra para PostgreSQL (Supabase) sem
+// reescrita: nada de Json, enum nativo ou array — só tipos que os dois suportam.
+// Campo que seria enum é String com os valores documentados ao lado.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+// A URL fica em prisma.config.ts (CLI) e no adapter em lib/prisma.ts (runtime).
+// Trocar para PostgreSQL depois é mudar só o provider aqui e o adapter lá.
+datasource db {
+  provider = "postgresql"
+}
+
+/// Quem contrata a página. Um cliente pode ter mais de uma página (campanha, filial).
+model Cliente {
+  id        String   @id @default(cuid())
+  nome      String
+  slug      String   @unique // vira o endereço: dnms.fun/<slug>
+  dominio   String?  @unique // domínio próprio, quando houver
+  ativo     Boolean  @default(true)
+  observacao String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  paginas  Pagina[]
+  usuarios Usuario[]
+
+  @@index([ativo])
+}
+
+/// A página de links em si: conteúdo, tema e SEO.
+model Pagina {
+  id        String  @id @default(cuid())
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  titulo    String
+  bio       String?
+  avatarUrl String?
+  publicada Boolean @default(false)
+
+  // tema — o que o painel edita sem tocar em código
+  corFundo      String @default("#101010")
+  corTexto      String @default("#F2F2F2")
+  corDestaque   String @default("#FF6F00")
+  corTextoBotao String @default("#101010")
+  fonte         String @default("Inter")
+  estiloBotao   String @default("arredondado") // arredondado | reto | pilula | contorno
+  fundoTipo     String @default("solido")      // solido | gradiente | imagem
+  fundoImagemUrl String?
+  fundoCorFim   String? // segunda cor, quando fundoTipo = gradiente
+
+  // SEO e compartilhamento
+  seoTitulo    String?
+  seoDescricao String?
+  seoImagemUrl String?
+  faviconUrl   String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  cards Card[]
+
+  @@index([clienteId])
+  @@index([publicada])
+}
+
+/// Bloco da página. O `tipo` é o que dá o efeito Elementor:
+/// cada tipo usa os campos que precisa e ignora o resto.
+///
+/// tipos: link | destaque | texto | titulo | imagem | video | whatsapp | redes | mapa | separador
+model Card {
+  id       String @id @default(cuid())
+  paginaId String
+  pagina   Pagina @relation(fields: [paginaId], references: [id], onDelete: Cascade)
+
+  tipo      String
+  titulo    String?
+  subtitulo String?
+  url       String?
+  imagemUrl String?
+  icone     String? // nome do ícone, quando o tipo usa
+
+  // tipo = whatsapp
+  telefone String?
+  mensagem String?
+
+  // aparência individual (herda o tema da página quando vazio)
+  corFundo String?
+  corTexto String?
+  destaque Boolean @default(false)
+
+  ordem Int     @default(0)
+  ativo Boolean @default(true)
+
+  // agendamento: fora da janela, o card não aparece
+  publicarEm    DateTime?
+  despublicarEm DateTime?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  cliques Clique[]
+
+  @@index([paginaId, ordem])
+  @@index([ativo])
+}
+
+/// Contagem simples de cliques. Sem cookie, sem rastreio de pessoa.
+model Clique {
+  id     String   @id @default(cuid())
+  cardId String
+  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  data   DateTime @default(now())
+  origem String? // referrer, quando houver
+
+  @@index([cardId, data])
+}
+
+/// Quem entra no painel.
+/// papel = admin (equipe Dunamis, vê tudo) | cliente (vê só a própria conta)
+/// O papel cliente já existe no modelo, mas o login dele só é liberado quando o
+/// Bruno decidir — hoje apenas admin usa o painel.
+model Usuario {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  nome      String?
+  senhaHash String?
+  papel     String  @default("admin")
+  ativo     Boolean @default(true)
+
+  clienteId String?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  criadoEm      DateTime  @default(now())
+  ultimoAcessoEm DateTime?
+
+  @@index([papel])
+}

@@ -1,0 +1,3508 @@
+[
+  {
+    "arquivo": "01-adventureelove.png",
+    "slug": "adventureelove",
+    "titulo": "Adventure & Love",
+    "bio": "Criadores de Conteúdo | Fotógrafos | Filmmakers",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 7,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, TikTok, YouTube"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Propostas? — Clique e fale com a gente"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "DOMINANDO PARCERIAS"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Nossos LUTs — Saiba mais"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Nossos Presets — Saiba mais"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Criando memórias e vídeos cinematográficos"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Viagens • Hospedagens • Lifestyle"
+      }
+    ],
+    "corFundo": "#191919",
+    "corDestaque": "#8BB857",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa: foto escura (barraca/céu noturno) só na faixa do topo, atrás do avatar; o resto do fundo é chapado #191919. Os 4 blocos do corpo não são botões de texto — são cards-banner com imagem de fundo, título grande e um botãozinho pílula verde dentro de cada um. Metade inferior do print é área vazia; no rodapé aparece a barra do plugin 'Saiba mais sobre a Página de Links' (não contada como bloco)."
+  },
+  {
+    "arquivo": "02-airesagencia.png",
+    "slug": "airesagencia",
+    "titulo": "Aires Agência",
+    "bio": "Agência de Marketing",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, YouTube, Spotify e mais 1 (ilegível)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Marketing Flow — Gestão de marketing completa"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Maré Visual — Captação de conteúdo"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Box de Conteúdo"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Notion Navigator — Criação de Notion Personalizado"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Comunidade Navegantes"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Aires Agência"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Flow, humanização e originalidade em cada ação"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#0B1B33",
+    "corDestaque": "#052B67",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Avatar é o logo (monograma 'A') em círculo, não foto. Os 5 blocos são cards-banner com arte própria e borda clara fina; a cor varia card a card entre azul-marinho #052B67 e azul médio #3C6AAF. O último bloco é um carrossel que não carregou no print: só aparecem as setas ‹ e › com área vazia entre elas — provavelmente galeria ou depoimentos. Rodapé traz a barra do plugin 'Saiba mais sobre a Página de Links' (não contada)."
+  },
+  {
+    "arquivo": "03-alinesantana.png",
+    "slug": "alinesantana",
+    "titulo": "ALINE SANTANA",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 5,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "E-mail, Pinterest, Instagram"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "ACESSO À PLATAFORMA | Comprou mas não conseguiu acessar? Clique aqui."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Precisa de suporte? Clique e envie um e-mail para mim."
+      }
+    ],
+    "corFundo": "#EEEEE7",
+    "corDestaque": "#FFFFFF",
+    "corTexto": "#3B2E24",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Única página clara do lote (bege off-white). O nome fica ACIMA do avatar, não abaixo — 'ALINE' em negrito + 'SANTANA' em fino. Não tem bio. Os dois blocos de imagem são fotos grandes sem texto: um mosaico de artes/templates e uma foto de xícara de café. Os dois últimos blocos ficam LADO A LADO em duas colunas (contei como 2 blocos, pois são dois links distintos) e são cards brancos com foto em cima e texto embaixo. No rodapé há a linha 'Dunamis Company® | © 2026. Todos os direitos reservados. CNPJ 52.633.995/0001-07' — não contada como bloco. Esta página não tem a barra do plugin PageLinks."
+  },
+  {
+    "arquivo": "04-amandatabet.png",
+    "slug": "amandatabet",
+    "titulo": "Amanda Tabet",
+    "bio": "Gestão de Negócios",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "O financeiro da sua empresa na mão de especialistas: BPO Financeiro e consultorias — Conheça a ELEVALUCRO"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Padronize os Processos da sua empresa, implantando: Estruturação de Processos, ISO 9001, ABNT NBR IEC 60079-19, Auditorias e Treinamentos — Conheça a GESQUAL GROUP"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Consultorias e Palestras — Acesse para saber mais"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça mais no Instagram — Clique e me acompanhe"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Entre em contato — Para saber mais sobre nossos serviços, clique aqui"
+      }
+    ],
+    "corFundo": "#DAE2E1",
+    "corDestaque": "#192F2C",
+    "corTexto": "#1A1A1A",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa: foto de prédios bem esmaecida ocupando só os ~180px do topo (atrás do avatar e do nome); do meio para baixo o fundo é chapado cinza-esverdeado #DAE2E1. Os 5 blocos são cards-banner com arte própria, cada um de uma cor: verde-escuro #192F2C, cinza-grafite (x2), roxo #4A1256 e verde #0F5B3F. O último ('Entre em contato', com ícone de balão de conversa) tem cara de link de contato/WhatsApp, mas visualmente é o mesmo card-banner dos outros — por isso classifiquei como destaque."
+  },
+  {
+    "arquivo": "05-anajulia.png",
+    "slug": "anajulia",
+    "titulo": "Ana Julia Influencer",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "Prazer, Ana Julia"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, TikTok"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Quero fechar parceria com Ana Julia."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Ana Julia Influencer"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Ana Julia é uma influenciadora digital que transformou sua paixão por câmeras em uma carreira. (4 parágrafos: começou como funcionária de loja de roupas, já colaborou com mais de 50 empresas, mais de 1 milhão de visualizações, especialista em storytelling visual)"
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#382313",
+    "corDestaque": "#6F482A",
+    "corTexto": "#F4E8DB",
+    "fundoTipo": "solido",
+    "estiloBotao": "reto",
+    "temIconesRedes": true,
+    "observacao": "Página em 3 faixas de cor: topo creme com textura aquarelada (#F4E8DB), miolo marrom-escuro chapado #382313 (é a cor dominante) e base creme claro #FCF6EF com foto grande dela à direita e monograma 'AJ' de marca d'água. NÃO tem nome escrito no cabeçalho — só avatar; o nome aparece na barra 'Prazer, Ana Julia' e no título da seção de baixo, de onde tirei o título. A barra 'Prazer, Ana Julia' tem contraste péssimo (texto marrom escuro sobre marrom). Entre o 1º bloco de imagem e o botão pílula há um vão vazio grande (~45px) — pode ser um bloco que não carregou no print. O último botão (marrom, cantos retos, na seção de baixo) está sem rótulo legível — texto da mesma cor do fundo do botão ou vazio. Estilos de botão misturados: 2 retos e 1 pílula."
+  },
+  {
+    "arquivo": "06-antoniofernandes.png",
+    "slug": "antoniofernandes",
+    "titulo": "Antônio Fernandes",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 14,
+    "blocos": [
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou disponível no Whatsapp — Transforme seu corpo!"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Transformação começa com inspiração! BORA? (Instagram)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Personal Trainer Presencial — Nada substitui o acompanhamento de perto"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Consultoria Online"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Suplementos de Qualidade?"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Resultados de alguns alunos"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Plano Personal Presencial"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Treinos personalizados de acordo com o objetivo de cada aluno (a); Avaliação completa com balança Bioimpedância, fita e adipômetro; Suporte 24h; Atualizações por meio de foto ou vídeo; Dúvidas sobre suplementação, alimentação e ergogênicos."
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Contratar agora"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Antônio Fernandes"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Serei o responsável por otimizar e melhorar seus treinos além da sua performance para alcançar o seu objetivo! Vamos trabalhar juntos por isso?"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#272727",
+    "corDestaque": "#01C48E",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "É a página mais longa e mais estruturada do lote — passa de página de links e vira mini landing page. Capa: foto escura de academia na faixa do topo, atrás do avatar (avatar com borda dourada). Não tem bio; abaixo do nome há um traço dourado fino (#EEB25E) que tratei como decoração do cabeçalho, não como bloco separador. A fileira de redes fica NO MEIO da página (depois dos 5 banners), não no topo. O bloco 8 é uma galeria com 4 prints de antes/depois lado a lado, cada um com legenda em cima — contei como 1 bloco de galeria; se o sistema novo criar um espaço por imagem, viram 4 e o total sobe para 17. O bloco 14 é uma foto/thumb dele na academia com moldura dourada, em duas colunas ao lado do texto — pode ser vídeo, mas não dá para ver botão de play no print."
+  },
+  {
+    "arquivo": "07-basiike.png",
+    "slug": "basiike",
+    "titulo": "BASIIKE",
+    "bio": "MODA ROCK",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "VISITE NOSSO SITE"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "ESTAMOS DISPONÍVEIS NO WHATSAPP!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "SIGA A GENTE NO INSTAGRAM E CONFIRA AS NOVIDADES"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "VEM CONHECER NOSSO SHOWROOM"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Google, WhatsApp"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "CONHEÇA NOSSOS PRODUTOS — Seu estilo merece a melhor qualidade"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Trabalhamos com: Roupas Masculinas e Femininas / Acessórios / Decorativos"
+      }
+    ],
+    "corFundo": "#000000",
+    "corDestaque": "#333030",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Tema todo preto/grafite. Capa é uma foto (duas mulheres) no topo, com logo circular ornamentado por cima. Os 4 botões têm ícone grande à direita e leve gradiente prata. O carrossel (setas < >) aparece vazio no print — as imagens não carregaram. O print está cortado no último bloco (o card 'Trabalhamos com' continua abaixo), então pode haver mais conteúdo depois dele."
+  },
+  {
+    "arquivo": "08-brunosantana.png",
+    "slug": "brunosantana",
+    "titulo": "Bruno Santana",
+    "bio": "CEO Digital Dunamis",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 3,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, YouTube, Behance"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Empresário ou Estrategista — Em busca de Páginas de Vendas? (CLIQUE E SAIBA MAIS)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "MEUS TRABALHOS — Conheça o meu portfólio."
+      }
+    ],
+    "corFundo": "#E9E9E9",
+    "corDestaque": "#185F94",
+    "corTexto": "#185F94",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página bem curta e a única de fundo claro do lote. Não tem botão de texto: os dois blocos são banners de imagem (o primeiro traz uma pílula verde 'CLIQUE E SAIBA MAIS' desenhada dentro da própria arte). Rodapé escuro 'Saiba mais sobre a Página de Links' é do sistema, não contado como bloco."
+  },
+  {
+    "arquivo": "09-cantinhomineiro.png",
+    "slug": "cantinhomineiro",
+    "titulo": "Cantinho Mineiro",
+    "bio": "Seja bem-vindo(a), Links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Localização"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Contato e Pedidos — Estamos disponíveis no Whatsapp."
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Segue a gente no Instagram — Conheça todos nossos produtos de pertinho."
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Fábrica Esmeralda — Faça uma visita, e conheça nossos produtos."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Seu cantinho mineiro — O sabor de minas pertinho de você!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#FFF1E0",
+    "corDestaque": "#0A9B3E",
+    "corTexto": "#8B1A1A",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Entre o logo circular e a bio existe uma arte de slogan 'Tudo mineiro, Cheio de Sabor' em letra manuscrita vermelha — faz parte do cabeçalho, não contei como bloco. Os 3 blocos são banners de imagem, cada um com cor própria (verde/WhatsApp, roxo/Instagram, azul-claro/Google), então a corDestaque informada é só a do primeiro. O carrossel abaixo do título não renderizou no print (aparecem só as setas). Barra de rodapé e as faixas das laterais são vinho #750000."
+  },
+  {
+    "arquivo": "10-casadotita.png",
+    "slug": "casadotita",
+    "titulo": "Casa do Tita",
+    "bio": "RESTAURANTE",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "DELIVERY & INFOS — Entregamos em toda praia grande"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "NOSSO CARDÁPIO — Conheça tudo que temos a oferecer."
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ESTAMOS TE ESPERANDO — Vem visitar a gente, e curtir as melhores praias e drinks."
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Threads, WhatsApp"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Mostrando o que sabemos fazer desde 1986. — Deus é nosso refúgio e fortaleza."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Atendimento todos os dias — Seg à Dom.: 9h às 21h"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#1E3651",
+    "corDestaque": "#11A75D",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é uma foto desfocada com a marca, e o avatar é o logo circular azul por cima dela. Os 3 blocos de link são banners de imagem coloridos (verde, azul, gradiente azul-verde-vermelho), então a corDestaque é a do primeiro. Contei as duas linhas douradas que emolduram o horário como blocos separador — se o sistema novo tratar isso como estilo do bloco de texto, o total cai para 7. O carrossel (setas < >) não renderizou no print."
+  },
+  {
+    "arquivo": "11-chalesurubici.png",
+    "slug": "chalesurubici",
+    "titulo": "Chalés Urubici",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 12,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, E-mail, Localização"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Luar da Serra"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Canto"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Chalé Bariloche"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Chalé Pucón"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Dúvidas? Chame a gente no Whatsapp, estamos disponíveis para esclarecer tudo!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Localização — Localizados a 10 km do centro de Urubici e perto de vários pontos turísticos"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Conheça nossos chalés — Os chalés foram criados para proporcionar momentos únicos em meio à natureza"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Viva uma experiência única — Urubici, Santa Catarina"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Depoimentos de quem já passou por aqui."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Prints de avaliações do Google (3 cards)"
+      }
+    ],
+    "corFundo": "#011917",
+    "corDestaque": "#096A47",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "É a página mais completa do lote. O print é estreito (307px), então os textos pequenos estão no limite da leitura: as duas linhas de bio acima e abaixo de 'Chalés Urubici' estão ilegíveis, e no 3º card só dá para ler 'Canto' — o segundo nome do chalé não é legível. Cada card de chalé traz foto, selo vermelho no canto e uma pílula CTA verde-água (#35D6A4 aprox.) dentro do próprio card; a corDestaque informada é a do card verde de WhatsApp. Atrás do cabeçalho há uma foto de mata bem esmaecida (funciona como capa), o resto do fundo é verde-escuro chapado. O carrossel entre os dois títulos não renderizou no print."
+  },
+  {
+    "arquivo": "12-crochedadri.png",
+    "slug": "crochedadri",
+    "titulo": "Croche Dadri",
+    "bio": "ESPECIALISTA EM CROCHÊ | PEÇAS EXCLUSIVAS",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "FAÇA AGORA SEUS PEDIDOS DE CROCHÊ (Clique aqui e entre em contato)"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ME SIGA NO INSTAGRAM PARA SABER NOVIDADES!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ESTOU NO FACEBOOK UM CANTINHO PESSOAL"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Facebook, WhatsApp"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "MEUS CROCHÊS DO CORAÇÃO — Espero que se apaixonem como eu todos os dias."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#5C360F",
+    "corDestaque": "#FB7676",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é um mosaico de fotos de peças de crochê no topo, com o avatar redondo (foto da artesã) por cima. Os 3 blocos são banners de imagem com cores diferentes (salmão, magenta, azul) e uma pílula pequena de CTA desenhada dentro da arte — a corDestaque é a do primeiro. O primeiro bloco não mostra ícone do WhatsApp (o ícone grande é um novelo), classifiquei como whatsapp pelo CTA 'Clique aqui e entre em contato'; se for outro destino, é só um link comum. O carrossel no fim não renderizou no print."
+  },
+  {
+    "arquivo": "13-daserradistribuidora.png",
+    "slug": "daserradistribuidora",
+    "titulo": "Da Serra Distribuidora",
+    "bio": "Distribuindo Sabor desde 2021",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Bem-vindo(a)! / (segunda linha ilegível)"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Pedidos direto pelo Whatsapp"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Nosso catálogo de Produtos"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Parcerias e Negócios"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estamos no Instagram"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp e mais 1 ícone"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Transformando refeições em momentos especiais"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "O sabor que faz a diferença desde 2021."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#FFDCBD",
+    "corDestaque": "#C0451F",
+    "corTexto": "#4A1414",
+    "fundoTipo": "solido",
+    "estiloBotao": "reto",
+    "temIconesRedes": true,
+    "observacao": "Os 4 botões são banners de imagem inteiros (arte com texto embutido), não botões de texto — e estão estourando a largura do container, cortados à direita. O último bloco é um carrossel vazio (só as setas ‹ › aparecem, as imagens não carregaram no print). A barra marrom do rodapé é o crédito 'Saiba mais sobre a Página de Links', não foi contada como bloco."
+  },
+  {
+    "arquivo": "14-dbconcept.png",
+    "slug": "dbconcept",
+    "titulo": "Day Barbosa",
+    "bio": "Especialista em Colorimetria & Alisamento",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Google e WhatsApp"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato e agende seu horário"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Curso Master Class"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Venha conhecer nosso espaço"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Seu caminho para transformação e beleza é nossa paixão"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especialista em Colorimetria e Alisamento"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Especialista em Alisamento (selo)"
+      }
+    ],
+    "corFundo": "#000000",
+    "corDestaque": "#D4AF6A",
+    "corTexto": "#EFD9A6",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é uma colagem de fotos em preto e branco atrás do avatar circular com anel dourado. Os 3 botões são banners de imagem com borda dourada. O 7º bloco é um carrossel vazio (só as setas ‹ ›). O 8º é um selo/logo dourado 'Especialista em Alisamento' no fim da página, acima do rodapé."
+  },
+  {
+    "arquivo": "15-digitaldunamis.png",
+    "slug": "digitaldunamis",
+    "titulo": "Digital Dunamis",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 10,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato para fazer um orçamento ou saber mais — Clique aqui e entre em contato"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "TRABALHAMOS COM:"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "SOCIAL MEDIA"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "DESIGN GRÁFICO"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "MATERIAL IMPRESSO"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "LANDING PAGES"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "MARKETING DIGITAL"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "PRODUÇÃO AUDIO/VISUAL"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Digital Dunamis (rodapé)"
+      }
+    ],
+    "corFundo": "#161413",
+    "corDestaque": "#F26A1B",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Página curta, só 1 botão de link (card verde/teal do WhatsApp). Topo tem um banner com padrão de ícones atrás do avatar circular (logo 'D'); o nome 'DIGITAL Dunamis' é imagem, não texto. Não há bio nem fileira de redes. Os 6 serviços são linhas separadas por fios finos — podem ser um único widget de lista no Elementor; contei uma por linha porque no sistema novo viram itens separados. O título 'TRABALHAMOS COM:' é uma tarja com gradiente vermelho→laranja."
+  },
+  {
+    "arquivo": "16-alinesantanadesativ.png",
+    "slug": "alinesantanadesativ",
+    "titulo": "Aline Santana",
+    "bio": "Design + Estratégia de Conteúdo",
+    "temAvatar": false,
+    "temCapa": true,
+    "totalBlocos": 5,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Conheça meu portfólio ou solicite orçamento clicando nos links"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Solicite orçamento — Solicite um orçamento aqui."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Meu Portfólio — Conheça mais os meus projetos."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Pack Profissional — Pacote de Artes"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram e Behance"
+      }
+    ],
+    "corFundo": "#000000",
+    "corDestaque": "#2E2E2E",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "É a versão antiga (PageLinks Antiga) da página da Aline. Não tem avatar circular: o nome e a assinatura estão dentro da foto de capa, que ocupa o topo inteiro. O texto de abertura está cortado na vertical (a caixa é menor que o texto). Os 3 botões são banners de imagem; corDestaque é o cinza escuro do card, já que não existe botão de cor sólida. A barra do rodapé é o crédito 'Saiba mais sobre a Página de Links', não contada como bloco."
+  },
+  {
+    "arquivo": "17-dudautilidades.png",
+    "slug": "dudautilidades",
+    "titulo": "Duda Utilidades",
+    "bio": "Sua loja de Utilidades favorita de Campinas",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Bem-vindo(a)! Links que vão te ajudar."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Acesse nosso Jornal Online — Clique e Confira"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estamos no Instagram — Segue a gente"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça nossas Lojas — Ir até a loja"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Utilidades do Lar em Campinas"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "É nas Lojas Duda!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Setores da Nossa Loja"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Cama, Mesa & Banho | Beleza & Cuidados | Utilidades | Ferramentas | Brinquedos | Área Pet | Papelaria | Cozinha | Taças | Alimentos & Bebidas | Decoração | Utilidades Domésticas | Festa | Jardim"
+      }
+    ],
+    "corFundo": "#213E60",
+    "corDestaque": "#F2C94C",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Avatar circular branco com o logo 'Duda'. Não há fileira de ícones de redes — o Instagram entra como card. O 7º bloco é um carrossel vazio (só as setas ‹ ›, imagens não carregaram). Os títulos 'Setores da Nossa Loja' e a lista de setores estão cortados à direita (caixa mais estreita que o texto). corDestaque é o amarelo da tagline, já que os botões são banners de imagem."
+  },
+  {
+    "arquivo": "18-elevalucro.png",
+    "slug": "elevalucro",
+    "titulo": "Elevalucro Negócios",
+    "bio": "Consultoria e BPO Financeiro",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 10,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp e mais 2 ícones"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "A gestão financeira da sua empresa feita por especialistas. (BPO Financeiro)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Descubra se seus preços realmente dão lucro. (Análise de Precificação)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "A gestão financeira que sua empresa precisa para crescer com segurança e liberdade (Consultoria)"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Suporte rápido e focado no seu negócio."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Algumas empresas que escolheram crescer com a gente."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Fileira de logos de clientes (7 visíveis)"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Consultoria que transforma números em decisões, e decisões em resultados."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "A diferença está na gestão financeira, e ela começa com clareza."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#151F25",
+    "corDestaque": "#009E71",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Topo tem a marca 'ELEVALUCRO NEGÓCIOS' em marca d'água grande atrás do avatar circular verde — funciona como capa. Os 4 botões são banners de imagem com borda/detalhe verde e CTA embutido. A fileira de logos de clientes (bloco 7) parece um carrossel: os logos das pontas estão cortados. O último bloco é outro carrossel vazio (só as setas ‹ ›). Rodapé é o crédito 'Saiba mais sobre a Página de Links', não contado."
+  },
+  {
+    "arquivo": "19-evelynciuffo.png",
+    "slug": "evelynciuffo",
+    "titulo": "Dra. Evelyn Ciuffo",
+    "bio": "Médica Oftalmologista especialista em córnea e catarata",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 10,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "Meu canal no Youtube"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Consultório Ipanema"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Para saber mais sobre mim, acesse meu website"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Faça seu agendamento Online (Doctoralia)"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Proporciono liberdade visual através da cirurgia refrativa e cirurgia de catarata — Médica Oftalmologista"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Serviços"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Primeira consulta oftalmologia / Cirurgia de catarata com lentes premium / Cirurgia refrativa (correção de grau) / Tratamento de Ceratocone / Adaptação de lentes de contato / Transplante de córnea"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "AGENDAR CONSULTA"
+      }
+    ],
+    "corFundo": "#F1E5DA",
+    "corDestaque": "#667553",
+    "corTexto": "#785849",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Os 4 links do topo são banners de imagem (arte pronta), não botões de texto. O bloco 7 é um carrossel que não carregou no print (só aparecem as setas ‹ ›), deixando um vazio grande no meio da página. Há um monograma sobreposto na borda do avatar. Fileira de redes com 3 ícones (Instagram, WhatsApp, site)."
+  },
+  {
+    "arquivo": "20-fernandoferro.png",
+    "slug": "fernandoferro",
+    "titulo": "Fernando Ferro",
+    "bio": "Palestrante e Professor em Licitações",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 4,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "link",
+        "rotulo": "MENTORIA I.A EM LICITAÇÕES PÚBLICAS"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ASSESSORIA EM LICITAÇÕES PARA ÓRGÃOS PÚBLICOS"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ASSESSORIA EM LICITAÇÕES PARA EMPRESAS"
+      }
+    ],
+    "corFundo": "#101216",
+    "corDestaque": "#F0CE62",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Print em paisagem (620x402) — é a página inteira, bem curta. Os 3 links são cards com miniatura de foto à esquerda, título em caixa alta à direita e um traço amarelo embaixo; cada card ainda traz uma etiqueta pequena acima do título (ilegível no print). Capa é uma foto de palco atrás do cabeçalho, escurecida. Redes: Instagram, YouTube e WhatsApp, em ícones dentro de círculos."
+  },
+  {
+    "arquivo": "21-ferreiramotors.png",
+    "slug": "ferreiramotors",
+    "titulo": "Ferreira Motor's",
+    "bio": "",
+    "temAvatar": false,
+    "temCapa": true,
+    "totalBlocos": 7,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Horários de Atendimento — Segunda à Sexta: 08h às 17:30h — Sábado e Domingo: Fechado"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especializados em Motores Automotivos — Manutenção de motores, Revisão, Suspensão, Injeção e Venda de peças."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "TRABALHAMOS COM:"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Revisão de Motores / Revisão Completa / Suspensão Veículo / Injeção Veículo / Fornecimento de Peças"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "QUERO FAZER UM ORÇAMENTO"
+      }
+    ],
+    "corFundo": "#0F252D",
+    "corDestaque": "#34B838",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "pilula",
+    "temIconesRedes": true,
+    "observacao": "Não tem avatar circular: o logo aparece centralizado dentro da capa (foto de mecânico), com a tagline dentro da própria arte. O bloco de horários usa cores diferentes por linha (título laranja, horário verde, 'Fechado' vermelho). O bloco 4 é um carrossel vazio (só as setas). O título 'TRABALHAMOS COM:' vem dentro de uma caixa branca com texto escuro; a lista de serviços tem linha divisória entre os itens. Nenhum botão de link comum — só o de WhatsApp no fim."
+  },
+  {
+    "arquivo": "22-fitsuplementos.png",
+    "slug": "fitsuplementos",
+    "titulo": "Fit Suplementos",
+    "bio": "Seja bem-vindo(a)! Links que vão te ajudar",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "Estamos no Instagram"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Santos Gonzaga"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "São Vicente Centro"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "São Vicente Beira Mar"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Praia Grande C. do Forte"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Praia Grande Boqueirão"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite uma de nossas lojas"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Linha a granel fresquinha — Preço de Atacadista"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#EBEBEB",
+    "corDestaque": "#2918FA",
+    "corTexto": "#427BFC",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Todos os blocos clicáveis são banners de imagem. Os 5 do meio são lojas: trazem 'Fale com a loja de' + nome da unidade + um selo verde de WhatsApp dentro da arte. O título só existe como logo circular azul ('FIT'), não há título em texto. Não tem fileira de ícones de redes. O último bloco é um carrossel que não carregou (só as setas), deixando quase um terço da página em branco. A bio é minúscula no print — leitura aproximada."
+  },
+  {
+    "arquivo": "23-gesqual.png",
+    "slug": "gesqual",
+    "titulo": "Gesqual Group",
+    "bio": "Há mais de 25 anos levando excelência em gestão para empresas.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Certificação ABNT NBR ISO 9001 — o selo que garante excelência e abre novas oportunidades"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Certificação ABNT NBR IEC 60079-19"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Auditorias e Treinamentos"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Suporte rápido e direto com nossa equipe"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Empresas que confiam na nossa excelência"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Qualidade não se improvisa. — Consultoria especializada em qualidade para quem busca mais que certificados."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#030D18",
+    "corDestaque": "#65FF76",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Os 4 links são banners de imagem com selo/ícone à esquerda, texto à direita e um botão verde dentro da própria arte. Abaixo da bio há uma linha extra bem pequena, quase ilegível, aparentando 'ISO 9001 | Auditorias | Treinamentos'. O bloco 7 é um carrossel de logos de clientes que carregou (8 marcas visíveis); o bloco 9 é outro carrossel, esse vazio, ocupando quase metade da altura da página. Fileira com 4 ícones de redes."
+  },
+  {
+    "arquivo": "24-heloisadepaula.png",
+    "slug": "heloisadepaula",
+    "titulo": "Helô de Paul",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 10,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Estou disponível no Whatsapp"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Sala VIP do Helô de Paul"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Siga meu trabalho no Instagram"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Meu Site"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Faça seu teste e Descubra"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Pinterest"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Parcerias (e-mail para dúvidas ou parcerias)"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Transforme sua imagem e destaque sua autoridade no ambiente de trabalho! — A moda passa, mas a elegância é eterna."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Estou a disposição!"
+      }
+    ],
+    "corFundo": "#4C403E",
+    "corDestaque": "#BFB299",
+    "corTexto": "#F0E9DC",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Título aparece como logo/lettering 'Helô de Paul'; a frase abaixo dele existe, mas ficou ilegível no print (não transcrevi). Todos os 7 primeiros blocos são banners de imagem com foto e um botãozinho dentro da arte; alternam fundo bege claro e marrom escuro. Não tem fileira de ícones de redes — Instagram e Pinterest são banners. O bloco 9 é um carrossel vazio, um vazio enorme entre o texto e o último bloco. O último bloco é um banner estreito, com foto redonda à esquerda e o texto cortado na arte."
+  },
+  {
+    "arquivo": "25-infraassessoria.png",
+    "slug": "infraassessoria",
+    "titulo": "Assessoria Empresarial",
+    "bio": "Transformando Estrutura em Performance.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 5,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, E-mail"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Assessoria CONTÁBIL — Vamos conversar"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Assessoria EMPRESARIAL — Quero saber mais"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Assessoria em LICITAÇÕES — Iniciar conversa"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "QUEM SOMOS? — Saiba mais"
+      }
+    ],
+    "corFundo": "#0D0D0D",
+    "corDestaque": "#FFFFFF",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "imagem",
+    "estiloBotao": "pilula",
+    "temIconesRedes": true,
+    "observacao": "Fundo preto com padrão geométrico repetido (losangos) em baixíssimo contraste — é imagem de textura, não foto. Os 4 blocos são banners horizontais de imagem (foto de fundo + título grande + botão pílula pequeno dentro do card), não botões de texto: o botão é branco ou escuro dependendo do banner. O 2º banner tem fundo marrom/dourado (#36250E). Logo circular INFRA no topo. Nada abaixo dos banners até o rodapé da plataforma."
+  },
+  {
+    "arquivo": "26-institutopontodeluz.png",
+    "slug": "institutopontodeluz",
+    "titulo": "Instituto Ponto de Luz",
+    "bio": "Bem vindo(a) — Links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 14,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Facebook, Google"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Acesse nosso catálogo"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "A verdadeira cura começa dentro de nós — Visite nosso site"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça nosso espaço"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Cristiano Carvalho"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Fale comigo no WhatsApp"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "ATENDIMENTOS"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Xamanismo"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Terapias"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Instituto de Ayahuasca Terapias Integrativas Complementares"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#41967E",
+    "corDestaque": "#4E8C3A",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "imagem",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página bem mais longa que o padrão. O topo tem foto (roda/cerimônia) com overlay verde até ~1/3 da altura; o resto é verde chapado #41967E. A frase de boas-vindas aparece ABAIXO da fileira de ícones (nas outras páginas ela vem antes). O logo traz 'Ayahuasca Terapia' como assinatura. Depois dos 3 banners vem um mini-card de pessoa: foto redonda + nome 'Cristiano Carvalho' + telefone (ilegível) + botão verde de WhatsApp. 'Xamanismo' e 'Terapias' são subtítulos com linha divisória embaixo (contei a linha junto com o título, não como separador). As duas listas de terapias são textos centralizados, ilegíveis no print (a de Terapias tem ~20 itens). O último bloco é um carrossel de imagens com setas laterais, mostrando um flyer de Ayahuasca/Rapé e Sananga. Há também um bloco de texto com o nome completo do instituto + endereço antes do carrossel."
+  },
+  {
+    "arquivo": "27-kajubeautyface.png",
+    "slug": "kajubeautyface",
+    "titulo": "Katia Guimarães",
+    "bio": "Bem vinda, links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Dia da Noiva — Para você se sentir linda, segura e inesquecível do início ao \"sim\"."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Maquiagem & Penteado — Realce sua beleza com uma produção feita para você brilhar."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça meu trabalho — Minha missão é transformar..."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Seu Casamento Perfeito!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especialista em atendimento de noivas."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Dunamis Company® © 2026. Todos os direitos reservados. CNPJ..."
+      }
+    ],
+    "corFundo": "#F3C7D4",
+    "corDestaque": "#D72977",
+    "corTexto": "#8C4B45",
+    "fundoTipo": "imagem",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Sob o nome aparece a assinatura 'Beauty Face'. O fundo é rosa quase chapado, mas com uma faixa de foto esmaecida (rostos) atrás do topo — bem sutil. Os 3 blocos são banners de imagem (foto + texto grande + botão pequeno); o 3º tem botão rosa forte #D72977. O 7º bloco é um carrossel que NÃO carregou no print: só aparecem as setas < > e um vazio grande de ~100px. O último bloco é o texto de copyright da Dunamis (fica no corpo, acima da barra 'Saiba mais sobre a Página de Links', que é da plataforma e não contei)."
+  },
+  {
+    "arquivo": "28-liamaragomes.png",
+    "slug": "liamaragomes",
+    "titulo": "Liamara Gomes",
+    "bio": "Especialista em atendimento de noivas.",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Google"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Agende seu dia de noiva — Marque seu horário"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça meus resultados no Instagram — Acompanhe"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Visite nosso espaço e se sinta em casa. — Veja localização"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Há 16 anos realizando sonhos"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especialista em atendimento de noivas."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Depoimentos de Sonhos Realizados."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Sonhos Realizados!"
+      }
+    ],
+    "corFundo": "#F5EBE4",
+    "corDestaque": "#59463F",
+    "corTexto": "#5A423A",
+    "fundoTipo": "imagem",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Mesmo template da Katia (27): bege claro com faixa de foto esmaecida atrás do topo. Os 3 banners são cards marrons (#59463F) com foto de um lado e texto do outro, alternando o lado da imagem. O 7º bloco é um carrossel que não carregou (só as setas < > e um vazio de ~90px). O 9º bloco é uma fileira horizontal de 3 cards 'Sonhos Realizados!' com prints de conversas de clientes — contei como 1 bloco (carrossel/galeria de depoimentos); se o sistema novo tratar cada card como um item, são 3."
+  },
+  {
+    "arquivo": "29-litoralrelogios.png",
+    "slug": "litoralrelogios",
+    "titulo": "Litoral Relógios",
+    "bio": "Bem vindo(a) — Links que vão te ajudar.",
+    "temAvatar": false,
+    "temCapa": false,
+    "totalBlocos": 7,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato — Tire suas dúvidas / Clique e fale conosco"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça mais nosso trabalho no Instagram — Visite nosso perfil"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Av. Dr. Vicente de Carvalho (em frente ao supermercado Cuca), Cidade Ocian / Praia Grande - SP — Venha até nossa loja"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Localização"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Vendas, consertos e tradição no litoral."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Paixão por relógios, cuidado com o tempo."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#0D1B2C",
+    "corDestaque": "#0B8622",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Único do lote em que a fileira de ícones de redes vem DEPOIS dos banners, não logo abaixo do cabeçalho. O topo não tem avatar redondo: é o logo horizontal 'LITORAL RELÓGIOS' (relógio + tipografia), seguido do subtítulo 'VENDAS & CONSERTOS / Troca de Pinos, Pulseiras & Baterias'. Os 3 blocos são banners de imagem em cores fortes (verde WhatsApp #0B8622, gradiente Instagram roxo/laranja, azul do mapa) com botão pequeno dentro. O último bloco é um carrossel que não carregou (só as setas < > e um vazio grande de ~150px)."
+  },
+  {
+    "arquivo": "30-lojasmari.png",
+    "slug": "lojasmari",
+    "titulo": "LojasMari",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 22,
+    "blocos": [
+      {
+        "tipo": "destaque",
+        "rotulo": "Jornal de Ofertas"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estamos no Instagram"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Quer fazer parte do nosso time?"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Conheça Nossas Lojas"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "O que dizem sobre a gente, elas confiaram e amaram"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "TEM ALGUMA DÚVIDA?"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#FF8439",
+    "corDestaque": "#FF7A28",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "É a página mais fora do padrão do lote: parece um mini-site, não um link da bio. O fundo não é uma cor só — são faixas por seção: topo off-white #FFF8F6 (cabeçalho + 3 banners), faixa laranja #FF8439 (a maior, com a grade de lojas), faixa pêssego #FFD3BE (depoimentos), faixa creme #FFFCEA (FAQ) e rodapé preto #141414. Coloquei o laranja como dominante por área. Não há fileira de ícones de redes. Os blocos 5 a 16 são 12 cards de loja em grade de 2 colunas (6 linhas), cada um com foto da fachada + faixa marrom #8B3003 com 'Loja Mari / CIDADE / cidade - SP' — os rótulos ficaram pequenos demais para ler no print, por isso vazios. O bloco 18 é um carrossel com 3 depoimentos em card branco (contei como 1). O bloco 21 é um acordeão de FAQ com 5 perguntas (contei o acordeão inteiro como 1 bloco; se cada pergunta virar um item, são 5). O bloco 22 é o rodapé preto com o logo LojasMari e o copyright. A linha de assinatura abaixo do logo do topo é ilegível, por isso a bio ficou vazia."
+  },
+  {
+    "arquivo": "31-lufilms.png",
+    "slug": "lufilms",
+    "titulo": "LuFilms",
+    "bio": "Videomaker",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 7,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "ORÇAMENTOS — Contato para trabalhos / Clique e saiba mais"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "MEU CANAL NO YOUTUBE — QUALIDADE & CAPRICHO EM CADA VÍDEO."
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "TENHA OS MELHORES DETALHES PRESERVADOS."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Veja alguns trabalhos de sucesso."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "FAÇA UM ORÇAMENTO"
+      }
+    ],
+    "corFundo": "#0D203A",
+    "corDestaque": "#00AFAB",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é uma tira de miniaturas de vídeo atrás do avatar. A galeria/carrossel abaixo do título aparece vazia no print (só as setas ‹ ›), provavelmente imagens que não carregaram. O botão pílula 'FAÇA UM ORÇAMENTO' fica isolado no rodapé e parece ser um CTA fixo/flutuante. Ícones de redes: Instagram, YouTube e e-mail. Na listagem oficial o título é 'Lu Films' (com espaço); na página está escrito 'LuFilms'."
+  },
+  {
+    "arquivo": "32-marcus6in7.png",
+    "slug": "marcus6in7",
+    "titulo": "Marcus Vinicius",
+    "bio": "Gestão Empresarial e Financeira",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 16,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato para assessoria ou informações. Estou disponível no WhatsApp."
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Conheça a 6in7 — Traga sua empresa para o próximo nível"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Sabe aquelas histórias de superação que até arrepia? O empresário Marcus Vinicius tem uma dessas."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "PodCast: Os Campeões"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "PodCast: Tô na B"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Ensino você a melhorar sua relação com dinheiro e Negócios com a 6in7"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Gestão Empresarial e Financeira."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "MEUS SERVIÇOS"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Gestão Financeira"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Gestão Empresarial"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Mentoria e Treinamento"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#EEEEEE",
+    "corDestaque": "#33A254",
+    "corTexto": "#3A3A3A",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Única página clara do lote. Capa = logo '6in7' grande em cinza claro atrás do avatar. Os dois primeiros botões são banners de imagem (verde WhatsApp e azul escuro 6in7); os três seguintes são cards com miniatura + texto (o primeiro ainda traz um botão azul interno). Carrossel/galeria vazio no meio da página (só as setas). Cada item de 'MEUS SERVIÇOS' tem uma linha de apoio em laranja pequena demais para ler. Logo 6in7 no rodapé entre dois divisores de largura total. Cores secundárias: azul escuro #0F3047 nos banners."
+  },
+  {
+    "arquivo": "33-matheusferro.png",
+    "slug": "matheusferro",
+    "titulo": "Matheus Ferro",
+    "bio": "@matheusferro_",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 5,
+    "blocos": [
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "CLIQUE E SAIBA MAIS"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "MENTORIA InstaLUCRO — Matheus Ferro"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Consultoria Para empresas (Whatsapp)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "PARCERIAS"
+      }
+    ],
+    "corFundo": "#020202",
+    "corDestaque": "#C16742",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "A mais enxuta do lote. Não tem fileira de ícones de redes nem capa — só avatar circular sobre fundo preto. Os três botões são banners de imagem (não botão de texto), com borda/brilho alaranjado. No rodapé há uma barra de crédito do WordPress ('Saiba mais sobre a Página de Links') que não contei como bloco de conteúdo."
+  },
+  {
+    "arquivo": "34-milenaferreira.png",
+    "slug": "milenaferreira",
+    "titulo": "Milena Ferreira",
+    "bio": "Estética Avançada",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Whatsapp"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Localização"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Seja uma mulher de destaque por onde passar, tenha uma Pele de Diamante."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Te ajudo a se ver livre da maquiagem em até 12 semanas!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Tratamentos faciais e corporais."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Especialista em tratamento para acne"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Epilação a laser"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Limpeza de Pele"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "QUERO SABER MAIS"
+      }
+    ],
+    "corFundo": "#DDC6B9",
+    "corDestaque": "#F2E8E2",
+    "corTexto": "#6F6159",
+    "fundoTipo": "solido",
+    "estiloBotao": "pilula",
+    "temIconesRedes": true,
+    "observacao": "Paleta nude: fundo bege rosado e botões em creme quase branco (#F2E8E2) com texto marrom — contraste baixo. Os dois botões pílula têm ícone à esquerda (foto da profissional no WhatsApp, pin no Localização). Galeria/carrossel vazio no meio (só as setas). O CTA final 'QUERO SABER MAIS' é uma pílula verde (#10CC7C) destoando da paleta, provavelmente botão fixo de WhatsApp. Entre 'Epilação a laser' e 'Limpeza de Pele' há uma linha fina, tratada como parte da lista de serviços e não contada como bloco separado. Ícones de redes: Instagram, Google e WhatsApp."
+  },
+  {
+    "arquivo": "35-milenealmeida.png",
+    "slug": "milenealmeida",
+    "titulo": "Milene Almeida",
+    "bio": "Artista Beauty",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 13,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Reserve seu horário em meu studio. — Sua beleza não pode esperar / Chamar agora"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Curso VIP — Designer de Sobrancelhas, do Iniciante ao Avançado"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça nosso espaço, e se sinta em casa."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "PROCEDIMENTOS"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "DESIGN COM HENNA"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "DESIGN COM HENNA + BUÇO"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "DESIGN PERSONALIZADO"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "DESIGN PERSONALIZADO + BUÇO"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Minhas Clientes Incríveis"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Cada rosto uma história"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#1A0A06",
+    "corDestaque": "#6B4230",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Fileira de redes fica logo abaixo do nome, antes dos botões (ordem diferente das outras páginas). Há um vão totalmente vazio (~80px no print) entre os ícones e o primeiro card — conferi pixel a pixel e não há nada renderizado ali; pode ser um bloco (vídeo/imagem) que não carregou. Os três blocos clicáveis são cards com miniatura e borda cobre; o primeiro tem botão verde 'Chamar agora' (WhatsApp) e o terceiro um botão azul. 'PROCEDIMENTOS' é um selo/badge marrom. A galeria do fim aparece vazia e as setas ficam bem na borda inferior do print, então pode haver mais conteúdo abaixo do que foi capturado."
+  },
+  {
+    "arquivo": "36-nalicuscuzbar.png",
+    "slug": "nalicuscuzbar",
+    "titulo": "Nali Cuscuz Bar",
+    "bio": "Cuscuz Nordestino Gourmet",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Almoço: Terça à Sexta das 11:30h às 15hrs — Jantar: Terça à Domingo das 18:30h às 00:00h"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "FAÇA SEU PEDIDO DE FORMA RÁPIDA E PRÁTICA!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "ESTAMOS NO IFOOD, FAÇA SEU PEDIDO E AVALIE A GENTE! Entregamos rapidinho"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "NOSSO CARDÁPIO — Temos opções para todos os paladares"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "NOSSA LOCALIZAÇÃO — Que tal nos fazer uma visita?"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "COMER BEM NUNCA FOI TÃO FÁCIL!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Tudo feito com muito amor e carinho."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#22170F",
+    "corDestaque": "#E14C00",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é uma foto de comida no topo, com o logo circular 'Nali' sobreposto; a bio vem num selo laranja abaixo do nome. O bloco de horários traz Almoço e Jantar separados por uma quebra de parágrafo — contei como UM bloco de texto, mas pode ter sido montado como dois. Os quatro botões são banners de imagem, cada um com cor própria (azul do app de pedidos, laranja do iFood, amarelo do cardápio, branco do Google Maps); usei o laranja #E14C00 como cor de destaque. Galeria/carrossel vazio no fim (só as setas). Ícones de redes: Instagram, Google e WhatsApp."
+  },
+  {
+    "arquivo": "37-natalialima.png",
+    "slug": "natalialima",
+    "titulo": "Natalia Lima",
+    "bio": "Lash Design",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 13,
+    "blocos": [
+      {
+        "tipo": "destaque",
+        "rotulo": "Método DS — Aprenda na prática como fazer um alinhamento perfeito para as sobrancelhas | QUERO FAZER PARTE"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Cursos Vi… (Virtuais) — Iniciante ao Avançado / Presencial | Faça parte"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Agende seu horário — A sua beleza não pode esperar! | Clique e fale comigo"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou no Instagram — Resultados encant… | Muitas novidades"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Acompanhe Meu Canal — Aprenda sobre design de sobrancelhas | Acesse agora"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou no TikTok | Clique e acompanhe"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou localizada em Cosmópolis/SP | Venha até meu studio"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "YouTube, TikTok e Google/Maps"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Você Merece Todo Cuidado e Atenção"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Design de Sobrancelhas | Extensão de Cílios | Epilação Egípcia | SPA Labial"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Procedimentos"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Design Personalizado | Design Personalizado com aplicação | Brow Lamination | Lash lifith"
+      }
+    ],
+    "corFundo": "#600E2F",
+    "corDestaque": "#C5306C",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Todos os botões são banners de imagem (não há botão de texto puro), e as imagens estouram a largura do card: vários rótulos aparecem cortados no print (\"Cursos Vi…\", \"Estou no Instagr…\", \"Estou no TikTo…\"). O nome e o \"Lash Design\" fazem parte da mesma imagem de assinatura, também cortada à direita. O 11º bloco é um carrossel/galeria que aparece vazio — só se veem as setas de navegação. A lista final \"Procedimentos\" tem linhas divisórias e está cortada na margem direita (pode haver preços que não apareceram). O topo tem uma capa com colagem de fotos de olhos/cílios atrás do avatar."
+  },
+  {
+    "arquivo": "38-ohanapizzaria.png",
+    "slug": "ohanapizzaria",
+    "titulo": "Ohana Pizzaria",
+    "bio": "Pizza recheada sem dó, nem piedade! Delivery em toda Praia Grande! Terça à Domingo – 18:30 às 00h",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 14,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Faça seus pedidos direto pelo WhatsApp — Clique aqui e faça seu pedido"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Acesse nosso cardápio e confira nossas pizzas — Conheça nossas deliciosas pizzas"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Faça seus pedidos através do InstaDelivery, e ganhe cashback! — Faça seu pedido de forma mais prática"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estamos no iFood! Já separou seus cupons de descontinho? — Conheça nossas deliciosas pizzas"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Nossa localização, peça e retire no balcão! — Retire suas pizzas no balcão"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp e Maps"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Recheio sem dó, nem piedade!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Experimente!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Ohana Pizzaria"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "PIZZAS — salgadas | doces | brotinhos · BEBIDAS — 2 litros | 1,5 litro · PROMOÇÕES — a semana toda"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Ohana Pizzaria"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "FAZER MEU PEDIDO"
+      }
+    ],
+    "corFundo": "#2C0100",
+    "corDestaque": "#F6B03A",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa com foto de pizza atrás do logo circular. Os 5 primeiros blocos são banners de imagem coloridos (verde, laranja, azul, vermelho, mapa) com um mini-rótulo dentro do próprio card. O 9º bloco é um carrossel/galeria que aparece completamente vazio no print — só as setas laterais. O menu final (PIZZAS/BEBIDAS/PROMOÇÕES) é texto de verdade, não imagem, e vem depois de uma linha dourada decorativa contada como separador. O último botão \"FAZER MEU PEDIDO\" é pílula verde de WhatsApp; os demais cards são arredondados."
+  },
+  {
+    "arquivo": "39-oticaespecialista.png",
+    "slug": "oticaespecialista",
+    "titulo": "Ótica Especialista",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 27,
+    "blocos": [
+      {
+        "tipo": "titulo",
+        "rotulo": "Escolha a armação que combina com você e leve suas lentes de grau com qualidade garantida!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Lentes com proteção UV · Antirreflexo e leveza no dia a dia · Parcelamento facilitado"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "FAÇA UM ORÇAMENTO"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Trabalhamos com as Melhores Marcas"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Faixa amarela com logos Armani Exchange, Victor Hugo, Ray-Ban e Mormaii"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Foto do óptico/médico no consultório"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Dr. Responde"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Nossa ótica é mais do que um lugar para encontrar óculos, é onde cuidado, tecnologia e estilo se encontram para proporcionar o melhor para sua visão."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Qualificados para Atender"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Com profissionais qualificados, realizamos exames de vista gratuitos e oferecemos orientações personalizadas… óculos prontos em 1 hora, ajustes gratuitos e garantias."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Foto do interior da loja"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Foto do óculos Ray-Ban Aviator"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Óculos RayBan"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Estilo clássico que nunca sai de moda! Com armação metálica leve e lentes que protegem 100% contra os raios UV…"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "COMPRE AGORA"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Serviços Especializados"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Óculos Prontos em 1 hora — Rápido, prático e feito sob medida para você."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Manutenção Ocular — Cuide da saúde dos seus olhos com consultas e hábitos preventivos."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Exame de Vista Gratuito — Cuide da sua visão para você enxergar melhor. Aproveite!"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Visagismo Ocular — Estuda o formato do rosto, olhos, sobrancelhas e proporções para realçar a harmonia facial."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Quem escolheu a Especialista, escolheu bem!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Depoimento de Jessica Marianno, cliente da Ótica Especialista"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "BÔNUS EXCLUSIVO — Na compra dos seus óculos de sol + lentes, leve um estojo premium e limpeza gratuita por 6 meses! | ENTRE EM CONTATO"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Perguntas Frequentes"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "FAQ com 5 perguntas (proteção contra o sol, prazo dos óculos, ajustes gratuitos, parcelamento, garantias)"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Ótica Especialista no rodapé"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "13 988071899 · contato@oticaespecialista.com.br · oticaespecialista013"
+      }
+    ],
+    "corFundo": "#FFFFFF",
+    "corDestaque": "#FFDF4C",
+    "corTexto": "#1A1A1A",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Não é uma página de links no formato dos outros clientes: é uma landing page completa, de largura total, com hero, prova social de marcas, blocos alternados imagem+texto, grade de 4 serviços em cards azul-marinho, depoimento, banner de bônus, FAQ em accordion e rodapé de contato. O amarelo #FFDF4C é a cor da marca (fundo da faixa de marcas e dos botões). A seção de FAQ tem fundo cinza-escuro #2A2A2A e a de serviços um creme claro #FFFDEF. No rodapé os ícones de WhatsApp, e-mail e Instagram aparecem ao lado de cada linha de contato, não como fileira de redes."
+  },
+  {
+    "arquivo": "40-outrafitta.png",
+    "slug": "outrafitta",
+    "titulo": "OutraFitta",
+    "bio": "Horário de Atendimento — Seg a Sex: 09h às 20h | Sáb, Dom e Feriados: 09h às 15h",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "destaque",
+        "rotulo": "Visite nosso site e conheça nossas coleções. — Compre Online"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Compre pelo Whatsapp"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça nosso Instagram — Cada peça, uma história"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp e site (ícone de óculos)"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Esteja sempre protegido do sol"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "E ainda com estilo"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Quem Somos?"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Bem-vindo à Outra Fitta, onde a visão clara encontra o estilo único… A Outra Fitta nasceu do desejo de unir qualidade, inovação e moda em um só lugar."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "FeedBacks"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Carrossel de depoimentos (Diego Rodrigo, DJ)"
+      }
+    ],
+    "corFundo": "#B8B4FD",
+    "corDestaque": "#5B52A8",
+    "corTexto": "#2E2A4D",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "O print é mais largo que a página (2613px) porque o carrossel de depoimentos vaza para fora da tela — os mesmos 3 cards de \"Diego Rodrigo | DJ\" aparecem repetidos até a borda direita, e o nome sai sobreposto (\"DiegRodrigo\"), como se dois depoimentos estivessem empilhados no mesmo lugar. Fundo lilás chapado com uma foto desfocada de óculos só na faixa do topo. O 7º bloco é um carrossel/galeria vazio, com apenas as setas visíveis, ocupando uma faixa alta. Os títulos \"Esteja sempre protegido do sol\" e \"Quem Somos?\" vêm sobre uma tarja roxa."
+  },
+  {
+    "arquivo": "41-packprofissional.png",
+    "slug": "packprofissional",
+    "titulo": "Pack Profissional",
+    "bio": "",
+    "temAvatar": false,
+    "temCapa": true,
+    "totalBlocos": 41,
+    "blocos": [
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Pack Profissional — Pacote de Artes"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Não seria ótimo se você tivesse um perfil impactante?"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "O Pack Profissional foi feito para você que não sabe por onde começar no design dos seus conteúdos, oferecendo ainda mais qualidade e profissionalismo para as suas artes."
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Foto da modelo sobre fundo de folhagem"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": "Faixa diagonal com \"Pack Profissional\" repetido"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Você já separou tempo para criar conteúdo, eu sei…"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Posso te garantir que seu tempo é tão valioso que você deveria desperdiçá-lo:"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Fechando negócios; Construindo audiência nos stories; Planejando estratégias de venda; Fazendo reuniões internas, assinando contratos…"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "O tempo que você perde fazendo suas artes pode ser convertido em mais dinheiro e investir seu tempo nas demandas que realmente dependem de você."
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Mosaico com as artes do pack"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Tudo feito no Canva para você baixar e usufruir"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Barra de busca do Canva — \"Facilite sua criação com o Pack Profissional\""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Quanto tempo você levaria criando 20 artes?"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Com o Pack Profissional você não precisa se preocupar, eu já fiz tudo para você. Todas as coleções podem ser utilizadas para QUALQUER PROFISSÃO."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Afinal, para que levar horas criando conteúdo amador?"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Colagem das artes do pack com o painel do Canva"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Delegar essa função a quem entende do assunto é a melhor maneira de garantir qualidade e eficiência… Você está investindo na imagem do seu negócio."
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "DESIGNS 100% ajustáveis"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Template Original adaptado para Dermatologista, Social Media e Advogada"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Nichos Individuais"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Bônus especial!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "No Pack Profissional, além do acervo de artes prontas, você recebe um minicurso exclusivo e prompts para o Chat GPT."
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "AULA 01: Como baixar o Pack Profissional?"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "AULA 02: Como baixar na plataforma Canva?"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "AULA 03: Como editar o meu template?"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "AULA 04: Como baixar minha arte pronta?"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "AULA 05: Como cortar meu carrossel?"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Comece agora construindo seu perfil com profissionalismo"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Pacote completo DE APENAS UM NICHO — R$47,00 (apenas nas primeiras 72h)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Pacote completo com todas as 140 ARTES — R$197,00 (apenas nas primeiras 72h)"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Garantia incondicional de 7 DIAS — devolvemos 100% do valor investido"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Quem é Aline Santana"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Designer com experiência no mercado digital desde 2016… mais de 100 clientes em 3 países, aluna certificada duas vezes pela Stella Sadério."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Perguntas Frequentes"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "FAQ com 7 perguntas (acesso ao conteúdo, aulas e templates, fora do Brasil, tempo de acesso, segurança da compra, devolução, outras dúvidas)"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Pack Profissional no rodapé"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Pack Profissional – 2026. Todos os direitos reservados. Desenvolvido por Dunamis"
+      }
+    ],
+    "corFundo": "#000000",
+    "corDestaque": "#A3BE3C",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Não é página de links: é uma página de vendas longa (9276px) do produto Pack Profissional, da Aline Santana. Todos os botões de CTA (5 no total) aparecem como retângulos verdes SEM texto no print — o rótulo não renderizou, por isso ficaram com rótulo vazio. Duas barras de ferramentas do Canva (\"Editar imagem / Inverter / Animar / Posição\" e ícones de cadeado, duplicar e lixeira) aparecem impressas sobre o conteúdo, provavelmente prints de tela usados como imagem decorativa. A seção \"Nichos Individuais\" tem só o título e um vazio enorme (~1400px) onde deveria haver a galeria. O verde-limão dos botões é gradiente (#B9D14E → #87992E); usei o tom médio."
+  },
+  {
+    "arquivo": "42-paginadelinks.png",
+    "slug": "paginadelinks",
+    "titulo": "Página de Links",
+    "bio": "",
+    "temAvatar": false,
+    "temCapa": true,
+    "totalBlocos": 36,
+    "blocos": [
+      {
+        "tipo": "imagem",
+        "rotulo": "Logo Página de Links"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Conecte seu público ao que importa. Transforme seus links em uma única página poderosa."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Todas as suas ofertas, conectadas em um só link. Simples assim."
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Mockup de 3 celulares com páginas de clientes"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Alguns clientes que já utilizam a Página de Links!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "4 mockups de celular (Geovanna Reimberg, Marcus Vinicius, Dra Evelyn Ciuffo, Santo Canto)"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Pare hoje mesmo de perder clientes por não direcioná-los de forma otimizada e atraente!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Quantas vezes seu cliente tentou entrar em contato com você, saber o endereço da sua loja ou solicitar um orçamento dos seus serviços e você não tem um link na bio personalizado?"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Tenha sua presença digital atualizada."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Transforme seus seguidores em clientes."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Para quem é a Página de Links?"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Para quem busca um bom posicionamento digital; para quem quer facilitar o acesso em seus canais; para quem deseja divulgar todos seus serviços em um único lugar; para quem quer facilitar o contato com seu cliente."
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "O que você vai receber:"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Todos os canais em um só lugar · Design profissional da página e cards · Slide de imagens · Página online 24h/7d com domínio personalizado · QRCode · Suporte para alterações · Link vitalício"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Depoimentos de alguns de nossos clientes satisfeitos"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Todos os nossos clientes… de forma otimizada e atraente para que você tenha mais credibilidade e organização."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Carrossel de depoimentos (Luciano/Lu Films, Ana/Santo Canto, Felipe/Lojas Mari, Lincon/Nali Cuscuz Bar, Aline/Design & Estratégia de Conteúdo)"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Página de Links Basic"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "de R$297,00 por R$147 — ou 12x de R$15,20 no crédito!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Todos os seus canais em um único lugar · Layout customizado · Cards direcionáveis · Ícones e conteúdos essenciais · Página online 24h/7d com domínio personalizado · QRCode configurado para o link · Suporte para alterações · Link seguro · Serviço vitalício"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Ao finalizar o pagamento, você será redirecionado para o WhatsApp para enviar as informações necessárias para a sua página personalizada."
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em Contato"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Selo 7 dias de garantia"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Garantia incondicional de 7 dias!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Caso você não se sinta feliz com sua compra, no prazo de 7 dias devolvemos o valor de forma integral."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Bruno Santana"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Serei o responsável por otimizar e melhorar a sua performance no mundo digital. Vamos trabalhar juntos por isso?"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Foto do Bruno Santana"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Organize e integre todas as suas ofertas em uma única Página de Links"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Velocidade | Design Personalizado | Posicionamento"
+      },
+      {
+        "tipo": "link",
+        "rotulo": ""
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em Contato"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Aviso Legal: nenhuma informação contida neste produto deve ser interpretada como uma afirmação de obtenção de resultados…"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Copyright © Página de Links. Todos os direitos reservados. Digital Dunamis CNPJ: 52.632.999/0001-07"
+      }
+    ],
+    "corFundo": "#FFFFFF",
+    "corDestaque": "#61CE70",
+    "corTexto": "#2A2A2A",
+    "fundoTipo": "solido",
+    "estiloBotao": "pilula",
+    "temIconesRedes": false,
+    "observacao": "Não é a página de um cliente: é a página de vendas do próprio produto \"Página de Links\" da Dunamis (preço, garantia, depoimentos e CTA de compra). Os 4 botões grandes verdes aparecem SEM texto no print — só a pílula verde chapada —, por isso ficaram com rótulo vazio; apenas os dois botõezinhos \"Entre em Contato\" (WhatsApp) têm rótulo legível. A seção de depoimentos é um carrossel que passa por cima do próprio título \"Depoimentos de alguns de nossos clientes satisfeitos\", deixando o texto ilegível. A página alterna faixas: branco, cinza-escuro #54595F, preto #0E0E0E e cinza claro #E6E6E6 — considerei o branco como fundo dominante."
+  },
+  {
+    "arquivo": "43-realzaoutilidadesdolar.png",
+    "slug": "realzaoutilidadesdolar",
+    "titulo": "Rea1zão",
+    "bio": "Bem vindo(a) — Alguns links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "Acesse nosso Jornal Online — Clique e Confira"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Estamos no Instagram — Segue a gente"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Faça parte do nosso Grupo de Ofertas — Entrar agora"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Vem conhecer nossa loja — Iniciar Percurso"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "A Loja de Utilidades Favorita de São Carlos"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "#TemVariedadeNoRea1zao"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Setores da Nossa Loja"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Cama, Mesa & Banho | Beleza & Cuidado | Utilidades | Ferramentas | Brinquedos | Área Pet | Papelaria | Cozinha | Tapetes | Alimentos & Bebidas | Decoração | Utilidades Domésticas | Festa | Jardinagem"
+      }
+    ],
+    "corFundo": "#5D2926",
+    "corDestaque": "#FF9C00",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": false,
+    "observacao": "Todos os 4 botões são banners de imagem (não botão de texto). O bloco 7 é um carrossel de imagens que aparece VAZIO no print — só as setas ‹ › sobre o fundo; ocupa uma área alta da página. O logo do topo é retangular, não circular. Vários textos aparecem cortados na direita (o conteúdo transborda o container na captura), por isso os rótulos longos estão reconstituídos. O rodapé 'Saiba mais sobre a Página de Links' é do tema WordPress e não foi contado como bloco. Na listagem oficial o título é 'Rea1zão™ Utilidades do Lar'."
+  },
+  {
+    "arquivo": "44-redebazzar.png",
+    "slug": "redebazzar",
+    "titulo": "Rede Bazzar",
+    "bio": "Bem vindo(a), alguns links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 12,
+    "blocos": [
+      {
+        "tipo": "link",
+        "rotulo": "Acesse nosso Jornal de Ofertas — Clique e Confira"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite nosso Instagram — Diversas novidades todos os dias para você! — Segue a gente"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite nosso Facebook — Conheça mais nosso grupo — Confira"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Fale conosco no Whatsapp — Disponíveis para atender todas as suas dúvidas — Chamar agora"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Nossos Endereços — Venha conhecer uma de nossas lojas — Venha até nós"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Facebook"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Tudo para o seu lar e muito mais !"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "#SeuLarcomBazzar"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Setores da Nossa Loja"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Cama, Mesa & Banho | Beleza & Cuidado | Utilidades | Ferramentas | Brinquedos | Área Pet | Papelaria | Cozinha | Tapetes | Alimentos & Bebidas | Decoração | Utilidades Domésticas | Festa | Jardinagem | ... | Perfumaria"
+      }
+    ],
+    "corFundo": "#104D30",
+    "corDestaque": "#E94201",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Mesma estrutura da 43 (mesmo cliente/modelo), porém mais completa. Os 5 botões são banners de imagem. O bloco 9 é um carrossel VAZIO no print (só as setas ‹ ›), e o bloco 10 é uma imagem solta da atendente logo acima do título 'Setores da Nossa Loja'. O título 'Setores da Nossa Loja' vem numa pilha laranja (#E94201). Abaixo do logo circular há o lockup 'Rede Bazzar / Tudo Para Seu Lar'. A última linha da lista de setores ('... | Perfumaria') fica cortada pelo fim da captura. Rodapé padrão 'Saiba mais sobre a Página de Links' não contado."
+  },
+  {
+    "arquivo": "45-redosouzaemuneratti.png",
+    "slug": "redosouzaemuneratti",
+    "titulo": "Redó, Souza & Muneratti — Advogados Associados",
+    "bio": "EXPERIÊNCIA | COMPROMISSO | RESULTADO",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, Google"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Dr. Rafael Redó — OAB-SP: 416.896 — Imobiliário • Notarial • Administrativo • Cível"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Dr. Diego Souza — OAB-SP: 282.547 — Previdenciário • Trabalhista • Social • Tributário • Empresarial"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Dr. Marcelo Muneratti — OAB-SP: 243.032 — Criminal • Civil • Família • Consumidor • Internacional"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Estamos no WhatsApp — Entre em contato para agendamento e consulta"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Localizados em Mongaguá — Comercial Marina, Av. Marina nº1919 sala 22 — Jd. Aguapeu | Mongaguá, SP"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Agora também em Santos — Edifício Volpi, Rua Prudente de Moraes nº75, Sala 55 — Vila Mathias | Santos, SP"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Acompanhe Nosso Canal (YouTube)"
+      }
+    ],
+    "corFundo": "#050D1D",
+    "corDestaque": "#C98208",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página mais recente e mais 'premium' do lote: avatar circular com foto dos 3 sócios, logo em serifa e tagline dourada. A fileira de ícones de redes vem ANTES dos botões (é o 1º bloco do corpo). Todos os botões são banners de imagem. Não tem carrossel nem bloco de texto solto. Os banners e a tagline aparecem cortados na direita no print (conteúdo mais largo que o container da captura). O rodapé é personalizado — 'Studio Central™ | © 2026. Todos os direitos reservados. CNPJ: 58.113.577/0001-90' — e não o rodapé padrão 'Página de Links'."
+  },
+  {
+    "arquivo": "46-relojoarialitoralocian.png",
+    "slug": "relojoarialitoralocian",
+    "titulo": "Relojoaria Litoral",
+    "bio": "Vendas e Consertos em Geral",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Estamos disponíveis no WHATSAPP — Fale com a gente — Chame agora"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Av. Dr. Vicente de Carvalho nº550 | Galeria Box 5 — Cidade Ocian | Praia Grande, SP — Conheça nossa loja"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Google Maps"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Deixe seu relógio nas mãos de quem entende do assunto."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especialistas em vendas e consertos de relógios."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#2A2415",
+    "corDestaque": "#FCDE00",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "É a versão 'Ocian' da Relojoaria Litoral (ver print 47), mas o nome escrito na página é só 'Relojoaria Litoral' — sem 'Ocian'. Logo amarelo em forma de engrenagem/relógio. Os 2 botões são banners de imagem. O bloco 6 é um carrossel VAZIO no print (só as setas ‹ ›), ocupando uma faixa alta. Rodapé personalizado 'Digital Dunamis™ | © 2024. Todos os direitos reservados. CNPJ: 52.632.995/0001-07' logo acima do rodapé padrão 'Página de Links' — nenhum dos dois foi contado como bloco."
+  },
+  {
+    "arquivo": "47-relojoarialitoral.png",
+    "slug": "relojoarialitoral",
+    "titulo": "Relojoaria Litoral",
+    "bio": "Vendas e Consertos em Geral",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 8,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Estamos disponíveis para atender no Whatsapp! — Entrar em contato"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Conheça um pouco mais no Instagram — Especializados em cuidar do seu relógio! — Visite nosso perfil"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite a gente no Facebook — Especializados em cuidar do seu relógio! — Visite nosso perfil"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Dentro do Litoral Plaza Shopping — Av. Ayrton Senna Da Silva nº1.511 Sala 13/14 — Praia Grande, São Paulo — Conheça nossa loja"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Facebook, Google"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Consertos em todas as marcas."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Especializados em cuidar do seu relógio!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#181818",
+    "corDestaque": "#FCDE00",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página irmã da 46 (mesmo logo amarelo de engrenagem e mesma bio), mas com fundo preto #181818 em vez do marrom, mais 2 botões (Instagram e Facebook) e 4 ícones de redes. Todos os botões são banners de imagem. O bloco 8 é um carrossel VAZIO no print (só as setas ‹ ›). O título 'Consertos em todas as marcas.' vem com um emoji/ícone de ferramentas antes do texto. Rodapé padrão 'Saiba mais sobre a Página de Links' não contado como bloco."
+  },
+  {
+    "arquivo": "48-renataamaral.png",
+    "slug": "renataamaral",
+    "titulo": "Renata Amaral",
+    "bio": "REALTOR | Triad, NC | Greensboro",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 5,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Get in touch — Whatsapp — Let's chat"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Send me a Text — Text or call me"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Questions? Send me an Email — I'm available"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "eXp Realty — Visit my Website — Click and learn more"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Site, Instagram, E-mail"
+      }
+    ],
+    "corFundo": "#EDE5DA",
+    "corDestaque": "#8B744E",
+    "corTexto": "#261F1C",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Única página clara do lote (fundo bege #EDE5DA) e única em inglês — corretora de imóveis nos EUA. Avatar circular com foto; abaixo, logo em serifa 'Renata Amaral' e a linha 'REALTOR | Triad, NC | Greensboro...', que fica cortada na direita e parcialmente encoberta pelo 1º banner. Os 4 botões são banners de imagem em tons bege/marrom. Sem carrossel e sem bloco de texto solto. Barra de rodapé marrom (#8B744E) com o padrão 'Saiba mais sobre a Página de Links', não contada como bloco."
+  },
+  {
+    "arquivo": "49-retificacerri.png",
+    "slug": "retificacerri",
+    "titulo": "Retífica Cerri",
+    "bio": "Oficina especializada, retífica de motores & venda de peças",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 15,
+    "blocos": [
+      {
+        "tipo": "texto",
+        "rotulo": "Atendimento — Seg a Sex :: 08h às 17:30h / Sábado, Domingo & Feriados :: Fechado"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Seu veículo merece o melhor tratamento! — Enviar mensagem"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite nosso Site — Acesse Agora"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Nossa Localização — Venha até Nós"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Google, WhatsApp"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Potência Restaurada, Performance Aprimorada!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Expertise em Motores que Você Pode Confiar."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Carrossel de imagens (não carregou no print, só as setas)"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Confie seu carro a quem entende — cuidamos de cada detalhe para você não se preocupar."
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "CONHEÇA NOSSOS SERVIÇOS"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Retífica de Motores Automotivos; Montagem de Motores; Oficina Especializada em Motor Automotivo; Venda & Fornecimento de Peças."
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Trabalhamos com as principais marcas"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Logos das marcas parceiras (Mahle, Sambel, Corteco, Schadek, Urba...)"
+      }
+    ],
+    "corFundo": "#020D1D",
+    "corDestaque": "#1B4386",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página mais longa do lote. Os 3 links do topo não são botões de texto: são banners de imagem com o CTA embutido na arte. O carrossel de fotos não renderizou no print (só aparecem as setas), deixando um vazio grande no meio. Os blocos de texto usam fundo azul em faixa e o texto está cortado pela largura do container (\"...em Motor Automot\", \"Confie seu carro a quem entende — cu...\"), ou seja, transborda no próprio site. Amarelo #F8BF21 é a cor do logo."
+  },
+  {
+    "arquivo": "50-rosanacroche.png",
+    "slug": "rosanacroche",
+    "titulo": "Rosana Oliveira — Artesanato & Crochet",
+    "bio": "Olá! Seja bem vindo(a), Links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, Pinterest"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Acesse meu Instagram — CONHEÇA MEUS TRABALHOS — Clique e saiba mais"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Me chame no Whatsapp — ENCOMENDAS & PEDIDOS — Chamar agora"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Crochês & Artesanato"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Um pouco do meu trabalho, e inspirações."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Carrossel de imagens (não carregou no print, só as setas)"
+      }
+    ],
+    "observacao": "Página curta e limpa. Fundo creme chapado, sem capa — o avatar é a ilustração da Rosana e o nome é uma assinatura manuscrita em imagem. Os 2 links são banners de imagem, não botões. O carrossel do fim não renderizou.",
+    "corFundo": "#FFF6EA",
+    "corDestaque": "#8C7452",
+    "corTexto": "#62441D",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true
+  },
+  {
+    "arquivo": "51-route0km.png",
+    "slug": "route0km",
+    "titulo": "ROUTE 0KM",
+    "bio": "A rota do seu novo carro",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Faça sua simulação agora! — Entre em contato e tire todas as suas dúvidas"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Acesse nosso estoque disponível. (Instagram)"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Estrada das lágrimas, nº77 — Auto Shopping Premium — Clique e venha até nosso endereço"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Visite nosso Website — Clique e conheça"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, Site"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Veículos Semi Novos e Zero Km"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Seu novo carro está aqui!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Carrossel de imagens (não carregou no print, só as setas)"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Nossos Serviços"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Venda de Carros Novos e Seminovos / Troca com Troco / Aceitamos Carro e Moto na Troca / Financiamento"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "QUERO SABER MAIS"
+      }
+    ],
+    "corFundo": "#202020",
+    "corDestaque": "#125E3F",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa com foto de pátio de carros ao pôr do sol, avatar com anel amarelo. Os 4 links são banners de imagem (cantos levemente arredondados); só o CTA final \"QUERO SABER MAIS\" é botão de verdade e esse é em formato pílula, verde WhatsApp. A lista de serviços vem com linhas divisórias finas entre os itens — contei como um bloco de texto só. Carrossel do meio não renderizou."
+  },
+  {
+    "arquivo": "52-ruthfoes.png",
+    "slug": "ruthfoes",
+    "titulo": "Ruth Fóes",
+    "bio": "Apresentadora | Influenciadora | Modelo",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 4,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, YouTube"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Parcerias & Publicidade — Vamos trabalhar juntos? — Divulgue sua marca através de campanhas autênticas e estratégicas que geram conexão, engajamento e resultados."
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Apresentadora, cantora e Influenciadora Digital — Compartilho a vida com MUITA ALEGRIA! — Conteúdos novos todos os dias (Instagram)"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Acompanhe Meu Canal no Youtube — Inscreva-se"
+      }
+    ],
+    "corFundo": "#FFE8D1",
+    "corDestaque": "#69441B",
+    "corTexto": "#6A431C",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "A mais simples do lote: fundo pêssego chapado, sem capa e sem carrossel. Só avatar, nome, bio, fileira de redes e 3 banners de imagem. Rodapé diferente das outras: mostra \"Dunamis Company™ | © 2026. Todos os direitos reservados. CNPJ: 52.632.995/0001-07\" no lugar do \"Saiba mais sobre a Página de Links\"."
+  },
+  {
+    "arquivo": "53-sarahsampaio.png",
+    "slug": "sarahsampaio",
+    "titulo": "Sarah Sampaio",
+    "bio": "Beauty Artist",
+    "temAvatar": true,
+    "temCapa": true,
+    "totalBlocos": 7,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato e agende seu momento — Clique e entre em contato"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Conheça mais do meu trabalho no Instagram — Clique e me acompanhe"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Minha localização — Av. Ana Costa nº 482/484, Sala nº 608 — Clique e veja o mapa"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram, Google"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Maquiagem | Penteado | Designer de Sobrancelhas | Epilação"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Toda noiva tem uma história linda de amor e um sonho a ser realizado."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Carrossel de imagens (não carregou no print, só as setas)"
+      }
+    ],
+    "corFundo": "#BEBDB9",
+    "corDestaque": "#926B5F",
+    "corTexto": "#926B5F",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Capa é uma imagem esmaecida com a palavra \"BEAUTY\" atrás do avatar; o resto da página é cinza chapado. Os 3 links são banners de imagem com foto + texto, cantos bem arredondados. O carrossel do fim não renderizou e deixou um vazio de quase 700px antes do rodapé."
+  },
+  {
+    "arquivo": "54-silcosmeticos.png",
+    "slug": "silcosmeticos",
+    "titulo": "Sil Cosméticos",
+    "bio": "Seja bem vindo(a) — Links que vão te ajudar.",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 10,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Fale com a gente no Whatsapp — Estamos disponíveis"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Nossa loja querida na Shopee — Conheça agora!"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Nos conheça pessoalmente — Loja Física — Clique e venha ao endereço"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Estamos no Instagram — Sempre com novidades! — Segue a gente!"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp, Google, TikTok"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Entregamos em Guarujá, via motogirl."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "As melhores e mais renomadas marcas reunidas em um só lugar! Escolha os seus produtos prediletos, que nós cuidamos do envio!"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "A loja preferida das lashes e nails designer."
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Enviamos para todo o Brasil!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Carrossel de imagens (não carregou no print, só as setas)"
+      }
+    ],
+    "corFundo": "#EFD0E7",
+    "corDestaque": "#653768",
+    "corTexto": "#653768",
+    "fundoTipo": "imagem",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Única do lote com fundo de imagem: bokeh rosa desfocado cobrindo a página inteira (por isso marquei fundoTipo imagem e temCapa false — não existe banner separado atrás do avatar). Acima do nome tem a linha \"Sílvia Pedrarias agora é\", sinal de rebranding. Os 4 links são banners de imagem. Carrossel do fim não renderizou."
+  },
+  {
+    "arquivo": "55-spacefm.png",
+    "slug": "spacefm",
+    "titulo": "A Rádio Queridinha de Ibiúna",
+    "bio": "Alguns links que podem ajudar",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, Facebook, WhatsApp e Mapa"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Peça sua música direto em nosso Whatsapp!"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Acesse agora nosso Website"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Anuncie a sua empresa na rádio mais querida da região!"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estamos localizados na cidade de Ibiúna"
+      },
+      {
+        "tipo": "separador",
+        "rotulo": ""
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Baixe nosso aplicativo"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Acompanhe nossa programação"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Baixe na Google Play"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Baixe na Apple Store"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Acesse pela Alexa"
+      }
+    ],
+    "corFundo": "#17293C",
+    "corDestaque": "#FFD400",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "imagem",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Fundo é foto desfocada em tom azul-marinho ocupando a página inteira (não é capa acima do avatar). O topo traz o logo SpaceFM 87,5 em imagem retangular, não avatar circular. Os 4 cards principais são banners de arte prontos, cada um com cor própria (roxo, azul claro, amarelo/verde, branco) e um botãozinho interno — não há uma cor única de botão; o #FFD400 é o amarelo do logo. Os 3 ícones de loja de app estão lado a lado, mas contei como 3 links por terem destinos e legendas distintos."
+  },
+  {
+    "arquivo": "56-stebernards.png",
+    "slug": "stebernards",
+    "titulo": "Stephanny",
+    "bio": "Fundadora & Mentora — Studio Bernards",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 9,
+    "blocos": [
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou no Instagram — Conheça meu trabalho"
+      },
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Fale comigo no WhatsApp — Chamar agora"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Agende seu atendimento online"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Conheça meu espaço"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "Instagram, WhatsApp e Google"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": "Conheça o Studio Bernards — Beleza é detalhe, excelência é o padrão"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Whatsapp do Studio"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Agenda do Studio"
+      },
+      {
+        "tipo": "link",
+        "rotulo": "Instagram do Studio"
+      }
+    ],
+    "corFundo": "#F0EAE1",
+    "corDestaque": "#EBD4D6",
+    "corTexto": "#4A3B31",
+    "fundoTipo": "solido",
+    "estiloBotao": "arredondado",
+    "temIconesRedes": true,
+    "observacao": "Página em duas partes: a de cima é da Stephanny (pessoa) e a de baixo, depois do logo SB, é do Studio Bernards, com 3 botões simples brancos de borda fina e ícone à esquerda. O nome Stephanny é manuscrito dourado (#C9A227). Os 4 cards de cima são banners de arte rosados; o #EBD4D6 é a cor média deles. A área fora do conteúdo é marrom escuro (#6B5B4E), como moldura lateral."
+  },
+  {
+    "arquivo": "57-studiosarahsampaio.png",
+    "slug": "studiosarahsampaio",
+    "titulo": "Studio Sarah Sampaio Beauty",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 6,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp, Instagram e localização"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Sua beleza real realçada com cuidado e técnica — Agende seu horário"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Tendências e bastidores que inspiram beleza de verdade — Nosso Instagram"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Um momento só seu, do jeito que você sempre sonhou"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Mais do que beleza, é um momento de recomeço."
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#111111",
+    "corDestaque": "#A8E063",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "pilula",
+    "temIconesRedes": true,
+    "observacao": "O topo tem o logo SB em imagem retangular, não avatar circular. O último bloco é uma galeria/carrossel que aparece vazia no print — só se veem as setas de navegação em uma faixa alta de fundo preto; provavelmente imagens que não carregaram. Os botõezinhos dentro dos cards variam de cor (verde-claro e roxo); usei o verde como referência."
+  },
+  {
+    "arquivo": "58-vanessaandrade.png",
+    "slug": "vanessaandrade",
+    "titulo": "Vanessa Andrade",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "redes",
+        "rotulo": ""
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Atendimento exclusivo para noivas"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "O mercado da beleza está crescendo — Maquiagem, Noiva, Formanda"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Reserve seu horário — Procedimentos: Make e Penteado"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Um espaço criado pra você se sentir linda, confiante e em casa"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Transformações feitas com amor, carinho e técnica"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "+ de 500 Noivas transformadas"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Maquiagem · Penteados · Micropigmentação · Lashes"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Depoimentos & Resultados"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#F4EEE5",
+    "corDestaque": "#B99A5B",
+    "corTexto": "#3B3229",
+    "fundoTipo": "solido",
+    "estiloBotao": "pilula",
+    "temIconesRedes": true,
+    "observacao": "Avatar circular com foto e nome em serifa dourada; a linha logo abaixo do nome está pequena demais para ler, por isso a bio ficou vazia. O 9º bloco é uma galeria/carrossel que aparece praticamente vazia no print (só marcas claras no meio da faixa bege). O último bloco é uma fileira de 4 prints de depoimento (conversas e mensagens), contada como um bloco de galeria."
+  },
+  {
+    "arquivo": "59-viniciusruffino.png",
+    "slug": "viniciusruffino",
+    "titulo": "Vinicius Ruffino",
+    "bio": "",
+    "temAvatar": true,
+    "temCapa": false,
+    "totalBlocos": 11,
+    "blocos": [
+      {
+        "tipo": "whatsapp",
+        "rotulo": "Entre em contato"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Estou no Instagram"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Personal presencial"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Consultoria online"
+      },
+      {
+        "tipo": "destaque",
+        "rotulo": "Assessoria de corrida"
+      },
+      {
+        "tipo": "redes",
+        "rotulo": "WhatsApp e Instagram"
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Resultados incríveis alcançados pelos meus alunos!"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      },
+      {
+        "tipo": "titulo",
+        "rotulo": "Aqui você CONQUISTA o seu RESULTADO, no menor tempo!"
+      },
+      {
+        "tipo": "texto",
+        "rotulo": "Treinos: presencial e a distância"
+      },
+      {
+        "tipo": "imagem",
+        "rotulo": ""
+      }
+    ],
+    "corFundo": "#262626",
+    "corDestaque": "#F5821F",
+    "corTexto": "#FFFFFF",
+    "fundoTipo": "solido",
+    "estiloBotao": "reto",
+    "temIconesRedes": true,
+    "observacao": "Avatar circular com foto e anel laranja; o laranja é a cor de marca visível, mas os 5 cards são banners de arte com cores próprias (verde WhatsApp, roxo Instagram, foto, cinza, azul). O bloco 8 é uma fileira de 4 cards de depoimento com foto, dentro de uma caixa cinza junto do título; contei a fileira como um bloco de galeria. O último bloco é um carrossel que aparece vazio no print — só as setas de navegação em uma faixa alta escura. O texto abaixo do nome, se existe, está ilegível."
+  }
+]
