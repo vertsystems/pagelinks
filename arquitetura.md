@@ -7,8 +7,7 @@
 | Camada | Escolha | Por quê |
 |---|---|---|
 | Aplicação | **Next.js (App Router) + TypeScript** | Página pública renderizada no servidor (rápida e indexável) e painel na mesma base |
-| Banco (agora) | **SQLite + Prisma 7** | Roda na máquina, sem conta nem chave de serviço. Constrói-se o sistema inteiro antes de contratar qualquer coisa |
-| Banco (depois) | **PostgreSQL via Supabase** | Troca de provider e adapter. O schema foi escrito sem Json, enum nativo ou array justamente para isso |
+| Banco | **PostgreSQL via Supabase** (projeto `vertsys-db`) | Migrado do SQLite em 05/09/2026. O schema foi escrito sem Json, enum nativo ou array justamente para essa troca sair sem reescrita |
 | Autenticação | **Supabase Auth** (quando publicar) | Login do painel sem construir do zero |
 | Arquivos | **Supabase Storage** (quando publicar) | Logo, avatar e imagem dos cards |
 | Hospedagem | **Vercel** | Deploy por push, domínio personalizado, plano inicial gratuito |
@@ -21,6 +20,10 @@
 - **No Prisma 7 a URL não fica no schema.** Vai em `prisma.config.ts` para a CLI e no
   driver adapter para o runtime (`lib/prisma.ts`)
 - O export do adapter é `PrismaBetterSqlite3` — e não `PrismaBetterSQLite3`
+- **A conexão direta (`db.<ref>.supabase.co:5432`) só resolve em IPv6.** Funciona no
+  Mac, quebra na Vercel, que é IPv4. As duas URLs do projeto passam pelo **pooler**:
+  `DATABASE_URL` no modo transação (6543, runtime) e `DIRECT_URL` no modo sessão
+  (5432, migração e studio). Migração não roda no modo transação
 
 **O critério não foi elegância, foi manutenção:** é exatamente a stack que o Bruno já
 usa em outros sistemas. Stack conhecida é stack que se conserta às 22h de uma sexta.
@@ -108,6 +111,34 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 ```bash
 npm run db:importar
 ```
+
+## O banco no Supabase — 06/09/2026
+
+Projeto **`vertsys-db`** (organização Vert Systems, plano Free, `us-west-2`, instância
+NANO — 60 conexões). Ref: `vjzxmlccmqazuoznuhxs`.
+
+O banco já está com a carteira dentro: **60 clientes, 60 páginas, 620 blocos**, e a
+migração `20260905202826_inicial` aplicada (`prisma migrate status` limpo).
+
+**Duas conexões, não uma:**
+
+| Variável | Porta | Modo | Para quê |
+|---|---|---|---|
+| `DATABASE_URL` | 6543 | transação (`?pgbouncer=true`) | a aplicação — `lib/prisma.ts` |
+| `DIRECT_URL` | 5432 | sessão | `prisma migrate`, `prisma studio` — `prisma.config.ts` |
+
+Ambas apontam para `aws-0-us-west-2.pooler.supabase.com`, com o usuário
+`postgres.<ref>`. O caminho direto (`db.<ref>.supabase.co`) ficou de fora de propósito:
+é IPv6 e a Vercel não fala IPv6.
+
+**Segurança:** RLS está ligado nas cinco tabelas e **não há nenhuma policy** — ou seja,
+a API REST pública do Supabase (`anon`) não lê nada. Quem lê é o Prisma, conectado como
+`postgres`, que tem `BYPASSRLS`. Se um dia o cliente for consultar o banco direto do
+navegador, aí sim entram policies.
+
+**As chaves** ficam só no `.env` (ignorado pelo git). O `.env.example` documenta o
+formato sem segredo nenhum. A chave publicável é pública por definição; a secreta não
+está no arquivo — pegar no dashboard quando o Storage entrar.
 
 ## Estado atual — 26/08/2026
 
