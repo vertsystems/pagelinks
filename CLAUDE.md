@@ -54,7 +54,8 @@ Herda as skills e as regras do Contex OS instalado na raiz da Vert Systems
   `#F0F3FA · #D5DEEF · #B1C9EF · #8AAEE0 · #638ECB · #395886`; o **escuro** é a identidade Vert Systems
   (verde `#34D399` sobre `#0B0F0D`). A troca é no botão do topo e fica num cookie. Cor nova no painel
   entra como token nos dois temas, em `app/gestao/gestao.css`, nunca fixa no módulo
-- **Imagem sobe sempre em WebP** e o servidor regrava em q90 no tamanho que a página usa (`lib/imagens.ts`)
+- **Imagem entra em WebP ou PNG e sai sempre em WebP q90**, no tamanho que a página usa
+  (`lib/imagens.ts`). Decisão do Bruno em 12/10/2026: PNG também, porque é mais prático
 - Nenhuma página vai ao ar sem o cliente ver antes
 - Página de links é peça de conversão: velocidade de carregamento e legibilidade no
   celular vêm antes de qualquer efeito visual

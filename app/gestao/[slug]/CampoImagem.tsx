@@ -1,15 +1,42 @@
 "use client";
 
 import { useId, useRef, useState, useTransition } from "react";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
 import { enviarImagem, removerImagem, type AlvoImagem } from "../acoes";
 import estilos from "../gestao.module.css";
 
-const LIMITE_ENVIO = 4 * 1024 * 1024; // o mesmo de lib/imagens.ts, conferido de novo no servidor
+/**
+ * Arquivo acima do teto de envio (PNG pesado, em geral): reduz aqui mesmo ao
+ * tamanho que a página usa e manda como WebP q95 (q85 se ainda passar do teto).
+ * O servidor regrava em WebP q90 do mesmo jeito. Qualidade 1 não serve: no teste,
+ * uma arte de 16 MB reduzida saiu acima de 4 MB.
+ */
+async function reduzirNoNavegador(arquivo: File, uso: UsoImagem): Promise<File> {
+  const bitmap = await createImageBitmap(arquivo);
+  const { largura, altura } = TAMANHO_MAXIMO[uso];
+  const escala = Math.min(1, largura / bitmap.width, altura ? altura / bitmap.height : 1);
+
+  const tela = document.createElement("canvas");
+  tela.width = Math.round(bitmap.width * escala);
+  tela.height = Math.round(bitmap.height * escala);
+  const ctx = tela.getContext("2d");
+  if (!ctx) return arquivo;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bitmap, 0, 0, tela.width, tela.height);
+
+  let blob: Blob | null = null;
+  for (const qualidade of [0.95, 0.85]) {
+    blob = await new Promise<Blob | null>((pronto) => tela.toBlob(pronto, "image/webp", qualidade));
+    if (!blob || blob.size <= LIMITE_ENVIO) break;
+  }
+  if (!blob) return arquivo;
+  return new File([blob], arquivo.name.replace(/\.\w+$/, "") + (blob.type === "image/webp" ? ".webp" : ".png"), { type: blob.type });
+}
 
 /**
- * Campo de imagem do editor: envia o WebP e já grava, sem esperar o Salvar do
- * formulário em volta. O input de arquivo não tem name, então não entra no envio
- * desse formulário.
+ * Campo de imagem do editor: recebe WebP ou PNG e já grava, sem esperar o
+ * Salvar do formulário em volta. O input de arquivo não tem name, então não
+ * entra no envio desse formulário.
  */
 export default function CampoImagem({
   alvo,
@@ -41,16 +68,28 @@ export default function CampoImagem({
     aoMudar?.(resposta.url ?? null);
   }
 
-  function enviar(arquivo: File) {
+  function enviar(original: File) {
     setErro(null);
-    if (arquivo.type !== "image/webp") return setErro("A imagem precisa estar em WebP.");
-    if (arquivo.size > LIMITE_ENVIO) return setErro("A imagem passa de 4 MB. Exporte de novo num tamanho menor.");
+    if (!FORMATOS_ACEITOS.includes(original.type)) return setErro("A imagem precisa estar em WebP ou PNG.");
 
-    const dados = new FormData();
-    dados.append("arquivo", arquivo);
     iniciar(async () => {
-      concluir(await enviarImagem(alvo, dados));
+      const uso = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
       if (entrada.current) entrada.current.value = "";
+      let arquivo = original;
+      try {
+        if (original.size > LIMITE_ENVIO) arquivo = await reduzirNoNavegador(original, uso);
+      } catch {
+        setErro("Não consegui abrir essa imagem. Confira se o arquivo não está corrompido.");
+        return;
+      }
+      if (arquivo.size > LIMITE_ENVIO) {
+        setErro("Mesmo reduzida, a imagem passa de 4 MB. Exporte de novo num tamanho menor.");
+        return;
+      }
+
+      const dados = new FormData();
+      dados.append("arquivo", arquivo);
+      concluir(await enviarImagem(alvo, dados));
     });
   }
 
@@ -75,7 +114,7 @@ export default function CampoImagem({
             ref={entrada}
             id={id}
             type="file"
-            accept="image/webp"
+            accept={FORMATOS_ACEITOS.join(",")}
             className={estilos.arquivoOculto}
             disabled={ocupado}
             onChange={(e) => {

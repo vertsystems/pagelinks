@@ -1,10 +1,13 @@
 import { randomBytes } from "node:crypto";
 import sharp from "sharp";
 import { prisma } from "@/lib/prisma";
+import { TAMANHO_MAXIMO, type UsoImagem } from "@/lib/imagens-limites";
+
+export { LIMITE_ENVIO, type UsoImagem } from "@/lib/imagens-limites";
 
 /**
- * Imagens do PageLinks: chegam em WebP pelo painel, saem otimizadas (WebP q90,
- * no tamanho máximo que a página usa) e ficam no Supabase Storage, no bucket
+ * Imagens do PageLinks: chegam em WebP ou PNG pelo painel, saem sempre em WebP
+ * q90, no tamanho máximo que a página usa, e ficam no Supabase Storage, no bucket
  * público "imagens", em <clienteId>/<uso>-<id>.webp. O nome nunca se repete, então
  * o arquivo pode ficar em cache para sempre.
  *
@@ -13,30 +16,16 @@ import { prisma } from "@/lib/prisma";
 
 const BUCKET = "imagens";
 
-/** Teto do envio. A Vercel corta o corpo da requisição em 4,5 MB. */
-export const LIMITE_ENVIO = 4 * 1024 * 1024;
-
-export type UsoImagem = "avatar" | "cabecalho" | "card" | "fundo";
-
-// A coluna da página tem 620 px: bloco e cabeçalho limitam só a largura (1240
-// cobre tela 2x), porque arte comprida é comum e não pode perder nitidez.
-// A foto do topo aparece com 104 px (400 sobra até para 3x); o fundo cobre a tela.
-const TAMANHO_MAXIMO: Record<UsoImagem, { largura: number; altura?: number }> = {
-  avatar: { largura: 400, altura: 400 },
-  cabecalho: { largura: 1240 },
-  card: { largura: 1240 },
-  fundo: { largura: 1920, altura: 1920 },
-};
-
 /**
- * Reduz ao tamanho que a página usa e regrava em WebP q90. Se a imagem já cabe
- * e o original sai mais leve que a regravação, fica o original: otimizar nunca
- * pode deixar o arquivo mais pesado. Lança erro se não for WebP de verdade.
+ * Reduz ao tamanho que a página usa e grava em WebP q90. Se chegou um WebP que
+ * já cabe e é mais leve que a regravação, fica o original: otimizar nunca pode
+ * deixar o arquivo mais pesado. Lança erro se não for WebP nem PNG de verdade
+ * (a extensão do nome não conta, quem decide é o conteúdo).
  */
 export async function otimizarImagem(entrada: Buffer, uso: UsoImagem) {
   const imagem = sharp(entrada, { animated: true });
   const { format, width = 0, pageHeight, height = 0 } = await imagem.metadata();
-  if (format !== "webp") throw new Error("O arquivo não é WebP.");
+  if (format !== "webp" && format !== "png") throw new Error("O arquivo não é WebP nem PNG.");
 
   const { largura, altura } = TAMANHO_MAXIMO[uso];
   const alturaDoQuadro = pageHeight ?? height;
@@ -48,7 +37,8 @@ export async function otimizarImagem(entrada: Buffer, uso: UsoImagem) {
     .webp({ quality: 90 })
     .toBuffer();
 
-  return !precisaReduzir && saida.length >= entrada.length ? entrada : saida;
+  const manterOriginal = format === "webp" && !precisaReduzir && saida.length >= entrada.length;
+  return manterOriginal ? entrada : saida;
 }
 
 function storage() {

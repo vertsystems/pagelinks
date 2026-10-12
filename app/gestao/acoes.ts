@@ -6,7 +6,8 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
-import { LIMITE_ENVIO, apagarImagensOrfas, guardarImagem, otimizarImagem, type UsoImagem } from "@/lib/imagens";
+import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -296,15 +297,8 @@ export async function duplicarCard(cardId: string) {
 
 // ---------- imagens ----------
 
-export type CampoImagemPagina = "avatarUrl" | "cabecalhoImagemUrl" | "fundoImagemUrl";
 export type AlvoImagem = { tipo: "pagina"; id: string; campo: CampoImagemPagina } | { tipo: "card"; id: string };
 export type EstadoImagem = { url?: string | null; erro?: string };
-
-const USO_DO_CAMPO: Record<CampoImagemPagina, UsoImagem> = {
-  avatarUrl: "avatar",
-  cabecalhoImagemUrl: "cabecalho",
-  fundoImagemUrl: "fundo",
-};
 
 /**
  * Onde a imagem mora, de qual cliente é e qual endereço tem agora. O alvo vem
@@ -357,12 +351,12 @@ async function localizarAlvo(alvo: AlvoImagem) {
   return null;
 }
 
-/** Recebe o WebP, otimiza, guarda no Storage e já grava no banco: não depende de apertar Salvar. */
+/** Recebe WebP ou PNG, converte para WebP q90, guarda no Storage e já grava no banco: não depende de apertar Salvar. */
 export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<EstadoImagem> {
   await exigirAdmin();
   const arquivo = dados.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha uma imagem." };
-  if (arquivo.type && arquivo.type !== "image/webp") return { erro: "A imagem precisa estar em WebP." };
+  if (arquivo.type && !FORMATOS_ACEITOS.includes(arquivo.type)) return { erro: "A imagem precisa estar em WebP ou PNG." };
   if (arquivo.size > LIMITE_ENVIO) return { erro: "A imagem passa de 4 MB. Exporte de novo num tamanho menor." };
 
   const local = await localizarAlvo(alvo);
@@ -372,7 +366,7 @@ export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<E
   try {
     otimizada = await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), local.uso);
   } catch {
-    return { erro: "Esse arquivo não é um WebP válido." };
+    return { erro: "Esse arquivo não é um WebP nem um PNG válido." };
   }
 
   let url: string;

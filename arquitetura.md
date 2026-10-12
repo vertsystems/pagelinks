@@ -114,19 +114,23 @@ npm run db:importar
 
 ## Imagens — 12/10/2026
 
-**Quem sobe é a equipe, sempre em WebP.** O painel tem campo de envio na foto do topo, na
+**Quem sobe é a equipe, em WebP ou PNG; sai sempre WebP q90.** O painel tem campo de envio na foto do topo, na
 imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço de SEO e o
 ícone da aba continuam como endereço digitado.
 
 - **O envio grava na hora**, sem esperar o Salvar do formulário: `enviarImagem` e
   `removerImagem` em `app/gestao/acoes.ts`, que também passam pelo `exigirAdmin()`
-- **Otimização** (`lib/imagens.ts`, com o `sharp`): regrava em WebP q90 e reduz ao tamanho
+- **Otimização** (`lib/imagens.ts`, com o `sharp`): converte para WebP q90 e reduz ao tamanho
   que a página usa. Bloco e cabeçalho limitam só a largura em 1240 px (a coluna tem 620),
   porque arte comprida é comum. Foto do topo vai a 400×400 e fundo a 1920. Se a imagem já
-  cabe e o original é mais leve que a regravação, fica o original. Arquivo que não é WebP de
-  verdade é recusado, mesmo com a extensão certa
+  cabe e o original (WebP) é mais leve que a regravação, fica o original. PNG transparente
+  continua transparente. Quem decide o formato é o conteúdo, não a extensão: JPG com nome
+  `.png` é recusado. Os limites ficam em `lib/imagens-limites.ts`, que o navegador também lê
 - **Teto de 4 MB por envio**: a Vercel corta o corpo da requisição em 4,5 MB. O `next.config.ts`
-  sobe o limite da ação de servidor, que por padrão é 1 MB
+  sobe o limite da ação de servidor, que por padrão é 1 MB. Arquivo maior (PNG pesado, em
+  geral) é reduzido no próprio navegador ao tamanho da página e vai como WebP q95 (q85 se ainda
+  passar); no teste, uma arte PNG de 16 MB chegou com 1 MB. Qualidade 1 no navegador não serve:
+  a mesma arte saía acima de 4 MB
 - **Testado de ponta a ponta em 12/10/2026** num Chrome de verdade, na página `demo`: WebP falso
   recusado, foto de 2,6 MB aceita, troca apagando o arquivo antigo, cabeçalho travando título e frase,
   exclusão de bloco limpando o bucket. A demo voltou ao estado original
