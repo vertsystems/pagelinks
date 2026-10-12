@@ -112,6 +112,30 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Bloco de redes: ícones — 13/10/2026
+
+O bloco **Redes** virou uma fileira de ícones lado a lado, cada um com o próprio link,
+todos dentro do mesmo bloco ("+ Adicionar ícone" põe mais uma linha; salvar o bloco
+grava a lista inteira, na ordem da tela).
+
+- **Tabela `Icone`** (cardId, rede, url, ordem), com RLS ligado como as outras. Ícone que
+  já existia é atualizado (guarda o histórico); o que sai da lista é apagado. Duplicar o
+  bloco duplica os ícones
+- **20 redes** em `lib/redes.ts`: WhatsApp, Instagram, Facebook, TikTok, YouTube, Google,
+  Google Maps, LinkedIn, X, Threads, Pinterest, Telegram, Spotify, iFood, Airbnb,
+  Tripadvisor, e os genéricos Site, E-mail, Telefone e Localização. Os desenhos das marcas
+  são do Simple Icons (CC0), copiados só os usados: o pacote inteiro iria parar no painel.
+  O LinkedIn saiu do Simple Icons a pedido da marca e tem desenho próprio
+- **Clique contado por ícone:** o link é `/ir/<cardId>?icone=<id>`, e `Clique.iconeId`
+  guarda qual foi. WhatsApp aceita só o número (sem o 55, ele entra); e-mail e telefone
+  viram `mailto:` e `tel:`; link sem `https://` ganha
+- **Sugestão a partir do nome:** os 49 blocos de redes que vieram do WordPress têm nomes como
+  "Instagram, WhatsApp, TikTok". Ao abrir um deles sem ícones, as linhas já nascem com essas
+  redes, faltando só colar os links
+- **Na página:** ícones de 28 px em área de toque de 48 px, na cor do texto da página (ou na
+  cor de texto do bloco). Bloco de redes sem ícone só aparece se tiver link (o botão de
+  antes); os que vieram do WordPress sem link eram espaço reservado e saíram da página
+
 ## Imagens — 12/10/2026
 
 **Quem sobe é a equipe, em WebP ou PNG; sai sempre WebP q90.** O painel tem campo de envio na foto do topo, na

@@ -111,20 +111,39 @@ model Card {
   atualizadoEm DateTime @updatedAt
 
   cliques Clique[]
+  icones  Icone[] // tipo = redes
 
   @@index([paginaId, ordem])
   @@index([ativo])
 }
 
+/// Ícone de um bloco "redes": a rede (whatsapp, instagram…, ver lib/redes.ts) e o
+/// link. Vários por bloco, lado a lado, na ordem de `ordem`.
+model Icone {
+  id     String @id @default(cuid())
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  rede   String
+  url    String
+  ordem  Int    @default(0)
+
+  cliques Clique[]
+
+  @@index([cardId, ordem])
+}
+
 /// Contagem simples de cliques. Sem cookie, sem rastreio de pessoa.
 model Clique {
-  id     String   @id @default(cuid())
-  cardId String
-  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  data   DateTime @default(now())
-  origem String? // referrer, quando houver
+  id       String   @id @default(cuid())
+  cardId   String
+  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  iconeId  String? // qual ícone, quando o clique foi num bloco de redes
+  icone    Icone?   @relation(fields: [iconeId], references: [id], onDelete: SetNull)
+  data     DateTime @default(now())
+  origem   String? // referrer, quando houver
 
   @@index([cardId, data])
+  @@index([iconeId])
 }
 
 /// Quem entra no painel.

@@ -28,7 +28,12 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
 
   const cliente = await prisma.cliente.findUnique({
     where: { slug },
-    include: { paginas: { take: 1, include: { cards: { orderBy: { ordem: "asc" } } } } },
+    include: {
+      paginas: {
+        take: 1,
+        include: { cards: { orderBy: { ordem: "asc" }, include: { icones: { orderBy: { ordem: "asc" } } } } },
+      },
+    },
   });
   if (!cliente) notFound();
 

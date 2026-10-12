@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
+import { REDE_POR_ID } from "@/lib/redes";
+import DesenhoRede from "./DesenhoRede";
 import estilos from "./pagina.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -26,6 +28,7 @@ async function buscarPagina(slug: string) {
               ],
             },
             orderBy: { ordem: "asc" },
+            include: { icones: { orderBy: { ordem: "asc" } } },
           },
         },
       },
@@ -166,6 +169,34 @@ export default async function PaginaPublica({ params }: Props) {
                   );
 
                 case "redes":
+                  if (card.icones.length) {
+                    return (
+                      <nav
+                        key={card.id}
+                        className={estilos.redes}
+                        aria-label={card.titulo ?? "Redes sociais"}
+                        style={card.corTexto ? { color: card.corTexto } : undefined}
+                      >
+                        {card.icones.map((icone) => {
+                          const rede = REDE_POR_ID[icone.rede];
+                          return rede ? (
+                            <a key={icone.id} className={estilos.icone} href={`${destino}?icone=${icone.id}`} aria-label={rede.nome} title={rede.nome}>
+                              <DesenhoRede rede={rede} tamanho={28} />
+                            </a>
+                          ) : null;
+                        })}
+                      </nav>
+                    );
+                  }
+                  // Sem ícone: só aparece se tiver link (o botão de antes). Os blocos de redes
+                  // que vieram do WordPress sem link eram espaço reservado e levavam para lugar nenhum.
+                  if (!card.url) return null;
+                  return (
+                    <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino}>
+                      {card.titulo}
+                    </a>
+                  );
+
                 case "link":
                 case "destaque":
                 default:

@@ -112,6 +112,14 @@
 .imagemRedonda img { object-fit: cover; }
 .imagemAcoes { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .botaoArquivo[aria-disabled="true"] { opacity: .6; pointer-events: none; }
+/* ícones do bloco de redes: uma linha por ícone */
+.rotuloSolto { font-size: 12.5px; color: var(--g-suave); font-weight: 500; }
+.listaIcones { display: flex; flex-direction: column; gap: 8px; }
+.iconeLinha { display: grid; grid-template-columns: 34px minmax(130px, 170px) 1fr auto; gap: 8px; align-items: center; }
+.iconePrevia {
+  width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px;
+  background: var(--g-acento-fundo); color: var(--g-destaque);
+}
 .tamanho { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 .tamanho span { font-size: 12.5px; color: var(--g-suave); }
 .tamanho input[type="range"] { flex: 1; min-width: 140px; max-width: 280px; accent-color: var(--g-acento); cursor: pointer; }
@@ -172,6 +180,8 @@
   .topoAcoes .btn:not(.btnIcone) { padding: 9px 12px; }
   .env { padding: 20px 16px 48px; }
   .doisCampos { grid-template-columns: 1fr; }
+  .iconeLinha { grid-template-columns: 34px 1fr auto; }
+  .iconeLinha input[type="text"] { grid-column: 1 / -1; order: 5; }
   .tabela thead { display: none; }
   .tabela tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 12px 0; }
   .tabela td { padding: 0 4px; }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
+import EditorIcones from "./EditorIcones";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -22,6 +23,7 @@ type Card = {
   ativo: boolean;
   publicarEm: Date | null;
   despublicarEm: Date | null;
+  icones: { id: string; rede: string; url: string }[];
 };
 
 const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
@@ -32,7 +34,7 @@ const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
   { valor: "texto", nome: "Texto", ajuda: "Um parágrafo curto, sem link" },
   { valor: "imagem", nome: "Imagem", ajuda: "Foto ou banner, clicável se tiver link" },
   { valor: "video", nome: "Vídeo", ajuda: "YouTube ou Vimeo, tocando na página" },
-  { valor: "redes", nome: "Redes", ajuda: "Botão discreto para o perfil social" },
+  { valor: "redes", nome: "Redes", ajuda: "Ícones lado a lado (WhatsApp, Instagram…), cada um com o seu link" },
   { valor: "separador", nome: "Separador", ajuda: "Uma linha para dar respiro" },
 ];
 
@@ -41,18 +43,20 @@ function camposDoTipo(tipo: string) {
   switch (tipo) {
     case "titulo":
     case "texto":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false };
     case "separador":
-      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false };
+      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false };
     case "imagem":
-      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false };
     case "video":
-      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false };
+    case "redes":
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true };
     // nos blocos clicáveis, a imagem é opcional e, quando existe, vira o próprio card (banner)
     case "whatsapp":
-      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true };
+      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false };
     default:
-      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false };
   }
 }
 
@@ -143,7 +147,7 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
                         {usa.titulo && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
-                              {card.tipo === "texto" ? "Texto" : "Título"}
+                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : "Título"}
                             </label>
                             <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
                           </div>
@@ -178,6 +182,8 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
                           tamanho={card.imagemTamanho}
                         />
                       )}
+
+                      {usa.icones && <EditorIcones icones={card.icones} titulo={card.titulo} />}
 
                       {usa.whatsapp && (
                         <div className={estilos.doisCampos}>

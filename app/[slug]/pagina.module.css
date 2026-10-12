@@ -85,6 +85,15 @@
 .cabecalho { margin: 0 0 32px; width: 100%; } /* mesmo respiro que a frase deixa antes dos blocos */
 .cabecalho img { width: 100%; height: auto; display: block; margin-inline: auto; }
 
+/* bloco de redes: ícones lado a lado; 48 px de área de toque para o dedo */
+.redes { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; color: var(--texto); }
+.icone {
+  width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%;
+  color: inherit; transition: transform .15s ease, opacity .15s ease;
+}
+.icone:hover { transform: translateY(-2px); opacity: .85; }
+.icone:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
 .imagem { width: 100%; border-radius: var(--raio); display: block; margin-inline: auto; }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
+import { REDE_POR_ID } from "@/lib/redes";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
@@ -216,12 +217,43 @@ export async function salvarCard(cardId: string, dados: FormData) {
       despublicarEm: data("despublicarEm"),
     },
   });
+  if (dados.has("icones")) await salvarIcones(cardId, dados);
 
   const c = await prisma.card.findUnique({
     where: { id: cardId },
     select: { pagina: { select: { cliente: { select: { slug: true } } } } },
   });
   revalidar(c?.pagina.cliente.slug);
+}
+
+/**
+ * Ícones do bloco de redes, na ordem da tela. O formulário manda as linhas em
+ * campos repetidos (iconeId, iconeRede, iconeUrl). Ícone que já existia é
+ * atualizado e guarda o histórico de cliques; o que sumiu da lista é apagado.
+ * Só vale id que já é deste bloco: o resto do navegador vira ícone novo.
+ */
+async function salvarIcones(cardId: string, dados: FormData) {
+  const ids = dados.getAll("iconeId").map(String);
+  const urls = dados.getAll("iconeUrl").map((v) => String(v).trim());
+  const linhas = dados
+    .getAll("iconeRede")
+    .map((rede, i) => ({ id: ids[i] ?? "", rede: String(rede), url: urls[i] ?? "", ordem: i }))
+    .filter((l) => l.url && REDE_POR_ID[l.rede])
+    .slice(0, 30);
+
+  const existentes = new Set(
+    (await prisma.icone.findMany({ where: { cardId }, select: { id: true } })).map((i) => i.id),
+  );
+  const manter = linhas.filter((l) => existentes.has(l.id)).map((l) => l.id);
+
+  await prisma.$transaction([
+    prisma.icone.deleteMany({ where: { cardId, id: { notIn: manter } } }),
+    ...linhas.map(({ id, rede, url, ordem }) =>
+      existentes.has(id)
+        ? prisma.icone.update({ where: { id }, data: { rede, url, ordem } })
+        : prisma.icone.create({ data: { cardId, rede, url, ordem } }),
+    ),
+  ]);
 }
 
 export async function alternarCard(cardId: string) {
@@ -286,7 +318,9 @@ export async function duplicarCard(cardId: string) {
     where: { paginaId: card.paginaId, ordem: { gt: card.ordem } },
     data: { ordem: { increment: 1 } },
   });
-  await prisma.card.create({ data: { ...resto, ordem: card.ordem + 1 } });
+  const copia = await prisma.card.create({ data: { ...resto, ordem: card.ordem + 1 } });
+  const icones = await prisma.icone.findMany({ where: { cardId }, select: { rede: true, url: true, ordem: true } });
+  if (icones.length) await prisma.icone.createMany({ data: icones.map((i) => ({ ...i, cardId: copia.id })) });
 
   const c = await prisma.pagina.findUnique({
     where: { id: card.paginaId },
