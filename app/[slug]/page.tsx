@@ -120,6 +120,19 @@ export default async function PaginaPublica({ params }: Props) {
           <div className={estilos.blocos}>
             {pagina.cards.map((card) => {
               const destino = `/ir/${card.id}`;
+              const imagem = card.imagemUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={estilos.imagem}
+                  src={card.imagemUrl}
+                  alt={card.titulo ?? ""}
+                  style={{ width: `${card.imagemTamanho ?? TAMANHO_NA_PAGINA.card.padrao}%` }}
+                  data-pl-tamanho={`card-${card.id}`}
+                />
+              ) : null;
+              // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
+              // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
+              const banner = imagem && <a key={card.id} href={destino}>{imagem}</a>;
 
               switch (card.tipo) {
                 case "titulo":
@@ -131,20 +144,9 @@ export default async function PaginaPublica({ params }: Props) {
                 case "separador":
                   return <hr key={card.id} className={estilos.separador} />;
 
-                case "imagem": {
-                  const largura = { width: `${card.imagemTamanho ?? TAMANHO_NA_PAGINA.card.padrao}%` };
-                  return card.imagemUrl ? (
-                    card.url ? (
-                      <a key={card.id} href={destino}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} style={largura} data-pl-tamanho={`card-${card.id}`} />
-                      </a>
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={card.id} className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} style={largura} data-pl-tamanho={`card-${card.id}`} />
-                    )
-                  ) : null;
-                }
+                case "imagem":
+                  if (!imagem) return null;
+                  return card.url ? banner : <div key={card.id}>{imagem}</div>;
 
                 case "video": {
                   const player = card.url ? urlDeVideo(card.url) : null;
@@ -154,17 +156,20 @@ export default async function PaginaPublica({ params }: Props) {
                 }
 
                 case "whatsapp":
-                  return card.telefone ? (
+                  if (!card.telefone) return null;
+                  if (banner) return banner;
+                  return (
                     <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino}>
                       {card.titulo ?? "Chamar no WhatsApp"}
                       {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
                     </a>
-                  ) : null;
+                  );
 
                 case "redes":
                 case "link":
                 case "destaque":
                 default:
+                  if (banner) return banner;
                   return (
                     <a
                       key={card.id}

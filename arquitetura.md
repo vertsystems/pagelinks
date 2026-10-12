@@ -144,6 +144,11 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
   alternativo. No painel, com a imagem, título e frase ficam travados (e o servidor ignora
   os dois) até a imagem sair
 - Precisa de `SUPABASE_SECRET_KEY` no `.env` e na Vercel. Sem ela, o envio avisa que está desligado
+- **Card-banner** (13/10/2026): todo bloco clicável (link, destaque, WhatsApp, redes) aceita
+  imagem opcional. Com ela, o card vira a própria arte, clicável e contando clique pelo
+  `/ir/`, no lugar do botão de texto. É como eram quase todas as páginas do WordPress: arte com
+  título e botãozinho desenhados dentro. O título do bloco continua editável, porque é o nome
+  dele no painel e o texto alternativo da imagem
 - **Barra de tamanho** (13/10/2026, pedido do Bruno): foto, cabeçalho e imagem de bloco têm
   uma barra que muda o tamanho de exibição. Foto em px (48 a 200, padrão 104), cabeçalho e
   bloco em % da coluna (20 a 100, padrão 100). Fica em `Pagina.avatarTamanho`,

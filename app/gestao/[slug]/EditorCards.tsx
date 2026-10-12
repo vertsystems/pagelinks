@@ -48,10 +48,11 @@ function camposDoTipo(tipo: string) {
       return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false };
     case "video":
       return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false };
+    // nos blocos clicáveis, a imagem é opcional e, quando existe, vira o próprio card (banner)
     case "whatsapp":
-      return { titulo: true, subtitulo: true, url: false, imagem: false, whatsapp: true };
+      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true };
     default:
-      return { titulo: true, subtitulo: true, url: true, imagem: false, whatsapp: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false };
   }
 }
 
@@ -167,8 +168,12 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
                         <CampoImagem
                           alvo={{ tipo: "card", id: card.id }}
                           url={card.imagemUrl}
-                          rotulo="Imagem"
-                          dica="O título vira o texto alternativo."
+                          rotulo={card.tipo === "imagem" ? "Imagem" : "Imagem do card (opcional)"}
+                          dica={
+                            card.tipo === "imagem"
+                              ? "O título vira o texto alternativo."
+                              : "Com imagem, o card vira a própria arte, clicável, no lugar do botão. O título não aparece na página: fica como texto alternativo e como nome do bloco aqui."
+                          }
                           fundo={corFundo}
                           tamanho={card.imagemTamanho}
                         />
