@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { exigirAdmin } from "@/lib/acesso";
 import FormNovo from "./FormNovo";
 import estilos from "../gestao.module.css";
 
-export default function NovoCliente() {
+export default async function NovoCliente() {
+  await exigirAdmin();
+
   return (
     <main className={estilos.env} style={{ maxWidth: 620 }}>
       <div className={estilos.cabecalho}>

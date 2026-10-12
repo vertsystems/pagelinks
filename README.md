@@ -22,6 +22,7 @@ npm run dev           # http://localhost:3000
 | `npm run db:migrate` | Aplica mudança de schema |
 | `npm run db:seed` | Recria a página de demonstração |
 | `npm run db:studio` | Abre o banco numa interface |
+| `SENHA='...' npm run db:usuario -- email` | Cria um admin do painel, ou troca a senha dele |
 
 ## Estrutura
 

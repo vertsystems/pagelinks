@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { exigirAdmin } from "@/lib/acesso";
 import estilos from "./gestao.module.css";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export default async function ListaClientes({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await exigirAdmin();
   const { q } = await searchParams;
   const busca = (q ?? "").trim();
 

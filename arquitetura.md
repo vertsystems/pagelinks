@@ -8,7 +8,7 @@
 |---|---|---|
 | Aplicação | **Next.js (App Router) + TypeScript** | Página pública renderizada no servidor (rápida e indexável) e painel na mesma base |
 | Banco | **PostgreSQL via Supabase** (projeto `vertsys-db`) | Migrado do SQLite em 05/09/2026. O schema foi escrito sem Json, enum nativo ou array justamente para essa troca sair sem reescrita |
-| Autenticação | **Supabase Auth** (quando publicar) | Login do painel sem construir do zero |
+| Autenticação | **Própria, na tabela `Usuario`** (12/10/2026) | Senha em scrypt e sessão em cookie assinado, só com o `crypto` do Node. Sem dependência e sem segundo cadastro de usuário fora do banco |
 | Arquivos | **Supabase Storage** (quando publicar) | Logo, avatar e imagem dos cards |
 | Hospedagem | **Vercel** | Deploy por push, domínio personalizado, plano inicial gratuito |
 
@@ -80,7 +80,7 @@ A escolha depende de quantas páginas existem hoje.
 5. ~~Editor de blocos com reordenação~~ — **feito**
 6. ~~Migração da carteira~~ — **feita**: 59 clientes, 620 blocos
 7. **Upload de imagem** (avatar, imagem de bloco, fundo) ← próximo
-8. Login do painel
+8. ~~Login do painel~~ — **feito** em 12/10/2026, com agendamento que mantém o banco acordado
 9. Publicação: Supabase + Vercel + dnms.fun
 10. Acesso do cliente ao painel, quando o Bruno decidir
 
@@ -111,6 +111,38 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 ```bash
 npm run db:importar
 ```
+
+## Login e agendamento — 12/10/2026
+
+**O painel fechado.** `/gestao` só abre com sessão de admin. O login fica em `/entrar`,
+e o botão **Sair** fica no topo do painel.
+
+- **Senha:** só o hash vai para `Usuario.senhaHash` (scrypt, `lib/senha.ts`). Para criar ou
+  trocar a senha de alguém: `SENHA='...' npm run db:usuario -- email@dominio.com "Nome"`
+- **Sessão:** cookie `pl_sessao` assinado com HMAC (`lib/sessao.ts`), válido por 30 dias,
+  `HttpOnly`. A chave é `SESSAO_SEGREDO`. Trocar a chave desloga todo mundo
+- **Duas travas.** A primeira é o `proxy.ts` (o antigo middleware), que manda quem chega
+  sem cookie para o login. A segunda é o `exigirAdmin()` (`lib/acesso.ts`), chamado no
+  começo de **toda página e toda ação** do painel, que confere no banco se a conta existe,
+  está ativa e é admin. A segunda é a que vale: ação de servidor pode ser disparada de
+  outra rota, e o proxy sozinho não cobre isso. **Página ou ação nova em `/gestao` precisa
+  chamar `exigirAdmin()`**
+- Desativar o usuário (`ativo = false`) corta o acesso na hora, sem esperar o cookie vencer
+- O papel `cliente` continua sem acesso: o login só aceita `admin`
+- Endereços reservados (`gestao`, `entrar`, `ir`, `api`) não podem virar slug de cliente
+- Por que não Supabase Auth: seria um segundo cadastro de usuário fora da tabela que já
+  existe, uma dependência a mais e a chave secreta do Supabase no servidor, tudo isso para
+  um painel com um usuário só. Se um dia o cliente entrar com "esqueci a senha" e login
+  por e-mail, vale reavaliar
+
+**O banco acordado.** No plano Free o Supabase pausa o projeto depois de 7 dias sem uso,
+e foi o que aconteceu entre setembro e outubro: o `/gestao` e todas as páginas deram 500
+até o Bruno restaurar o projeto no painel do Supabase. Agora o `vercel.json` agenda
+`/api/manter-banco` a cada 5 dias (dias 1, 6, 11, 16, 21, 26 e 31, ao meio-dia UTC), e a
+rota faz uma consulta real ao banco. Ela só responde a quem traz o `CRON_SECRET`, que é o
+que a Vercel envia no agendamento. O intervalo maior entre duas chamadas é de 5 dias.
+
+`SESSAO_SEGREDO` e `CRON_SECRET` estão no `.env` local e na Vercel (produção e preview).
 
 ## O banco no Supabase — 06/09/2026
 
@@ -151,8 +183,7 @@ lado, nove tipos de bloco para adicionar, reordenação, esconder sem apagar, du
 agendamento por bloco, tema por página (cores, 14 fontes, formato de botão, fundo
 sólido/degradê/imagem), SEO e Open Graph, e cadastro com endereço e anotação interna.
 
-**Ainda não tem login** — enquanto roda só na máquina, tudo bem; antes de publicar,
-é obrigatório.
+**Login:** desde 12/10/2026 o `/gestao` exige login (ver "Login e agendamento" acima).
 
 **Tipos de card que a página já sabe renderizar:** `link`, `destaque`, `whatsapp`
 (com mensagem pronta), `titulo`, `texto`, `imagem` (clicável ou não), `video`

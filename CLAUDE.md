@@ -43,8 +43,8 @@ Conteúdo de cliente vive no banco, nunca em arquivo.
 
 ## Contexto herdado
 
-Herda as skills e as regras do ViperOS da raiz do workspace, e o contexto da marca
-em `unidade-negocios/vertsystems/`. **Não usa a identidade da Dunamis** — nem no painel, nem nas páginas.
+Herda as skills e as regras do Contex OS instalado na raiz da Vert Systems
+(`vertsystems/`, dois níveis acima), e o contexto da marca de lá (pasta irmã de `dunamiscompany/` em `VERT SYS/`). **Não usa a identidade da Dunamis** — nem no painel, nem nas páginas.
 
 ## Específico deste projeto
 

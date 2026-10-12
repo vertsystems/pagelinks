@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:importar": "tsx prisma/importar.ts"
+    "db:importar": "tsx prisma/importar.ts",
+    "db:usuario": "tsx prisma/usuario.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",

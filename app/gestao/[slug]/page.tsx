@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { exigirAdmin } from "@/lib/acesso";
 import { FONTES } from "@/lib/tema";
 import { excluirCliente, salvarPagina } from "../acoes";
 import FormCadastro from "./FormCadastro";
@@ -20,6 +21,7 @@ const ESTILOS_BOTAO = [
 ];
 
 export default async function EditorCliente({ params }: { params: Promise<{ slug: string }> }) {
+  await exigirAdmin();
   const { slug } = await params;
 
   const cliente = await prisma.cliente.findUnique({

@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { gerarSlug } from "@/lib/slug";
+import { exigirAdmin } from "@/lib/acesso";
+import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -18,10 +19,12 @@ function revalidar(slug?: string) {
 // ---------- cliente ----------
 
 export async function criarCliente(_anterior: EstadoForm, dados: FormData): Promise<EstadoForm> {
+  await exigirAdmin();
   const nome = String(dados.get("nome") ?? "").trim();
   if (!nome) return { erro: "O nome é obrigatório." };
 
   const slug = gerarSlug(String(dados.get("slug") ?? "") || nome);
+  if (SLUGS_RESERVADOS.includes(slug)) return { erro: `O endereço /${slug} é reservado pelo sistema.` };
   const existe = await prisma.cliente.findUnique({ where: { slug } });
   if (existe) return { erro: `O endereço /${slug} já está em uso por "${existe.nome}".` };
 
@@ -38,9 +41,11 @@ export async function criarCliente(_anterior: EstadoForm, dados: FormData): Prom
 }
 
 export async function salvarCliente(id: string, _anterior: EstadoForm, dados: FormData): Promise<EstadoForm> {
+  await exigirAdmin();
   const nome = String(dados.get("nome") ?? "").trim();
   const slugNovo = gerarSlug(String(dados.get("slug") ?? ""));
   if (!nome || !slugNovo) return { erro: "Nome e endereço são obrigatórios." };
+  if (SLUGS_RESERVADOS.includes(slugNovo)) return { erro: `O endereço /${slugNovo} é reservado pelo sistema.` };
 
   const conflito = await prisma.cliente.findFirst({
     where: { slug: slugNovo, NOT: { id } },
@@ -65,6 +70,7 @@ export async function salvarCliente(id: string, _anterior: EstadoForm, dados: Fo
 }
 
 export async function excluirCliente(id: string) {
+  await exigirAdmin();
   const c = await prisma.cliente.findUnique({ where: { id }, select: { slug: true } });
   await prisma.cliente.delete({ where: { id } });
   revalidar(c?.slug);
@@ -74,6 +80,7 @@ export async function excluirCliente(id: string) {
 // ---------- página ----------
 
 export async function salvarPagina(paginaId: string, dados: FormData) {
+  await exigirAdmin();
   const pagina = await prisma.pagina.findUnique({
     where: { id: paginaId },
     select: { cliente: { select: { slug: true } } },
@@ -113,6 +120,7 @@ export async function salvarPagina(paginaId: string, dados: FormData) {
 // ---------- card ----------
 
 export async function criarCard(paginaId: string, tipo: string) {
+  await exigirAdmin();
   const ultimo = await prisma.card.findFirst({
     where: { paginaId },
     orderBy: { ordem: "desc" },
@@ -148,6 +156,7 @@ export async function criarCard(paginaId: string, tipo: string) {
 }
 
 export async function salvarCard(cardId: string, dados: FormData) {
+  await exigirAdmin();
   const texto = (campo: string) => {
     const v = String(dados.get(campo) ?? "").trim();
     return v || null;
@@ -184,6 +193,7 @@ export async function salvarCard(cardId: string, dados: FormData) {
 }
 
 export async function alternarCard(cardId: string) {
+  await exigirAdmin();
   const card = await prisma.card.findUnique({ where: { id: cardId }, select: { ativo: true } });
   if (!card) return;
   await prisma.card.update({ where: { id: cardId }, data: { ativo: !card.ativo } });
@@ -196,6 +206,7 @@ export async function alternarCard(cardId: string) {
 }
 
 export async function excluirCard(cardId: string) {
+  await exigirAdmin();
   const c = await prisma.card.findUnique({
     where: { id: cardId },
     select: { pagina: { select: { cliente: { select: { slug: true } } } } },
@@ -206,6 +217,7 @@ export async function excluirCard(cardId: string) {
 
 /** Move o card uma posição para cima ou para baixo, trocando a ordem com o vizinho. */
 export async function moverCard(cardId: string, direcao: "cima" | "baixo") {
+  await exigirAdmin();
   const card = await prisma.card.findUnique({
     where: { id: cardId },
     select: { id: true, ordem: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
@@ -232,6 +244,7 @@ export async function moverCard(cardId: string, direcao: "cima" | "baixo") {
 
 /** Duplica um card logo abaixo do original. */
 export async function duplicarCard(cardId: string) {
+  await exigirAdmin();
   const card = await prisma.card.findUnique({ where: { id: cardId } });
   if (!card) return;
 
