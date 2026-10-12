@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
-import { REDE_POR_ID } from "@/lib/redes";
+import { AJUSTE_ICONES, REDE_POR_ID } from "@/lib/redes";
 import DesenhoRede from "./DesenhoRede";
 import estilos from "./pagina.module.css";
 
@@ -175,7 +175,14 @@ export default async function PaginaPublica({ params }: Props) {
                         key={card.id}
                         className={estilos.redes}
                         aria-label={card.titulo ?? "Redes sociais"}
-                        style={card.corTexto ? { color: card.corTexto } : undefined}
+                        data-pl-redes={card.id}
+                        style={
+                          {
+                            "--icone": `${card.iconeTamanho ?? AJUSTE_ICONES.tamanho.padrao}px`,
+                            "--espaco": `${card.iconeEspaco ?? AJUSTE_ICONES.espaco.padrao}px`,
+                            color: card.corTexto ?? undefined,
+                          } as React.CSSProperties
+                        }
                       >
                         {card.icones.map((icone) => {
                           const rede = REDE_POR_ID[icone.rede];

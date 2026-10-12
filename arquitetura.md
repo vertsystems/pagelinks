@@ -132,6 +132,10 @@ grava a lista inteira, na ordem da tela).
 - **Sugestão a partir do nome:** os 49 blocos de redes que vieram do WordPress têm nomes como
   "Instagram, WhatsApp, TikTok". Ao abrir um deles sem ícones, as linhas já nascem com essas
   redes, faltando só colar os links
+- **Barras de tamanho e espaço** (`Card.iconeTamanho`, de 16 a 64 px, padrão 28;
+  `Card.iconeEspaco`, de 0 a 64 px, padrão 24). Mexem na prévia ao vivo pelas variáveis
+  `--icone` e `--espaco` da fileira e gravam sozinhas. O espaço é medido entre os desenhos:
+  a área de toque (10 px em volta) tem margem negativa igual e não empurra os vizinhos
 - **Na página:** ícones de 28 px em área de toque de 48 px, na cor do texto da página (ou na
   cor de texto do bloco). Bloco de redes sem ícone só aparece se tiver link (o botão de
   antes); os que vieram do WordPress sem link eram espaço reservado e saíram da página
@@ -189,6 +193,17 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 **Conserto junto:** o editor tem três formulários para a mesma página, e o `salvarPagina`
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
+
+## Listas que voltavam depois de salvar — 13/10/2026
+
+O React 19 reseta o formulário quando a ação de servidor termina, e um `<select>` volta à
+opção de quando foi montado. No editor, isso fazia a lista mostrar o valor antigo depois de
+salvar (escolher Poppins, salvar, e a lista mostrava Inter), e salvar de novo desfazia a
+escolha sem aviso. Nos ícones de redes, controlados pelo estado, todos voltavam para a
+primeira opção (WhatsApp). Conserto: toda `<select>` do editor tem `key` no valor gravado e
+usa `defaultValue`, então é recriada com o valor novo e o reset volta para ele. **Lista nova
+no editor segue o mesmo padrão.** Campo de texto e de cor não tem o problema: o React
+acompanha o atributo de valor deles.
 
 ## Tema do painel — 12/10/2026
 

@@ -103,3 +103,14 @@ export function redesNoTexto(texto: string | null | undefined) {
     .sort((a, b) => a.posicao - b.posicao)
     .map((r) => r.id);
 }
+
+/**
+ * Barras do bloco de redes, em px. O espaço é a distância entre os desenhos: a
+ * área de toque (10 px em volta de cada ícone) não empurra os vizinhos.
+ */
+export const AJUSTE_ICONES = {
+  tamanho: { min: 16, max: 64, passo: 2, padrao: 28, unidade: "px" },
+  espaco: { min: 0, max: 64, passo: 2, padrao: 24, unidade: "px" },
+} as const;
+
+export type AjusteIcones = keyof typeof AJUSTE_ICONES;

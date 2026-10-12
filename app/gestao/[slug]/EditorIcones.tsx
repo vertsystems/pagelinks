@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { REDES, REDE_POR_ID, redesNoTexto } from "@/lib/redes";
+import { AJUSTE_ICONES, REDES, REDE_POR_ID, redesNoTexto, type AjusteIcones } from "@/lib/redes";
+import { salvarAjusteIcones } from "../acoes";
+import BarraAjuste, { naPrevia } from "./BarraAjuste";
 import DesenhoRede from "../../[slug]/DesenhoRede";
 import estilos from "../gestao.module.css";
 
@@ -16,7 +18,31 @@ type Linha = Icone & { chave: string };
  * Bloco sem ícone ainda: se o nome dele cita redes ("Instagram, WhatsApp", como
  * vieram do WordPress), as linhas já nascem sugeridas, faltando só o link.
  */
-export default function EditorIcones({ icones, titulo }: { icones: Icone[]; titulo: string | null }) {
+export default function EditorIcones({
+  cardId,
+  icones,
+  titulo,
+  iconeTamanho,
+  iconeEspaco,
+}: {
+  cardId: string;
+  icones: Icone[];
+  titulo: string | null;
+  iconeTamanho: number | null;
+  iconeEspaco: number | null;
+}) {
+  const [erroAjuste, setErroAjuste] = useState<string | null>(null);
+
+  /** A fileira da prévia lê --icone e --espaco: muda na hora, sem recarregar. */
+  function aplicarNaPrevia(ajuste: AjusteIcones, valor: number) {
+    naPrevia(`[data-pl-redes="${cardId}"]`)?.style.setProperty(ajuste === "tamanho" ? "--icone" : "--espaco", `${valor}px`);
+  }
+
+  async function gravarAjuste(ajuste: AjusteIcones, valor: number) {
+    const resposta = await salvarAjusteIcones(cardId, ajuste, valor);
+    setErroAjuste(resposta.erro ?? null);
+  }
+
   const [linhas, setLinhas] = useState<Linha[]>(() =>
     icones.length
       ? icones.map((i) => ({ ...i, chave: i.id }))
@@ -63,9 +89,13 @@ export default function EditorIcones({ icones, titulo }: { icones: Icone[]; titu
               <span className={estilos.iconePrevia} title={rede.nome}>
                 <DesenhoRede rede={rede} />
               </span>
+              {/* sem value controlado: depois de salvar, o React 19 reseta o formulário e um
+                  <select> controlado volta à primeira opção (todos viravam WhatsApp). Com key na
+                  rede e defaultValue, cada troca recria a lista e o reset volta para a rede certa. */}
               <select
+                key={linha.rede}
                 name="iconeRede"
-                value={linha.rede}
+                defaultValue={linha.rede}
                 onChange={(e) => mudar(linha.chave, "rede", e.target.value)}
                 aria-label={`Rede do ícone ${i + 1}`}
               >
@@ -108,6 +138,23 @@ export default function EditorIcones({ icones, titulo }: { icones: Icone[]; titu
       <span className={estilos.dica}>
         WhatsApp aceita só o número com DDD. E-mail e telefone abrem o app certo. A ordem aqui é a ordem na página.
       </span>
+
+      <BarraAjuste
+        rotulo="Tamanho dos ícones"
+        valor={iconeTamanho}
+        faixa={AJUSTE_ICONES.tamanho}
+        aoMover={(v) => aplicarNaPrevia("tamanho", v)}
+        aoGravar={(v) => gravarAjuste("tamanho", v)}
+      />
+      <BarraAjuste
+        rotulo="Espaço entre eles"
+        valor={iconeEspaco}
+        faixa={AJUSTE_ICONES.espaco}
+        aoMover={(v) => aplicarNaPrevia("espaco", v)}
+        aoGravar={(v) => gravarAjuste("espaco", v)}
+      />
+      <span className={estilos.dica}>As barras gravam sozinhas; os ícones e os links, no Salvar bloco.</span>
+      {erroAjuste && <span className={estilos.erroCampo} role="alert">{erroAjuste}</span>}
     </div>
   );
 }

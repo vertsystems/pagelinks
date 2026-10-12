@@ -3,6 +3,7 @@
 import { useId, useRef, useState, useTransition } from "react";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
 import { enviarImagem, removerImagem, salvarTamanhoImagem, type AlvoImagem } from "../acoes";
+import BarraAjuste, { naPrevia } from "./BarraAjuste";
 import estilos from "../gestao.module.css";
 
 /**
@@ -71,28 +72,19 @@ export default function CampoImagem({
 
   const uso: UsoImagem = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
   const exibicao = tamanhoInicial !== undefined && uso !== "fundo" ? TAMANHO_NA_PAGINA[uso] : null;
-  const [tamanho, setTamanho] = useState(tamanhoInicial ?? exibicao?.padrao ?? 0);
-  const espera = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /** Aplica o tamanho no elemento marcado da prévia, sem recarregar. */
   function aplicarNaPrevia(valor: number) {
     if (!exibicao) return;
-    const chave = alvo.tipo === "card" ? `card-${alvo.id}` : uso;
-    const quadro = document.querySelector<HTMLIFrameElement>("iframe[data-previa]");
-    const alvoNaPrevia = quadro?.contentDocument?.querySelector<HTMLElement>(`[data-pl-tamanho="${chave}"]`);
-    if (!alvoNaPrevia) return;
-    alvoNaPrevia.style.width = `${valor}${exibicao.unidade}`;
-    if (exibicao.unidade === "px") alvoNaPrevia.style.height = `${valor}px`;
+    const elemento = naPrevia(`[data-pl-tamanho="${alvo.tipo === "card" ? `card-${alvo.id}` : uso}"]`);
+    if (!elemento) return;
+    elemento.style.width = `${valor}${exibicao.unidade}`;
+    if (exibicao.unidade === "px") elemento.style.height = `${valor}px`;
   }
 
-  function mudarTamanho(valor: number) {
-    setTamanho(valor);
-    aplicarNaPrevia(valor);
-    if (espera.current) clearTimeout(espera.current);
-    espera.current = setTimeout(async () => {
-      const resposta = await salvarTamanhoImagem(alvo, valor);
-      setErro(resposta.erro ?? null);
-    }, 500);
+  async function gravarTamanho(valor: number) {
+    const resposta = await salvarTamanhoImagem(alvo, valor);
+    setErro(resposta.erro ?? null);
   }
 
   function concluir(resposta: { url?: string | null; erro?: string }) {
@@ -173,24 +165,7 @@ export default function CampoImagem({
         </div>
       </div>
       {url && exibicao && (
-        <div className={estilos.tamanho}>
-          <span>Tamanho</span>
-          <input
-            type="range"
-            min={exibicao.min}
-            max={exibicao.max}
-            step={exibicao.passo}
-            value={tamanho}
-            onChange={(e) => mudarTamanho(Number(e.target.value))}
-            aria-label={`Tamanho de: ${rotulo}`}
-          />
-          <output>{tamanho}{exibicao.unidade === "%" ? "%" : " px"}</output>
-          {tamanho !== exibicao.padrao && (
-            <button type="button" className={estilos.tamanhoPadrao} onClick={() => mudarTamanho(exibicao.padrao)}>
-              voltar ao padrão
-            </button>
-          )}
-        </div>
+        <BarraAjuste rotulo="Tamanho" nomeAcessivel={`Tamanho de: ${rotulo}`} valor={tamanhoInicial ?? null} faixa={exibicao} aoMover={aplicarNaPrevia} aoGravar={gravarTamanho} />
       )}
       {erro && <span className={estilos.erroCampo} role="alert">{erro}</span>}
       {dica && <span className={estilos.dica}>{dica}</span>}

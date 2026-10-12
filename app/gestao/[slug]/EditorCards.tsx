@@ -24,6 +24,8 @@ type Card = {
   publicarEm: Date | null;
   despublicarEm: Date | null;
   icones: { id: string; rede: string; url: string }[];
+  iconeTamanho: number | null;
+  iconeEspaco: number | null;
 };
 
 const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
@@ -134,7 +136,7 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
                       <div className={estilos.doisCampos}>
                         <div className={estilos.campo}>
                           <label htmlFor={`tipo-${card.id}`}>Tipo de bloco</label>
-                          <select id={`tipo-${card.id}`} name="tipo" defaultValue={card.tipo}>
+                          <select key={card.tipo} id={`tipo-${card.id}`} name="tipo" defaultValue={card.tipo}>
                             {TIPOS.map((t) => (
                               <option key={t.valor} value={t.valor}>{t.nome}</option>
                             ))}
@@ -183,7 +185,15 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
                         />
                       )}
 
-                      {usa.icones && <EditorIcones icones={card.icones} titulo={card.titulo} />}
+                      {usa.icones && (
+                        <EditorIcones
+                          cardId={card.id}
+                          icones={card.icones}
+                          titulo={card.titulo}
+                          iconeTamanho={card.iconeTamanho}
+                          iconeEspaco={card.iconeEspaco}
+                        />
+                      )}
 
                       {usa.whatsapp && (
                         <div className={estilos.doisCampos}>

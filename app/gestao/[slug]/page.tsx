@@ -97,7 +97,9 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           {/* blocos */}
           <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} cards={pagina.cards} />
 
-          {/* aparência */}
+          {/* aparência. As listas têm key no valor gravado: depois de salvar, o React 19 reseta
+              o formulário, e um <select> volta à opção de quando foi montado. Recriado com o
+              valor novo, o reset volta para ele (sem isso, salvar de novo desfazia a escolha). */}
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>
             <h2>Aparência<small>cores, fonte e formato dos botões</small></h2>
             <div className={estilos.campos}>
@@ -113,13 +115,13 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               <div className={estilos.doisCampos}>
                 <div className={estilos.campo}>
                   <label htmlFor="fonte">Fonte</label>
-                  <select id="fonte" name="fonte" defaultValue={pagina.fonte}>
+                  <select key={pagina.fonte} id="fonte" name="fonte" defaultValue={pagina.fonte}>
                     {FONTES.map((f) => <option key={f} value={f}>{f}</option>)}
                   </select>
                 </div>
                 <div className={estilos.campo}>
                   <label htmlFor="estiloBotao">Formato dos botões</label>
-                  <select id="estiloBotao" name="estiloBotao" defaultValue={pagina.estiloBotao}>
+                  <select key={pagina.estiloBotao} id="estiloBotao" name="estiloBotao" defaultValue={pagina.estiloBotao}>
                     {ESTILOS_BOTAO.map((e) => <option key={e.valor} value={e.valor}>{e.nome}</option>)}
                   </select>
                 </div>
@@ -128,7 +130,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               <div className={estilos.doisCampos}>
                 <div className={estilos.campo}>
                   <label htmlFor="fundoTipo">Tipo de fundo</label>
-                  <select id="fundoTipo" name="fundoTipo" defaultValue={pagina.fundoTipo}>
+                  <select key={pagina.fundoTipo} id="fundoTipo" name="fundoTipo" defaultValue={pagina.fundoTipo}>
                     <option value="solido">Cor única</option>
                     <option value="gradiente">Degradê entre duas cores</option>
                     <option value="imagem">Imagem</option>
