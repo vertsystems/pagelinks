@@ -50,7 +50,11 @@ Herda as skills e as regras do Contex OS instalado na raiz da Vert Systems
 
 - **A página do cliente usa a marca do cliente**, nunca a da Vert Systems. Cor, fonte
   e logo vêm do cadastro dele
-- **O painel usa a marca Vert Systems** (a definir)
+- **O painel tem dois temas** (decisão do Bruno, 12/10/2026): o **claro** é o padrão, na paleta azul
+  `#F0F3FA · #D5DEEF · #B1C9EF · #8AAEE0 · #638ECB · #395886`; o **escuro** é a identidade Vert Systems
+  (verde `#34D399` sobre `#0B0F0D`). A troca é no botão do topo e fica num cookie. Cor nova no painel
+  entra como token nos dois temas, em `app/gestao/gestao.css`, nunca fixa no módulo
+- **Imagem sobe sempre em WebP** e o servidor regrava em q90 no tamanho que a página usa (`lib/imagens.ts`)
 - Nenhuma página vai ao ar sem o cliente ver antes
 - Página de links é peça de conversão: velocidade de carregamento e legibilidade no
   celular vêm antes de qualquer efeito visual

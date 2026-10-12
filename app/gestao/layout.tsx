@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { COOKIE_TEMA, lerTema } from "@/lib/tema-painel";
 import { sair } from "../entrar/acoes";
+import BotaoTema from "./BotaoTema";
 import estilos from "./gestao.module.css";
 import "./gestao.css";
 
@@ -9,14 +12,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function LayoutGestao({ children }: { children: React.ReactNode }) {
+export default async function LayoutGestao({ children }: { children: React.ReactNode }) {
+  const tema = lerTema((await cookies()).get(COOKIE_TEMA)?.value);
+
   return (
-    <div className={estilos.tela}>
+    <div className={estilos.tela} data-tema={tema}>
       <header className={estilos.topo}>
         <Link className={estilos.marca} href="/gestao">
           <b>Page</b>Links <span>· gestão</span>
         </Link>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className={estilos.topoAcoes}>
+          <BotaoTema inicial={tema} />
           <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/novo">
             Novo cliente
           </Link>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
+import CampoImagem from "./CampoImagem";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -162,10 +163,12 @@ export default function EditorCards({ paginaId, cards }: { paginaId: string; car
                       )}
 
                       {usa.imagem && (
-                        <div className={estilos.campo}>
-                          <label htmlFor={`img-${card.id}`}>Endereço da imagem</label>
-                          <input id={`img-${card.id}`} type="url" name="imagemUrl" defaultValue={card.imagemUrl ?? ""} placeholder="https://" />
-                        </div>
+                        <CampoImagem
+                          alvo={{ tipo: "card", id: card.id }}
+                          url={card.imagemUrl}
+                          rotulo="Imagem"
+                          dica="Ocupa a largura toda da página. O título vira o texto alternativo."
+                        />
                       )}
 
                       {usa.whatsapp && (

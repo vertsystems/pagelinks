@@ -12,7 +12,8 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "db:importar": "tsx prisma/importar.ts",
-    "db:usuario": "tsx prisma/usuario.ts"
+    "db:usuario": "tsx prisma/usuario.ts",
+    "storage:preparar": "tsx prisma/preparar-storage.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",
@@ -22,7 +23,8 @@
     "next": "16.3.3",
     "pg": "^8.23.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^20",

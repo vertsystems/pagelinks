@@ -9,7 +9,7 @@
 | Aplicação | **Next.js (App Router) + TypeScript** | Página pública renderizada no servidor (rápida e indexável) e painel na mesma base |
 | Banco | **PostgreSQL via Supabase** (projeto `vertsys-db`) | Migrado do SQLite em 05/09/2026. O schema foi escrito sem Json, enum nativo ou array justamente para essa troca sair sem reescrita |
 | Autenticação | **Própria, na tabela `Usuario`** (12/10/2026) | Senha em scrypt e sessão em cookie assinado, só com o `crypto` do Node. Sem dependência e sem segundo cadastro de usuário fora do banco |
-| Arquivos | **Supabase Storage** (quando publicar) | Logo, avatar e imagem dos cards |
+| Arquivos | **Supabase Storage**, bucket `imagens` (12/10/2026) | Foto, cabeçalho, imagem de bloco e fundo, em WebP |
 | Hospedagem | **Vercel** | Deploy por push, domínio personalizado, plano inicial gratuito |
 
 ### Detalhes que custaram tempo e ficam registrados
@@ -79,7 +79,7 @@ A escolha depende de quantas páginas existem hoje.
 4. ~~Painel de gestão em `/gestao`~~ — **feito**: lista, editor, prévia ao vivo
 5. ~~Editor de blocos com reordenação~~ — **feito**
 6. ~~Migração da carteira~~ — **feita**: 59 clientes, 620 blocos
-7. **Upload de imagem** (avatar, imagem de bloco, fundo) ← próximo
+7. ~~Upload de imagem~~ — **feito** em 12/10/2026 (foto, cabeçalho, bloco e fundo), ver "Imagens" abaixo
 8. ~~Login do painel~~ — **feito** em 12/10/2026, com agendamento que mantém o banco acordado
 9. Publicação: Supabase + Vercel + dnms.fun
 10. Acesso do cliente ao painel, quando o Bruno decidir
@@ -111,6 +111,46 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 ```bash
 npm run db:importar
 ```
+
+## Imagens — 12/10/2026
+
+**Quem sobe é a equipe, sempre em WebP.** O painel tem campo de envio na foto do topo, na
+imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço de SEO e o
+ícone da aba continuam como endereço digitado.
+
+- **O envio grava na hora**, sem esperar o Salvar do formulário: `enviarImagem` e
+  `removerImagem` em `app/gestao/acoes.ts`, que também passam pelo `exigirAdmin()`
+- **Otimização** (`lib/imagens.ts`, com o `sharp`): regrava em WebP q90 e reduz ao tamanho
+  que a página usa. Bloco e cabeçalho limitam só a largura em 1240 px (a coluna tem 620),
+  porque arte comprida é comum. Foto do topo vai a 400×400 e fundo a 1920. Se a imagem já
+  cabe e o original é mais leve que a regravação, fica o original. Arquivo que não é WebP de
+  verdade é recusado, mesmo com a extensão certa
+- **Teto de 4 MB por envio**: a Vercel corta o corpo da requisição em 4,5 MB. O `next.config.ts`
+  sobe o limite da ação de servidor, que por padrão é 1 MB
+- **Testado de ponta a ponta em 12/10/2026** num Chrome de verdade, na página `demo`: WebP falso
+  recusado, foto de 2,6 MB aceita, troca apagando o arquivo antigo, cabeçalho travando título e frase,
+  exclusão de bloco limpando o bucket. A demo voltou ao estado original
+- **Onde fica:** bucket público `imagens`, em `<clienteId>/<uso>-<id>.webp`. O nome nunca se
+  repete, então o arquivo vai com cache de um ano. Criado por `npm run storage:preparar`
+- **Limpeza:** trocar ou remover uma imagem, excluir bloco e excluir cliente apagam do
+  bucket o arquivo que ninguém mais usa. Confere o banco antes, porque duplicar um bloco
+  copia o endereço da imagem
+- **Cabeçalho em imagem** (`Pagina.cabecalhoImagemUrl`): para quando a arte da marca já
+  traz o nome e a frase. Na página ela entra dentro do `<h1>`, com título e frase como texto
+  alternativo. No painel, com a imagem, título e frase ficam travados (e o servidor ignora
+  os dois) até a imagem sair
+- Precisa de `SUPABASE_SECRET_KEY` no `.env` e na Vercel. Sem ela, o envio avisa que está desligado
+
+**Conserto junto:** o editor tem três formulários para a mesma página, e o `salvarPagina`
+gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
+título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
+
+## Tema do painel — 12/10/2026
+
+Claro por padrão (paleta azul), escuro como opção, no botão do topo do `/gestao` e do
+`/entrar`. Fica no cookie `pl_tema`, que o servidor lê para entregar a tela já no tema
+certo. Os tokens dos dois temas estão em `app/gestao/gestao.css`, e o módulo só usa token.
+Contraste do claro: texto 12.3:1, texto suave 5.1:1, botão 7.2:1.
 
 ## Login e agendamento — 12/10/2026
 

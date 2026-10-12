@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
+import { LIMITE_ENVIO, apagarImagensOrfas, guardarImagem, otimizarImagem, type UsoImagem } from "@/lib/imagens";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -71,50 +73,80 @@ export async function salvarCliente(id: string, _anterior: EstadoForm, dados: Fo
 
 export async function excluirCliente(id: string) {
   await exigirAdmin();
-  const c = await prisma.cliente.findUnique({ where: { id }, select: { slug: true } });
+  const c = await prisma.cliente.findUnique({
+    where: { id },
+    select: {
+      slug: true,
+      paginas: {
+        select: {
+          avatarUrl: true,
+          cabecalhoImagemUrl: true,
+          fundoImagemUrl: true,
+          seoImagemUrl: true,
+          faviconUrl: true,
+          cards: { select: { imagemUrl: true } },
+        },
+      },
+    },
+  });
   await prisma.cliente.delete({ where: { id } });
+
+  const { paginas = [] } = c ?? {};
+  await apagarImagensOrfas(
+    paginas.flatMap((p) => [
+      p.avatarUrl,
+      p.cabecalhoImagemUrl,
+      p.fundoImagemUrl,
+      p.seoImagemUrl,
+      p.faviconUrl,
+      ...p.cards.map((card) => card.imagemUrl),
+    ]),
+  );
   revalidar(c?.slug);
   redirect("/gestao");
 }
 
 // ---------- página ----------
 
+const CAMPOS_OBRIGATORIOS = ["corFundo", "corTexto", "corDestaque", "corTextoBotao", "fonte", "estiloBotao", "fundoTipo"] as const;
+const CAMPOS_OPCIONAIS = ["fundoCorFim", "seoTitulo", "seoDescricao", "seoImagemUrl", "faviconUrl"] as const;
+
+/**
+ * O editor tem três formulários para a mesma página (topo, aparência, Google).
+ * Cada um manda só os campos dele, e só o que veio é gravado: antes, salvar o
+ * topo zerava cores e SEO. As imagens (foto, cabeçalho, fundo) não passam por
+ * aqui: têm envio próprio, em enviarImagem/removerImagem.
+ */
 export async function salvarPagina(paginaId: string, dados: FormData) {
   await exigirAdmin();
   const pagina = await prisma.pagina.findUnique({
     where: { id: paginaId },
-    select: { cliente: { select: { slug: true } } },
+    select: { cabecalhoImagemUrl: true, cliente: { select: { slug: true } } },
   });
+  if (!pagina) return;
 
   const texto = (campo: string) => {
     const v = String(dados.get(campo) ?? "").trim();
     return v || null;
   };
+  const data: Prisma.PaginaUpdateInput = {};
 
-  await prisma.pagina.update({
-    where: { id: paginaId },
-    data: {
-      titulo: String(dados.get("titulo") ?? "").trim() || "Sem título",
-      bio: texto("bio"),
-      avatarUrl: texto("avatarUrl"),
-      publicada: dados.get("publicada") === "on",
-      corFundo: String(dados.get("corFundo") ?? "#101010"),
-      corTexto: String(dados.get("corTexto") ?? "#F2F2F2"),
-      corDestaque: String(dados.get("corDestaque") ?? "#FF6F00"),
-      corTextoBotao: String(dados.get("corTextoBotao") ?? "#101010"),
-      fonte: String(dados.get("fonte") ?? "Inter"),
-      estiloBotao: String(dados.get("estiloBotao") ?? "arredondado"),
-      fundoTipo: String(dados.get("fundoTipo") ?? "solido"),
-      fundoCorFim: texto("fundoCorFim"),
-      fundoImagemUrl: texto("fundoImagemUrl"),
-      seoTitulo: texto("seoTitulo"),
-      seoDescricao: texto("seoDescricao"),
-      seoImagemUrl: texto("seoImagemUrl"),
-      faviconUrl: texto("faviconUrl"),
-    },
-  });
+  // Com imagem no cabeçalho, título e frase ficam travados até a imagem sair.
+  if (!pagina.cabecalhoImagemUrl) {
+    if (dados.has("titulo")) data.titulo = texto("titulo") ?? "Sem título";
+    if (dados.has("bio")) data.bio = texto("bio");
+  }
+  // O formulário que tem a chave manda também um "publicada" vazio: checkbox
+  // desmarcado não vai no envio, e sem isso não daria para distinguir de "não é deste formulário".
+  if (dados.has("publicada")) data.publicada = dados.getAll("publicada").includes("on");
+  for (const campo of CAMPOS_OBRIGATORIOS) {
+    const valor = texto(campo);
+    if (valor) data[campo] = valor;
+  }
+  for (const campo of CAMPOS_OPCIONAIS) if (dados.has(campo)) data[campo] = texto(campo);
 
-  revalidar(pagina?.cliente.slug);
+  await prisma.pagina.update({ where: { id: paginaId }, data });
+  revalidar(pagina.cliente.slug);
 }
 
 // ---------- card ----------
@@ -173,7 +205,6 @@ export async function salvarCard(cardId: string, dados: FormData) {
       titulo: texto("titulo"),
       subtitulo: texto("subtitulo"),
       url: texto("url"),
-      imagemUrl: texto("imagemUrl"),
       telefone: texto("telefone"),
       mensagem: texto("mensagem"),
       corFundo: texto("corFundo"),
@@ -209,9 +240,10 @@ export async function excluirCard(cardId: string) {
   await exigirAdmin();
   const c = await prisma.card.findUnique({
     where: { id: cardId },
-    select: { pagina: { select: { cliente: { select: { slug: true } } } } },
+    select: { imagemUrl: true, pagina: { select: { cliente: { select: { slug: true } } } } },
   });
   await prisma.card.delete({ where: { id: cardId } });
+  await apagarImagensOrfas([c?.imagemUrl]);
   revalidar(c?.pagina.cliente.slug);
 }
 
@@ -260,4 +292,111 @@ export async function duplicarCard(cardId: string) {
     select: { cliente: { select: { slug: true } } },
   });
   revalidar(c?.cliente.slug);
+}
+
+// ---------- imagens ----------
+
+export type CampoImagemPagina = "avatarUrl" | "cabecalhoImagemUrl" | "fundoImagemUrl";
+export type AlvoImagem = { tipo: "pagina"; id: string; campo: CampoImagemPagina } | { tipo: "card"; id: string };
+export type EstadoImagem = { url?: string | null; erro?: string };
+
+const USO_DO_CAMPO: Record<CampoImagemPagina, UsoImagem> = {
+  avatarUrl: "avatar",
+  cabecalhoImagemUrl: "cabecalho",
+  fundoImagemUrl: "fundo",
+};
+
+/**
+ * Onde a imagem mora, de qual cliente é e qual endereço tem agora. O alvo vem
+ * do navegador, então só passa campo que está na lista acima.
+ */
+async function localizarAlvo(alvo: AlvoImagem) {
+  if (alvo?.tipo === "card") {
+    const id = String(alvo.id);
+    const card = await prisma.card.findUnique({
+      where: { id },
+      select: { imagemUrl: true, pagina: { select: { clienteId: true, cliente: { select: { slug: true } } } } },
+    });
+    if (!card) return null;
+    return {
+      uso: "card" as UsoImagem,
+      atual: card.imagemUrl,
+      clienteId: card.pagina.clienteId,
+      slug: card.pagina.cliente.slug,
+      gravar: (url: string | null) => prisma.card.update({ where: { id }, data: { imagemUrl: url } }),
+    };
+  }
+
+  if (alvo?.tipo === "pagina" && Object.hasOwn(USO_DO_CAMPO, alvo.campo)) {
+    const id = String(alvo.id);
+    const campo = alvo.campo;
+    const pagina = await prisma.pagina.findUnique({
+      where: { id },
+      select: {
+        avatarUrl: true,
+        cabecalhoImagemUrl: true,
+        fundoImagemUrl: true,
+        clienteId: true,
+        cliente: { select: { slug: true } },
+      },
+    });
+    if (!pagina) return null;
+    return {
+      uso: USO_DO_CAMPO[campo],
+      atual: pagina[campo],
+      clienteId: pagina.clienteId,
+      slug: pagina.cliente.slug,
+      gravar: (url: string | null) => {
+        const data: Prisma.PaginaUpdateInput = {};
+        data[campo] = url;
+        return prisma.pagina.update({ where: { id }, data });
+      },
+    };
+  }
+
+  return null;
+}
+
+/** Recebe o WebP, otimiza, guarda no Storage e já grava no banco: não depende de apertar Salvar. */
+export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const arquivo = dados.get("arquivo");
+  if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha uma imagem." };
+  if (arquivo.type && arquivo.type !== "image/webp") return { erro: "A imagem precisa estar em WebP." };
+  if (arquivo.size > LIMITE_ENVIO) return { erro: "A imagem passa de 4 MB. Exporte de novo num tamanho menor." };
+
+  const local = await localizarAlvo(alvo);
+  if (!local) return { erro: "Não encontrei onde guardar essa imagem. Recarregue a página." };
+
+  let otimizada: Buffer;
+  try {
+    otimizada = await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), local.uso);
+  } catch {
+    return { erro: "Esse arquivo não é um WebP válido." };
+  }
+
+  let url: string;
+  try {
+    url = await guardarImagem(local.clienteId, local.uso, otimizada);
+  } catch (erro) {
+    console.error(erro);
+    const desligado = erro instanceof Error && erro.message.startsWith("Envio de imagem desligado");
+    return { erro: desligado ? erro.message : "Não consegui guardar a imagem agora. Tente de novo em instantes." };
+  }
+
+  await local.gravar(url);
+  await apagarImagensOrfas([local.atual]);
+  revalidar(local.slug);
+  return { url };
+}
+
+export async function removerImagem(alvo: AlvoImagem): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const local = await localizarAlvo(alvo);
+  if (!local) return { erro: "Não encontrei essa imagem. Recarregue a página." };
+
+  await local.gravar(null);
+  await apagarImagensOrfas([local.atual]);
+  revalidar(local.slug);
+  return { url: null };
 }

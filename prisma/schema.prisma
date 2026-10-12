@@ -42,6 +42,8 @@ model Pagina {
   titulo    String
   bio       String?
   avatarUrl String?
+  // arte da marca que já traz o nome e a frase: quando existe, substitui título e bio na página
+  cabecalhoImagemUrl String?
   publicada Boolean @default(false)
 
   // tema — o que o painel edita sem tocar em código

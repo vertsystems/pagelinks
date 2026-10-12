@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const titulo = pagina.seoTitulo || pagina.titulo;
   const descricao = pagina.seoDescricao || pagina.bio || undefined;
-  const imagem = pagina.seoImagemUrl || pagina.avatarUrl || undefined;
+  const imagem = pagina.seoImagemUrl || pagina.avatarUrl || pagina.cabecalhoImagemUrl || undefined;
 
   return {
     title: titulo,
@@ -87,8 +87,18 @@ export default async function PaginaPublica({ params }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img className={estilos.avatar} src={pagina.avatarUrl} alt={pagina.titulo} width={104} height={104} />
           )}
-          <h1 className={estilos.titulo}>{pagina.titulo}</h1>
-          {pagina.bio && <p className={estilos.bio}>{pagina.bio}</p>}
+          {pagina.cabecalhoImagemUrl ? (
+            // A arte da marca já traz o nome e a frase: ela é o título da página.
+            <h1 className={estilos.cabecalho}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={pagina.cabecalhoImagemUrl} alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")} />
+            </h1>
+          ) : (
+            <>
+              <h1 className={estilos.titulo}>{pagina.titulo}</h1>
+              {pagina.bio && <p className={estilos.bio}>{pagina.bio}</p>}
+            </>
+          )}
 
           <div className={estilos.blocos}>
             {pagina.cards.map((card) => {

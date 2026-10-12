@@ -82,6 +82,9 @@
 
 .texto { font-size: 15px; line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
 
+.cabecalho { margin: 0 0 32px; width: 100%; } /* mesmo respiro que a frase deixa antes dos blocos */
+.cabecalho img { width: 100%; height: auto; display: block; }
+
 .imagem { width: 100%; border-radius: var(--raio); display: block; }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }

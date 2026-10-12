@@ -5,6 +5,8 @@ import { exigirAdmin } from "@/lib/acesso";
 import { FONTES } from "@/lib/tema";
 import { excluirCliente, salvarPagina } from "../acoes";
 import FormCadastro from "./FormCadastro";
+import CampoImagem from "./CampoImagem";
+import CamposTopo from "./CamposTopo";
 import CampoCor from "./CampoCor";
 import EditorCards from "./EditorCards";
 import Previa from "./Previa";
@@ -32,6 +34,10 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
 
   const pagina = cliente.paginas[0];
   if (!pagina) notFound();
+
+  // A prévia recarrega quando isto muda: mexer num bloco também conta, não só na página.
+  const ultimaMudanca = Math.max(pagina.atualizadoEm.getTime(), ...pagina.cards.map((c) => c.atualizadoEm.getTime()));
+  const versaoDaPrevia = `${ultimaMudanca}-${pagina.cards.length}`;
 
   const cliques = await prisma.clique.count({
     where: { card: { paginaId: pagina.id } },
@@ -61,19 +67,15 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>
             <h2>Página<small>o que aparece no topo</small></h2>
             <div className={estilos.campos}>
-              <div className={estilos.campo}>
-                <label htmlFor="titulo">Título</label>
-                <input id="titulo" type="text" name="titulo" defaultValue={pagina.titulo} required />
-              </div>
-              <div className={estilos.campo}>
-                <label htmlFor="bio">Frase de apresentação</label>
-                <textarea id="bio" name="bio" defaultValue={pagina.bio ?? ""} rows={2} />
-              </div>
-              <div className={estilos.campo}>
-                <label htmlFor="avatarUrl">Endereço da foto ou logo</label>
-                <input id="avatarUrl" type="url" name="avatarUrl" defaultValue={pagina.avatarUrl ?? ""} placeholder="https://" />
-                <span className={estilos.dica}>Aparece redonda no topo. Deixe vazio para não mostrar.</span>
-              </div>
+              <CamposTopo
+                paginaId={pagina.id}
+                titulo={pagina.titulo}
+                bio={pagina.bio}
+                avatarUrl={pagina.avatarUrl}
+                cabecalhoImagemUrl={pagina.cabecalhoImagemUrl}
+              />
+              {/* marca que este formulário cuida da chave: desmarcada, ela não iria no envio */}
+              <input type="hidden" name="publicada" value="" />
               <label className={estilos.chave}>
                 <input type="checkbox" name="publicada" defaultChecked={pagina.publicada} />
                 Página no ar
@@ -90,15 +92,6 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           {/* aparência */}
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>
             <h2>Aparência<small>cores, fonte e formato dos botões</small></h2>
-            <input type="hidden" name="titulo" value={pagina.titulo} />
-            <input type="hidden" name="bio" value={pagina.bio ?? ""} />
-            <input type="hidden" name="avatarUrl" value={pagina.avatarUrl ?? ""} />
-            {pagina.publicada && <input type="hidden" name="publicada" value="on" />}
-            <input type="hidden" name="seoTitulo" value={pagina.seoTitulo ?? ""} />
-            <input type="hidden" name="seoDescricao" value={pagina.seoDescricao ?? ""} />
-            <input type="hidden" name="seoImagemUrl" value={pagina.seoImagemUrl ?? ""} />
-            <input type="hidden" name="faviconUrl" value={pagina.faviconUrl ?? ""} />
-
             <div className={estilos.campos}>
               <div className={estilos.doisCampos}>
                 <CampoCor nome="corFundo" rotulo="Fundo" valor={pagina.corFundo} />
@@ -136,11 +129,12 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                 <CampoCor nome="fundoCorFim" rotulo="Segunda cor do degradê" valor={pagina.fundoCorFim ?? pagina.corFundo} />
               </div>
 
-              <div className={estilos.campo}>
-                <label htmlFor="fundoImagemUrl">Endereço da imagem de fundo</label>
-                <input id="fundoImagemUrl" type="url" name="fundoImagemUrl" defaultValue={pagina.fundoImagemUrl ?? ""} placeholder="https://" />
-                <span className={estilos.dica}>Só é usada quando o tipo de fundo for “Imagem”.</span>
-              </div>
+              <CampoImagem
+                alvo={{ tipo: "pagina", id: pagina.id, campo: "fundoImagemUrl" }}
+                url={pagina.fundoImagemUrl}
+                rotulo="Imagem de fundo"
+                dica="Só é usada quando o tipo de fundo for “Imagem”."
+              />
             </div>
             <div className={estilos.salvarBarra}>
               <BotaoSalvar rotulo="Salvar aparência" />
@@ -150,20 +144,6 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           {/* busca e compartilhamento */}
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>
             <h2>Google e compartilhamento<small>como a página aparece fora dela</small></h2>
-            <input type="hidden" name="titulo" value={pagina.titulo} />
-            <input type="hidden" name="bio" value={pagina.bio ?? ""} />
-            <input type="hidden" name="avatarUrl" value={pagina.avatarUrl ?? ""} />
-            {pagina.publicada && <input type="hidden" name="publicada" value="on" />}
-            <input type="hidden" name="corFundo" value={pagina.corFundo} />
-            <input type="hidden" name="corTexto" value={pagina.corTexto} />
-            <input type="hidden" name="corDestaque" value={pagina.corDestaque} />
-            <input type="hidden" name="corTextoBotao" value={pagina.corTextoBotao} />
-            <input type="hidden" name="fonte" value={pagina.fonte} />
-            <input type="hidden" name="estiloBotao" value={pagina.estiloBotao} />
-            <input type="hidden" name="fundoTipo" value={pagina.fundoTipo} />
-            <input type="hidden" name="fundoCorFim" value={pagina.fundoCorFim ?? ""} />
-            <input type="hidden" name="fundoImagemUrl" value={pagina.fundoImagemUrl ?? ""} />
-
             <div className={estilos.campos}>
               <div className={estilos.campo}>
                 <label htmlFor="seoTitulo">Título no Google</label>
@@ -195,7 +175,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           <form
             action={excluirCliente.bind(null, cliente.id)}
             className={estilos.bloco}
-            style={{ borderColor: "rgba(248,113,113,.25)" }}
+            style={{ borderColor: "var(--g-perigo-borda)" }}
           >
             <h2>Excluir cliente<small>não tem volta</small></h2>
             <p style={{ color: "var(--g-suave)", fontSize: 14, margin: "0 0 14px" }}>
@@ -208,7 +188,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           </form>
         </div>
 
-        <Previa slug={cliente.slug} versao={pagina.atualizadoEm.toISOString()} />
+        <Previa slug={cliente.slug} versao={versaoDaPrevia} />
       </div>
     </main>
   );

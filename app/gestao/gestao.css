@@ -1,16 +1,71 @@
-/* Tokens do painel — identidade Vert Systems.
-   Ficam aqui e não no módulo porque o iframe da prévia e os estilos globais
-   do painel precisam enxergar as mesmas variáveis. */
+/* Tokens do painel, em dois temas.
+   O tema vem do atributo data-tema no invólucro da tela (.tela), lido do cookie
+   pl_tema no servidor: o claro é o padrão, o escuro é opção do botão no topo.
+   Ficam aqui e não no módulo porque são variáveis globais do painel.
+
+   Claro: paleta azul (#F0F3FA · #D5DEEF · #B1C9EF · #8AAEE0 · #638ECB · #395886),
+   com o texto num marinho da mesma família. Escuro: a identidade Vert Systems.
+   Contraste conferido em 12/10/2026 (texto 12.3:1, suave 5.1:1, botão 7.2:1). */
 .gestao-escopo, [class*="gestao-module"] { }
 
 :root {
+  --g-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+[data-tema="claro"] {
+  color-scheme: light;
+  --g-fundo: #F0F3FA;
+  --g-card: #FFFFFF;
+  --g-card-2: #D5DEEF;
+  --g-texto: #1C2E4A;
+  --g-suave: #52678C;
+  --g-linha: #D5DEEF;
+  --g-linha-forte: #B1C9EF;
+  --g-campo-borda: #8AAEE0;
+  --g-acento: #395886;
+  --g-acento-texto: #FFFFFF;
+  --g-acento-fundo: #D5DEEF;
+  --g-destaque: #395886;
+  --g-foco: #395886;
+  --g-anel: #B1C9EF;
+  --g-marca: #638ECB;
+  --g-neutro-fundo: #E6EBF4;
+  --g-perigo: #B42318;
+  --g-perigo-texto: #B42318;
+  --g-perigo-fundo: #FDECEA;
+  --g-perigo-borda: #F4C7C3;
+  --g-topo: rgba(255,255,255,.88);
+  --g-moldura: #395886;
+  --g-sombra: 0 20px 50px rgb(57 88 134 / .22);
+}
+
+[data-tema="escuro"] {
+  color-scheme: dark;
   --g-fundo: #0B0F0D;
   --g-card: #121815;
   --g-card-2: #171F1B;
   --g-texto: #E8EDEA;
   --g-suave: #9AA8A1;
-  --g-verde: #34D399;
   --g-linha: rgba(232,237,234,.10);
   --g-linha-forte: rgba(232,237,234,.20);
-  --g-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  --g-campo-borda: rgba(232,237,234,.10);
+  --g-acento: #34D399;
+  --g-acento-texto: #06110C;
+  --g-acento-fundo: rgba(52,211,153,.12);
+  --g-destaque: #34D399;
+  --g-foco: #34D399;
+  --g-anel: rgba(52,211,153,.18);
+  --g-marca: #34D399;
+  --g-neutro-fundo: rgba(232,237,234,.09);
+  --g-perigo: #F87171;
+  --g-perigo-texto: #FCA5A5;
+  --g-perigo-fundo: rgba(248,113,113,.1);
+  --g-perigo-borda: rgba(248,113,113,.3);
+  --g-topo: rgba(11,15,13,.92);
+  --g-moldura: #000;
+  --g-sombra: 0 20px 50px rgb(0 0 0 / .4);
 }
+
+/* o fundo da página acompanha o tema, para a rolagem elástica não mostrar branco no escuro */
+body:has([data-tema="claro"]) { background: #F0F3FA; }
+body:has([data-tema="escuro"]) { background: #0B0F0D; }
