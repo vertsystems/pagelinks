@@ -27,3 +27,16 @@ export const USO_DO_CAMPO: Record<CampoImagemPagina, UsoImagem> = {
   cabecalhoImagemUrl: "cabecalho",
   fundoImagemUrl: "fundo",
 };
+
+/**
+ * Tamanho de exibição na página, escolhido na barra do painel. A foto é o
+ * diâmetro em px; cabeçalho e imagem de bloco, a largura em % da coluna (620 px).
+ * O fundo não tem barra: ele sempre cobre a tela.
+ */
+export type ExibicaoImagem = { min: number; max: number; passo: number; padrao: number; unidade: "px" | "%" };
+
+export const TAMANHO_NA_PAGINA: Record<Exclude<UsoImagem, "fundo">, ExibicaoImagem> = {
+  avatar: { min: 48, max: 200, passo: 4, padrao: 104, unidade: "px" },
+  cabecalho: { min: 20, max: 100, passo: 5, padrao: 100, unidade: "%" },
+  card: { min: 20, max: 100, passo: 5, padrao: 100, unidade: "%" },
+};

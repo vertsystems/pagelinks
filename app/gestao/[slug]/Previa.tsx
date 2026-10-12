@@ -7,13 +7,22 @@ import estilos from "../gestao.module.css";
  * Prévia ao vivo da página do cliente.
  * Recarrega sozinha sempre que `versao` muda — que é o timestamp de atualização
  * vindo do banco. Assim, salvar qualquer coisa reflete aqui sem apertar nada.
+ * Ao recarregar, volta para onde estava rolada: ajustar um bloco lá embaixo não
+ * pode jogar a prévia para o topo. O data-previa é por onde a barra de tamanho
+ * das imagens mexe na página ao vivo.
  */
 export default function Previa({ slug, versao }: { slug: string; versao: string }) {
   const quadro = useRef<HTMLIFrameElement>(null);
   const [largura, setLargura] = useState<"celular" | "cheia">("celular");
 
   useEffect(() => {
-    if (quadro.current) quadro.current.src = `/${slug}?previa=${Date.now()}`;
+    const iframe = quadro.current;
+    if (!iframe) return;
+    const rolagem = iframe.contentWindow?.scrollY ?? 0;
+    const voltar = () => iframe.contentWindow?.scrollTo(0, rolagem);
+    iframe.addEventListener("load", voltar, { once: true });
+    iframe.src = `/${slug}?previa=${Date.now()}`;
+    return () => iframe.removeEventListener("load", voltar);
   }, [slug, versao]);
 
   return (
@@ -42,7 +51,7 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
         className={estilos.previaMoldura}
         style={{ maxWidth: largura === "celular" ? 380 : "100%", marginInline: "auto" }}
       >
-        <iframe ref={quadro} src={`/${slug}`} title={`Prévia de ${slug}`} />
+        <iframe ref={quadro} src={`/${slug}`} title={`Prévia de ${slug}`} data-previa />
       </div>
     </div>
   );

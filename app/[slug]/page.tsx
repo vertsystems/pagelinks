@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
+import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
 import estilos from "./pagina.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -77,6 +78,9 @@ export default async function PaginaPublica({ params }: Props) {
   if (!pagina) notFound();
 
   const fonte = urlDaFonte(pagina.fonte);
+  // tamanhos escolhidos na barra do painel; data-pl-tamanho é por onde a prévia ajusta ao vivo
+  const avatar = pagina.avatarTamanho ?? TAMANHO_NA_PAGINA.avatar.padrao;
+  const cabecalho = pagina.cabecalhoTamanho ?? TAMANHO_NA_PAGINA.cabecalho.padrao;
 
   return (
     <>
@@ -85,13 +89,26 @@ export default async function PaginaPublica({ params }: Props) {
         <div className={estilos.conteudo}>
           {pagina.avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className={estilos.avatar} src={pagina.avatarUrl} alt={pagina.titulo} width={104} height={104} />
+            <img
+              className={estilos.avatar}
+              src={pagina.avatarUrl}
+              alt={pagina.titulo}
+              width={avatar}
+              height={avatar}
+              style={{ width: avatar, height: avatar }}
+              data-pl-tamanho="avatar"
+            />
           )}
           {pagina.cabecalhoImagemUrl ? (
             // A arte da marca já traz o nome e a frase: ela é o título da página.
             <h1 className={estilos.cabecalho}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={pagina.cabecalhoImagemUrl} alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")} />
+              <img
+                src={pagina.cabecalhoImagemUrl}
+                alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")}
+                style={{ width: `${cabecalho}%` }}
+                data-pl-tamanho="cabecalho"
+              />
             </h1>
           ) : (
             <>
@@ -114,18 +131,20 @@ export default async function PaginaPublica({ params }: Props) {
                 case "separador":
                   return <hr key={card.id} className={estilos.separador} />;
 
-                case "imagem":
+                case "imagem": {
+                  const largura = { width: `${card.imagemTamanho ?? TAMANHO_NA_PAGINA.card.padrao}%` };
                   return card.imagemUrl ? (
                     card.url ? (
                       <a key={card.id} href={destino}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} />
+                        <img className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} style={largura} data-pl-tamanho={`card-${card.id}`} />
                       </a>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img key={card.id} className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} />
+                      <img key={card.id} className={estilos.imagem} src={card.imagemUrl} alt={card.titulo ?? ""} style={largura} data-pl-tamanho={`card-${card.id}`} />
                     )
                   ) : null;
+                }
 
                 case "video": {
                   const player = card.url ? urlDeVideo(card.url) : null;

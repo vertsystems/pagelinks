@@ -112,6 +112,11 @@
 .imagemRedonda img { object-fit: cover; }
 .imagemAcoes { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .botaoArquivo[aria-disabled="true"] { opacity: .6; pointer-events: none; }
+.tamanho { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.tamanho span { font-size: 12.5px; color: var(--g-suave); }
+.tamanho input[type="range"] { flex: 1; min-width: 140px; max-width: 280px; accent-color: var(--g-acento); cursor: pointer; }
+.tamanho output { font-family: var(--g-mono); font-size: 12.5px; min-width: 48px; }
+.tamanhoPadrao { background: none; border: 0; padding: 0; font: inherit; font-size: 12.5px; color: var(--g-destaque); text-decoration: underline; cursor: pointer; }
 .arquivoOculto { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
 .imagemAcoes:has(.arquivoOculto:focus-visible) .botaoArquivo { outline: 2px solid var(--g-foco); outline-offset: 2px; }
 

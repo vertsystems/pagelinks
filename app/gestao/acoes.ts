@@ -7,7 +7,7 @@ import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
-import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -317,7 +317,9 @@ async function localizarAlvo(alvo: AlvoImagem) {
       atual: card.imagemUrl,
       clienteId: card.pagina.clienteId,
       slug: card.pagina.cliente.slug,
-      gravar: (url: string | null) => prisma.card.update({ where: { id }, data: { imagemUrl: url } }),
+      // sem imagem, o tamanho também volta ao padrão: a próxima imagem não herda o ajuste
+      gravar: (url: string | null) =>
+        prisma.card.update({ where: { id }, data: url ? { imagemUrl: url } : { imagemUrl: null, imagemTamanho: null } }),
     };
   }
 
@@ -343,6 +345,8 @@ async function localizarAlvo(alvo: AlvoImagem) {
       gravar: (url: string | null) => {
         const data: Prisma.PaginaUpdateInput = {};
         data[campo] = url;
+        if (!url && campo === "avatarUrl") data.avatarTamanho = null;
+        if (!url && campo === "cabecalhoImagemUrl") data.cabecalhoTamanho = null;
         return prisma.pagina.update({ where: { id }, data });
       },
     };
@@ -393,4 +397,37 @@ export async function removerImagem(alvo: AlvoImagem): Promise<EstadoImagem> {
   await apagarImagensOrfas([local.atual]);
   revalidar(local.slug);
   return { url: null };
+}
+
+/** Grava o tamanho escolhido na barra. Valor fora do intervalo encosta no limite. */
+export async function salvarTamanhoImagem(alvo: AlvoImagem, valor: number): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const uso =
+    alvo?.tipo === "card" ? "card" : alvo?.tipo === "pagina" && Object.hasOwn(USO_DO_CAMPO, alvo.campo) ? USO_DO_CAMPO[alvo.campo] : null;
+  if (!uso || uso === "fundo" || !Number.isFinite(valor)) return { erro: "Esse tamanho não pode ser gravado." };
+
+  const { min, max, padrao } = TAMANHO_NA_PAGINA[uso];
+  const escolhido = Math.round(Math.min(max, Math.max(min, valor)));
+  // o padrão fica gravado como vazio: se um dia o padrão mudar, quem não mexeu acompanha
+  const tamanho = escolhido === padrao ? null : escolhido;
+  const id = String(alvo.id);
+
+  try {
+    const slug =
+      uso === "card"
+        ? (await prisma.card.update({
+            where: { id },
+            data: { imagemTamanho: tamanho },
+            select: { pagina: { select: { cliente: { select: { slug: true } } } } },
+          })).pagina.cliente.slug
+        : (await prisma.pagina.update({
+            where: { id },
+            data: uso === "avatar" ? { avatarTamanho: tamanho } : { cabecalhoTamanho: tamanho },
+            select: { cliente: { select: { slug: true } } },
+          })).cliente.slug;
+    revalidar(slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar o tamanho. Recarregue a página." };
+  }
 }

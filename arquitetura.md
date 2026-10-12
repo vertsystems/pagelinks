@@ -144,6 +144,18 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
   alternativo. No painel, com a imagem, título e frase ficam travados (e o servidor ignora
   os dois) até a imagem sair
 - Precisa de `SUPABASE_SECRET_KEY` no `.env` e na Vercel. Sem ela, o envio avisa que está desligado
+- **Barra de tamanho** (13/10/2026, pedido do Bruno): foto, cabeçalho e imagem de bloco têm
+  uma barra que muda o tamanho de exibição. Foto em px (48 a 200, padrão 104), cabeçalho e
+  bloco em % da coluna (20 a 100, padrão 100). Fica em `Pagina.avatarTamanho`,
+  `Pagina.cabecalhoTamanho` e `Card.imagemTamanho`. Vazio é o padrão, e "voltar ao padrão"
+  grava vazio. Arrastar muda a prévia na hora, direto no iframe (mesma origem, pelos
+  `data-pl-tamanho` da página pública), e grava meio segundo depois que a barra para.
+  Remover a imagem zera o tamanho; trocar mantém. Os intervalos ficam em
+  `TAMANHO_NA_PAGINA`, em `lib/imagens-limites.ts`
+- **A prévia guarda a rolagem** quando recarrega depois de salvar: ajustar um bloco lá
+  embaixo não joga a prévia de volta para o topo
+- A miniatura do campo de imagem usa a cor de fundo da página do cliente: logo branco
+  sumia no xadrez claro
 
 **Conserto junto:** o editor tem três formulários para a mesma página, e o `salvarPagina`
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o

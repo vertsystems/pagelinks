@@ -1,8 +1,8 @@
 "use client";
 
 import { useId, useRef, useState, useTransition } from "react";
-import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
-import { enviarImagem, removerImagem, type AlvoImagem } from "../acoes";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
+import { enviarImagem, removerImagem, salvarTamanhoImagem, type AlvoImagem } from "../acoes";
 import estilos from "../gestao.module.css";
 
 /**
@@ -37,6 +37,10 @@ async function reduzirNoNavegador(arquivo: File, uso: UsoImagem): Promise<File> 
  * Campo de imagem do editor: recebe WebP ou PNG e já grava, sem esperar o
  * Salvar do formulário em volta. O input de arquivo não tem name, então não
  * entra no envio desse formulário.
+ *
+ * Com `tamanho` (foto, cabeçalho, bloco), mostra a barra de tamanho: arrastar
+ * muda a prévia na hora, direto no iframe (mesma origem), e o valor é gravado
+ * meio segundo depois que a barra para.
  */
 export default function CampoImagem({
   alvo,
@@ -44,6 +48,8 @@ export default function CampoImagem({
   rotulo,
   dica,
   redonda = false,
+  fundo,
+  tamanho: tamanhoInicial,
   aoMudar,
 }: {
   alvo: AlvoImagem;
@@ -51,6 +57,10 @@ export default function CampoImagem({
   rotulo: string;
   dica?: string;
   redonda?: boolean;
+  /** cor de fundo da página do cliente, atrás da miniatura: logo branco some no xadrez claro */
+  fundo?: string;
+  /** tamanho gravado (null = padrão); sem a prop, não há barra */
+  tamanho?: number | null;
   aoMudar?: (url: string | null) => void;
 }) {
   const id = useId();
@@ -58,6 +68,32 @@ export default function CampoImagem({
   const [url, setUrl] = useState(inicial);
   const [erro, setErro] = useState<string | null>(null);
   const [ocupado, iniciar] = useTransition();
+
+  const uso: UsoImagem = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
+  const exibicao = tamanhoInicial !== undefined && uso !== "fundo" ? TAMANHO_NA_PAGINA[uso] : null;
+  const [tamanho, setTamanho] = useState(tamanhoInicial ?? exibicao?.padrao ?? 0);
+  const espera = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /** Aplica o tamanho no elemento marcado da prévia, sem recarregar. */
+  function aplicarNaPrevia(valor: number) {
+    if (!exibicao) return;
+    const chave = alvo.tipo === "card" ? `card-${alvo.id}` : uso;
+    const quadro = document.querySelector<HTMLIFrameElement>("iframe[data-previa]");
+    const alvoNaPrevia = quadro?.contentDocument?.querySelector<HTMLElement>(`[data-pl-tamanho="${chave}"]`);
+    if (!alvoNaPrevia) return;
+    alvoNaPrevia.style.width = `${valor}${exibicao.unidade}`;
+    if (exibicao.unidade === "px") alvoNaPrevia.style.height = `${valor}px`;
+  }
+
+  function mudarTamanho(valor: number) {
+    setTamanho(valor);
+    aplicarNaPrevia(valor);
+    if (espera.current) clearTimeout(espera.current);
+    espera.current = setTimeout(async () => {
+      const resposta = await salvarTamanhoImagem(alvo, valor);
+      setErro(resposta.erro ?? null);
+    }, 500);
+  }
 
   function concluir(resposta: { url?: string | null; erro?: string }) {
     if (resposta.erro) {
@@ -73,7 +109,6 @@ export default function CampoImagem({
     if (!FORMATOS_ACEITOS.includes(original.type)) return setErro("A imagem precisa estar em WebP ou PNG.");
 
     iniciar(async () => {
-      const uso = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
       if (entrada.current) entrada.current.value = "";
       let arquivo = original;
       try {
@@ -102,7 +137,10 @@ export default function CampoImagem({
     <div className={estilos.campo}>
       <label htmlFor={id}>{rotulo}</label>
       <div className={estilos.imagemCampo}>
-        <div className={`${estilos.imagemMiniatura} ${redonda ? estilos.imagemRedonda : ""}`}>
+        <div
+          className={`${estilos.imagemMiniatura} ${redonda ? estilos.imagemRedonda : ""}`}
+          style={url && fundo ? { background: fundo } : undefined}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {url ? <img src={url} alt="" /> : <span>sem imagem</span>}
         </div>
@@ -134,6 +172,26 @@ export default function CampoImagem({
           )}
         </div>
       </div>
+      {url && exibicao && (
+        <div className={estilos.tamanho}>
+          <span>Tamanho</span>
+          <input
+            type="range"
+            min={exibicao.min}
+            max={exibicao.max}
+            step={exibicao.passo}
+            value={tamanho}
+            onChange={(e) => mudarTamanho(Number(e.target.value))}
+            aria-label={`Tamanho de: ${rotulo}`}
+          />
+          <output>{tamanho}{exibicao.unidade === "%" ? "%" : " px"}</output>
+          {tamanho !== exibicao.padrao && (
+            <button type="button" className={estilos.tamanhoPadrao} onClick={() => mudarTamanho(exibicao.padrao)}>
+              voltar ao padrão
+            </button>
+          )}
+        </div>
+      )}
       {erro && <span className={estilos.erroCampo} role="alert">{erro}</span>}
       {dica && <span className={estilos.dica}>{dica}</span>}
     </div>

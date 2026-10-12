@@ -13,6 +13,7 @@ type Card = {
   subtitulo: string | null;
   url: string | null;
   imagemUrl: string | null;
+  imagemTamanho: number | null;
   telefone: string | null;
   mensagem: string | null;
   corFundo: string | null;
@@ -60,7 +61,7 @@ function paraInput(d: Date | null) {
   return iso.slice(0, 16);
 }
 
-export default function EditorCards({ paginaId, cards }: { paginaId: string; cards: Card[] }) {
+export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: string; corFundo: string; cards: Card[] }) {
   const [aberto, setAberto] = useState<string | null>(null);
 
   return (
@@ -167,7 +168,9 @@ export default function EditorCards({ paginaId, cards }: { paginaId: string; car
                           alvo={{ tipo: "card", id: card.id }}
                           url={card.imagemUrl}
                           rotulo="Imagem"
-                          dica="Ocupa a largura toda da página. O título vira o texto alternativo."
+                          dica="O título vira o texto alternativo."
+                          fundo={corFundo}
+                          tamanho={card.imagemTamanho}
                         />
                       )}
 

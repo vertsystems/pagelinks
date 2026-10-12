@@ -14,13 +14,19 @@ export default function CamposTopo({
   titulo,
   bio,
   avatarUrl,
+  avatarTamanho,
   cabecalhoImagemUrl,
+  cabecalhoTamanho,
+  corFundo,
 }: {
   paginaId: string;
   titulo: string;
   bio: string | null;
   avatarUrl: string | null;
+  avatarTamanho: number | null;
   cabecalhoImagemUrl: string | null;
+  cabecalhoTamanho: number | null;
+  corFundo: string;
 }) {
   const [comImagem, setComImagem] = useState(!!cabecalhoImagemUrl);
 
@@ -32,6 +38,8 @@ export default function CamposTopo({
         rotulo="Foto ou logo"
         dica="Aparece redonda no topo."
         redonda
+        fundo={corFundo}
+        tamanho={avatarTamanho}
       />
       <div className={estilos.campo}>
         <label htmlFor="titulo">Título</label>
@@ -50,6 +58,8 @@ export default function CamposTopo({
             ? "A imagem está no lugar do título e da frase. Para voltar a escrever os dois, remova a imagem."
             : "Para quando a arte da marca já traz o nome e a frase juntos. Ela substitui os dois na página."
         }
+        fundo={corFundo}
+        tamanho={cabecalhoTamanho}
         aoMudar={(url) => setComImagem(!!url)}
       />
     </>

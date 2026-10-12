@@ -72,7 +72,10 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                 titulo={pagina.titulo}
                 bio={pagina.bio}
                 avatarUrl={pagina.avatarUrl}
+                avatarTamanho={pagina.avatarTamanho}
                 cabecalhoImagemUrl={pagina.cabecalhoImagemUrl}
+                cabecalhoTamanho={pagina.cabecalhoTamanho}
+                corFundo={pagina.corFundo}
               />
               {/* marca que este formulário cuida da chave: desmarcada, ela não iria no envio */}
               <input type="hidden" name="publicada" value="" />
@@ -87,7 +90,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           </form>
 
           {/* blocos */}
-          <EditorCards paginaId={pagina.id} cards={pagina.cards} />
+          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} cards={pagina.cards} />
 
           {/* aparência */}
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>

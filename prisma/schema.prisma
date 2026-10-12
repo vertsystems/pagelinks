@@ -42,8 +42,10 @@ model Pagina {
   titulo    String
   bio       String?
   avatarUrl String?
+  avatarTamanho Int? // diâmetro em px; vazio = 104
   // arte da marca que já traz o nome e a frase: quando existe, substitui título e bio na página
   cabecalhoImagemUrl String?
+  cabecalhoTamanho   Int? // largura em % da coluna; vazio = 100
   publicada Boolean @default(false)
 
   // tema — o que o painel edita sem tocar em código
@@ -86,6 +88,7 @@ model Card {
   subtitulo String?
   url       String?
   imagemUrl String?
+  imagemTamanho Int? // largura em % da coluna; vazio = 100
   icone     String? // nome do ícone, quando o tipo usa
 
   // tipo = whatsapp
