@@ -41,10 +41,25 @@
   max-width: 46ch;
 }
 
-.blocos { width: 100%; display: flex; flex-direction: column; gap: var(--espaco-blocos, 14px); }
+.blocos { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--espaco-blocos, 14px); }
+
+/* Cada bloco numa célula que ocupa uma fração da linha (--fracao, do painel; 1 = inteira).
+   largura = fração × 100% − (1 − fração) × espaço: frações que somam 1 fecham a linha
+   exata, já descontado o espaço entre elas. Na mesma linha, as células ficam da mesma
+   altura, e o botão ocupa a altura toda; imagem e texto ficam centralizados. */
+.celula {
+  --fracao: 1;
+  flex: 0 0 calc(var(--fracao) * 100% - (1 - var(--fracao)) * var(--espaco-blocos, 14px));
+  min-width: 0;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.celula > .botao { flex: 1; }
+/* bloco que não ocupa a linha toda: botão com menos margem interna, para o texto caber.
+   O seletor olha o atributo style porque é ali que a fração entra, inclusive ao vivo na prévia. */
+.celula[style*="--fracao"] > .botao { padding: 14px 12px; }
 
 .botao {
-  display: block;
+  display: flex; flex-direction: column; justify-content: center;
   width: 100%;
   background: var(--preenchimento);
   border: var(--borda);

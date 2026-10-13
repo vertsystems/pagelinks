@@ -73,3 +73,21 @@ export function urlDaFonte(fonte: string): string | null {
 }
 
 export const FONTES = [...FONTES_PERMITIDAS];
+
+/**
+ * Largura de um bloco na linha. Blocos lado a lado se encaixam, e frações que
+ * somam 1 fecham a linha sem sobra (1/2 + 1/2, 1/3 + 2/3, 1/4 + 3/4…). Por isso é
+ * fração e não barra livre: com 48% + 50%, sobraria um buraco no fim da linha.
+ */
+export const LARGURAS = [
+  { valor: "inteira", rotulo: "Inteira", fracao: 1 },
+  { valor: "3/4", rotulo: "3/4", fracao: 3 / 4 },
+  { valor: "2/3", rotulo: "2/3", fracao: 2 / 3 },
+  { valor: "1/2", rotulo: "1/2", fracao: 1 / 2 },
+  { valor: "1/3", rotulo: "1/3", fracao: 1 / 3 },
+  { valor: "1/4", rotulo: "1/4", fracao: 1 / 4 },
+] as const;
+
+export function fracaoDaLargura(largura: string | null | undefined) {
+  return LARGURAS.find((l) => l.valor === largura)?.fracao ?? 1;
+}

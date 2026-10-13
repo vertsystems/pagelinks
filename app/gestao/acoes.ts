@@ -7,7 +7,7 @@ import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
 import { AJUSTE_ICONES, REDE_POR_ID, type AjusteIcones } from "@/lib/redes";
-import { AJUSTE_PAGINA, type AjustePagina } from "@/lib/tema";
+import { AJUSTE_PAGINA, LARGURAS, type AjustePagina } from "@/lib/tema";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
@@ -508,5 +508,23 @@ export async function salvarAjustePagina(paginaId: string, ajuste: AjustePagina,
     return {};
   } catch {
     return { erro: "Não consegui gravar o ajuste. Recarregue a página." };
+  }
+}
+
+/** Largura do bloco na linha (blocos lado a lado). Grava na hora; "inteira" fica como vazio. */
+export async function salvarLarguraCard(cardId: string, largura: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (!LARGURAS.some((l) => l.valor === largura)) return { erro: "Essa largura não existe." };
+
+  try {
+    const card = await prisma.card.update({
+      where: { id: String(cardId) },
+      data: { largura: largura === "inteira" ? null : largura },
+      select: { pagina: { select: { cliente: { select: { slug: true } } } } },
+    });
+    revalidar(card.pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar a largura. Recarregue a página." };
   }
 }

@@ -194,6 +194,24 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Blocos lado a lado — 14/10/2026
+
+Cada bloco tem **largura na linha** (`Card.largura`: 3/4, 2/3, 1/2, 1/3, 1/4; vazio = inteira),
+escolhida no editor do bloco, e os blocos se encaixam lado a lado, descendo quando a linha
+enche. É fração, não barra livre, para o alinhamento sair certo: frações que somam 1
+fecham a linha exata (1/2 + 1/2, 1/3 + 2/3, três de 1/3).
+
+- Na página, cada bloco vai numa `.celula` com `--fracao`; a largura é
+  `fração × 100% − (1 − fração) × espaço`, então o espaço entre eles (o mesmo da barra
+  "Espaço entre os blocos") já sai descontado. Testado: 156 + 14 + 156 = 326 px e
+  99,3 + 14 + 212,7 = 326 px
+- Na mesma linha, as células ficam da mesma altura e o botão ocupa a altura toda; bloco
+  parcial sozinho numa linha fica centralizado; botão em bloco parcial tem menos margem
+  interna
+- A escolha grava na hora e mexe na prévia ao vivo (`data-pl-bloco`); a lista do painel
+  mostra a fração ao lado do tipo. Duas trocas seguidas muito rápidas podem fazer a primeira
+  sumir da prévia por um instante, até a prévia recarregar com o que foi gravado
+
 ## Espaços da página e prévia no computador — 14/10/2026
 
 - **Espaço acima do topo** (`Pagina.espacoTopo`, de 0 a 320 px), no bloco "Página": empurra a

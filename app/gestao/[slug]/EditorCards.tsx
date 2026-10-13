@@ -5,6 +5,7 @@ import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarAj
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
+import EscolhaLargura from "./EscolhaLargura";
 import BarraAjuste, { naPrevia } from "./BarraAjuste";
 import { AJUSTE_PAGINA } from "@/lib/tema";
 import estilos from "../gestao.module.css";
@@ -22,6 +23,7 @@ type Card = {
   corFundo: string | null;
   corTexto: string | null;
   destaque: boolean;
+  largura: string | null;
   ativo: boolean;
   publicarEm: Date | null;
   despublicarEm: Date | null;
@@ -117,6 +119,7 @@ export default function EditorCards({
             >
               <div className={estilos.cardTopo}>
                 <span className={estilos.cardTipo}>{nomeTipo}</span>
+                {card.largura && <span className={estilos.cardLargura} title="Largura na linha">{card.largura}</span>}
                 <button
                   type="button"
                   className={estilos.cardTitulo}
@@ -231,6 +234,8 @@ export default function EditorCards({
                           </div>
                         </div>
                       )}
+
+                      <EscolhaLargura cardId={card.id} largura={card.largura} />
 
                       <div className={estilos.doisCampos}>
                         <div className={estilos.campo}>

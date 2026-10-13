@@ -170,6 +170,10 @@
   font-family: var(--g-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
   color: var(--g-destaque); background: var(--g-acento-fundo); padding: 4px 8px; border-radius: 5px; white-space: nowrap;
 }
+.cardLargura {
+  font-family: var(--g-mono); font-size: 10.5px; padding: 3px 7px; border-radius: 5px; white-space: nowrap;
+  border: 1px solid var(--g-linha-forte); color: var(--g-suave);
+}
 .cardTitulo { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cardTitulo em { color: var(--g-suave); font-style: normal; }
 .cardAcoes { display: flex; gap: 4px; align-items: center; }
