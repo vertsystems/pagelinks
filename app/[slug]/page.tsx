@@ -177,12 +177,20 @@ export default async function PaginaPublica({ params }: Props) {
                           key={card.id}
                           className={estilos.redes}
                           aria-label={card.titulo ?? "Redes sociais"}
-                          style={card.corTexto ? { color: card.corTexto } : undefined}
+                          data-cor={card.iconeCor === "marcas" ? "marcas" : undefined}
+                          style={card.iconeCor?.startsWith("#") ? { color: card.iconeCor } : undefined}
                         >
                           {card.icones.map((icone) => {
                             const rede = REDE_POR_ID[icone.rede];
                             return rede ? (
-                              <a key={icone.id} className={estilos.icone} href={`${destino}?icone=${icone.id}`} aria-label={rede.nome} title={rede.nome}>
+                              <a
+                                key={icone.id}
+                                className={estilos.icone}
+                                href={`${destino}?icone=${icone.id}`}
+                                aria-label={rede.nome}
+                                title={rede.nome}
+                                style={rede.cor ? ({ "--marca": rede.cor } as React.CSSProperties) : undefined}
+                              >
                                 <DesenhoRede rede={rede} tamanho={28} />
                               </a>
                             ) : null;

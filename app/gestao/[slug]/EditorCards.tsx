@@ -28,6 +28,7 @@ type Card = {
   largura: string | null;
   ajustesTablet: string | null;
   ajustesComputador: string | null;
+  iconeCor: string | null;
   ativo: boolean;
   publicarEm: Date | null;
   despublicarEm: Date | null;
@@ -79,11 +80,13 @@ function paraInput(d: Date | null) {
 export default function EditorCards({
   paginaId,
   corFundo,
+  corTexto,
   blocos,
   cards,
 }: {
   paginaId: string;
   corFundo: string;
+  corTexto: string;
   /** espaço entre os blocos, por tela */
   blocos: ValoresTela;
   cards: Card[];
@@ -239,6 +242,8 @@ export default function EditorCards({
                           titulo={card.titulo}
                           valoresIcone={valoresPorTela(card, "icone")}
                           valoresVao={valoresPorTela(card, "vao")}
+                          iconeCor={card.iconeCor}
+                          corTexto={corTexto}
                         />
                       )}
 

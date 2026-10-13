@@ -136,6 +136,11 @@ grava a lista inteira, na ordem da tela).
   `Card.iconeEspaco`, de 0 a 64 px, padrão 24). Mexem na prévia ao vivo pelas variáveis
   `--icone` e `--espaco` da fileira e gravam sozinhas. O espaço é medido entre os desenhos:
   a área de toque (10 px em volta) tem margem negativa igual e não empurra os vizinhos
+- **Cor dos ícones** (13/10/2026, `Card.iconeCor`): vazio = cor do texto da página;
+  `"marcas"` = cada ícone na cor da sua marca (`cor` em `lib/redes.ts`, do Simple Icons;
+  LinkedIn pelo azul oficial); `"#RRGGBB"` = uma cor só. TikTok, X, Threads e os genéricos
+  não têm cor de marca e ficam na cor do texto, senão sumiriam em fundo escuro. É a mesma
+  nas três telas. Grava sozinha (`salvarCorIcones`) e mexe na prévia ao vivo
 - **Na página:** ícones de 28 px em área de toque de 48 px, na cor do texto da página (ou na
   cor de texto do bloco). Bloco de redes sem ícone só aparece se tiver link (o botão de
   antes); os que vieram do WordPress sem link eram espaço reservado e saíram da página
@@ -202,7 +207,7 @@ barra fixa) e rola a prévia até o mesmo bloco, no centro. Não trava a rolagem
 rola só a página de dentro (`scrollTo` na janela do iframe; `scrollIntoView` ali puxaria o
 editor junto). Com "reduzir movimento" ligado no sistema, a rolagem é sem animação.
 
-## Layout por tela: celular, tablet e computador — 14/10/2026
+## Layout por tela: celular, tablet e computador — 13/10/2026
 
 Tamanhos, espaços e larguras são escolhidos **por tela**; conteúdo (texto, link, imagem,
 cor, fonte) é o mesmo nas três. A tela escolhida na prévia ("Celular | Tablet |
@@ -234,7 +239,7 @@ o celular. Tudo está em `lib/ajustes.ts`, que é a fonte da verdade.
 - O padrão do espaço do topo passou a mudar em 768 px (era 480): de 481 a 767 px, sem
   ajuste, o topo agora é 36 px, e não 48
 
-## Blocos lado a lado — 14/10/2026
+## Blocos lado a lado — 13/10/2026
 
 Cada bloco tem **largura na linha** (`Card.largura`: 3/4, 2/3, 1/2, 1/3, 1/4; vazio = inteira),
 escolhida no editor do bloco, e os blocos se encaixam lado a lado, descendo quando a linha
@@ -252,7 +257,7 @@ fecham a linha exata (1/2 + 1/2, 1/3 + 2/3, três de 1/3).
   mostra a fração ao lado do tipo. Duas trocas seguidas muito rápidas podem fazer a primeira
   sumir da prévia por um instante, até a prévia recarregar com o que foi gravado
 
-## Espaços da página e prévia no computador — 14/10/2026
+## Espaços da página e prévia no computador — 13/10/2026
 
 - **Espaço acima do topo** (`Pagina.espacoTopo`, de 0 a 320 px), no bloco "Página": empurra a
   foto, ou o que vier primeiro, e o resto da página para baixo. Vazio segue o de antes (36 px no

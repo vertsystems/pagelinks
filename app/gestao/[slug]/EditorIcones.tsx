@@ -4,6 +4,7 @@ import { useState } from "react";
 import { REDES, REDE_POR_ID, redesNoTexto } from "@/lib/redes";
 import type { ValoresTela } from "@/lib/ajustes";
 import ControleAjuste from "./ControleAjuste";
+import CorDosIcones from "./CorDosIcones";
 import DesenhoRede from "../../[slug]/DesenhoRede";
 import estilos from "../gestao.module.css";
 
@@ -24,6 +25,8 @@ export default function EditorIcones({
   titulo,
   valoresIcone,
   valoresVao,
+  iconeCor,
+  corTexto,
 }: {
   cardId: string;
   icones: Icone[];
@@ -31,6 +34,9 @@ export default function EditorIcones({
   /** tamanho dos ícones e espaço entre eles, por tela */
   valoresIcone: ValoresTela;
   valoresVao: ValoresTela;
+  /** cor dos ícones gravada (null = cor do texto) e a cor do texto da página */
+  iconeCor: string | null;
+  corTexto: string;
 }) {
   const [linhas, setLinhas] = useState<Linha[]>(() =>
     icones.length
@@ -130,7 +136,8 @@ export default function EditorIcones({
 
       <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="icone" valores={valoresIcone} rotulo="Tamanho dos ícones" />
       <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="vao" valores={valoresVao} rotulo="Espaço entre eles" />
-      <span className={estilos.dica}>As barras gravam sozinhas; os ícones e os links, no Salvar bloco.</span>
+      <CorDosIcones cardId={cardId} cor={iconeCor} corTexto={corTexto} />
+      <span className={estilos.dica}>As barras e a cor gravam sozinhas; os ícones e os links, no Salvar bloco.</span>
     </div>
   );
 }

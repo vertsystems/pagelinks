@@ -130,6 +130,7 @@ model Card {
   icones  Icone[] // tipo = redes
   iconeTamanho Int? // tipo = redes: tamanho do ícone em px; vazio = 28
   iconeEspaco  Int? // tipo = redes: espaço entre os ícones em px; vazio = 24
+  iconeCor     String? // tipo = redes: vazio = cor do texto · "marcas" · "#RRGGBB" (lib/redes.ts)
 
   @@index([paginaId, ordem])
   @@index([ativo])

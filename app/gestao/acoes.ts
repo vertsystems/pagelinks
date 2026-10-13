@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
-import { REDE_POR_ID } from "@/lib/redes";
+import { REDE_POR_ID, corDosIconesValida } from "@/lib/redes";
 import { AJUSTES, TELAS, lerJson, normalizarAjuste, type ChaveAjuste, type Tela, type ValorAjuste } from "@/lib/ajustes";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
@@ -514,5 +514,22 @@ export async function salvarAjuste(
     return {};
   } catch {
     return { erro: "Não consegui gravar o ajuste. Recarregue a página." };
+  }
+}
+
+/** Cor dos ícones de um bloco de redes: null (cor do texto), "marcas" ou "#RRGGBB". Grava na hora. */
+export async function salvarCorIcones(cardId: string, cor: string | null): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (!corDosIconesValida(cor)) return { erro: "Essa cor não serve." };
+  try {
+    const card = await prisma.card.update({
+      where: { id: String(cardId) },
+      data: { iconeCor: cor },
+      select: { pagina: { select: { cliente: { select: { slug: true } } } } },
+    });
+    revalidar(card.pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar a cor. Recarregue a página." };
   }
 }
