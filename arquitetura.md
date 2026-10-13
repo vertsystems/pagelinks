@@ -219,6 +219,21 @@ ao lado das imagens.
   foto subiu para 640 px de arquivo e 320 px na barra
 - Ficaram de fora as imagens de `extras/` (30, em 10 clientes): carrosséis, fileiras de logos,
   prints de avaliação. O lugar delas são os blocos de imagem vazios que vieram dos prints
+- **Correções depois da primeira rodada** (conferidas no celular, uma a uma):
+  - Fernando Ferro, Studio Sarah Sampaio e Vanessa Andrade tinham os ícones de redes
+    exportados como cards: eles entraram nos blocos dos banners. Os ícones viraram ícones do
+    bloco de redes (com os links da página antiga) e cada banner voltou para o bloco dele
+  - SpaceFM: os três selos (Google Play, App Store, Alexa) a 1/3 da linha, pequenos, com o link
+    de cada loja
+  - Milene Almeida: os prints só tinham 3 dos 5 banners; ficaram os 5, na ordem e com nome
+  - Sarah Sampaio: as imagens da pasta têm proporção diferente da página antiga, e os links
+    não casaram; foram postos pela ordem. A imagem que era a fileira de ícones saiu
+  - Infra Assessoria: os botões "Fale com a gente" eram os links dos banners
+- **Ícones de redes da carteira:** 81 ícones em 26 páginas, lidos da página antiga (um por
+  rede, sem os botões e os links de loja). Matheus Ferro e Heloisa de Paula não tinham ícones
+- **Ficou sem destino** (a página antiga não tinha link para recuperar): Redó Souza &
+  Muneratti "Acompanhe Nosso Canal", Ana Julia "Quero fechar parceria", Matheus Ferro
+  "Mentoria InstaLUCRO", Renata Amaral "Contact now!" e dois do Instituto Ponto de Luz
 
 ## Blocos lado a lado mais juntos — 13/10/2026
 
