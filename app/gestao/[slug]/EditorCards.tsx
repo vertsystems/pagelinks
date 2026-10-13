@@ -355,7 +355,7 @@ export default function EditorCards({
                     </svg>
                   </button>
                 )}
-                <span className={estilos.cardTipo}>{nomeTipo}</span>
+                <span className={estilos.cardTipo} data-tipo={card.tipo}>{nomeTipo}</span>
                 {(() => {
                   // largura do bloco na tela que está sendo editada
                   const largura = String(valorNaTela(valoresPorTela(card, "largura"), "largura", tela).valor);

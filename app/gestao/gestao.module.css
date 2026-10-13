@@ -318,6 +318,18 @@
   font-family: var(--g-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
   color: var(--g-destaque); background: var(--g-acento-fundo); padding: 4px 8px; border-radius: 5px; white-space: nowrap;
 }
+/* cada tipo de bloco com a sua cor, para achar no meio da lista (tokens em gestao.css) */
+.cardTipo[data-tipo="link"] { background: var(--g-tipo-link); color: var(--g-tipo-link-texto); }
+.cardTipo[data-tipo="destaque"] { background: var(--g-tipo-destaque); color: var(--g-tipo-destaque-texto); }
+.cardTipo[data-tipo="whatsapp"] { background: var(--g-tipo-whatsapp); color: var(--g-tipo-whatsapp-texto); }
+.cardTipo[data-tipo="titulo"] { background: var(--g-tipo-titulo); color: var(--g-tipo-titulo-texto); }
+.cardTipo[data-tipo="texto"] { background: var(--g-tipo-texto); color: var(--g-tipo-texto-texto); }
+.cardTipo[data-tipo="lista"] { background: var(--g-tipo-lista); color: var(--g-tipo-lista-texto); }
+.cardTipo[data-tipo="imagem"] { background: var(--g-tipo-imagem); color: var(--g-tipo-imagem-texto); }
+.cardTipo[data-tipo="video"] { background: var(--g-tipo-video); color: var(--g-tipo-video-texto); }
+.cardTipo[data-tipo="redes"] { background: var(--g-tipo-redes); color: var(--g-tipo-redes-texto); }
+.cardTipo[data-tipo="carrossel"] { background: var(--g-tipo-carrossel); color: var(--g-tipo-carrossel-texto); }
+.cardTipo[data-tipo="separador"] { background: var(--g-tipo-separador); color: var(--g-tipo-separador-texto); }
 .cardLargura {
   font-family: var(--g-mono); font-size: 10.5px; padding: 3px 7px; border-radius: 5px; white-space: nowrap;
   border: 1px solid var(--g-linha-forte); color: var(--g-suave);

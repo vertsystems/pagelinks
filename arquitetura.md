@@ -112,6 +112,14 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Cor por tipo de bloco no editor — 13/10/2026
+
+Cada etiqueta de tipo (link, destaque, WhatsApp, título, texto, lista, imagem, vídeo, redes,
+carrossel, separador) tem a sua cor, para achar o bloco no meio da lista. Tons suaves:
+fundo claro e o texto na mesma cor, mais escuro. Tokens `--g-tipo-<tipo>` e
+`--g-tipo-<tipo>-texto` nos dois temas (`gestao.css`); no escuro, a cor é translúcida sobre o
+cartão. Contraste medido: de 5,8:1 a 6,7:1 no claro e de 8:1 a 10,6:1 no escuro.
+
 ## Tamanho do texto nos blocos de título e texto, e confirmação ao excluir — 13/10/2026
 
 **Tamanho do texto**: barra por tela nos blocos de título e de texto (`AJUSTES.letra`, coluna

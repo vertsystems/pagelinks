@@ -41,6 +41,18 @@
   --g-ok: #16A34A;
   --g-ok-borda: #11843B;
   --g-sombra: 0 20px 50px rgb(57 88 134 / .22);
+  /* etiqueta de cada tipo de bloco no editor: tons suaves, texto da mesma cor mais escuro (contraste de 5,8:1 a 6,7:1) */
+  --g-tipo-link: #DCEBFF; --g-tipo-link-texto: #1D4F91;
+  --g-tipo-destaque: #FFE6C7; --g-tipo-destaque-texto: #8A4500;
+  --g-tipo-whatsapp: #D3F4E1; --g-tipo-whatsapp-texto: #11663A;
+  --g-tipo-titulo: #ECE3FF; --g-tipo-titulo-texto: #5B3A9E;
+  --g-tipo-texto: #E4E9F0; --g-tipo-texto-texto: #425268;
+  --g-tipo-lista: #D0F1EE; --g-tipo-lista-texto: #0D625C;
+  --g-tipo-imagem: #FCE0EE; --g-tipo-imagem-texto: #962A5E;
+  --g-tipo-video: #FDE1DE; --g-tipo-video-texto: #A1281F;
+  --g-tipo-redes: #D9F0FA; --g-tipo-redes-texto: #0A5C82;
+  --g-tipo-carrossel: #F4DFF9; --g-tipo-carrossel-texto: #7A278B;
+  --g-tipo-separador: #ECE7DF; --g-tipo-separador-texto: #65553F;
 }
 
 [data-tema="escuro"] {
@@ -72,6 +84,18 @@
   --g-ok: #22C55E;
   --g-ok-borda: #16A34A;
   --g-sombra: 0 20px 50px rgb(0 0 0 / .4);
+  /* etiqueta de cada tipo de bloco: a cor translúcida sobre o cartão escuro (contraste de 8:1 a 10,6:1) */
+  --g-tipo-link: rgb(96 165 250 / .16); --g-tipo-link-texto: #93C5FD;
+  --g-tipo-destaque: rgb(251 146 60 / .16); --g-tipo-destaque-texto: #FDBA74;
+  --g-tipo-whatsapp: rgb(74 222 128 / .14); --g-tipo-whatsapp-texto: #86EFAC;
+  --g-tipo-titulo: rgb(167 139 250 / .18); --g-tipo-titulo-texto: #C4B5FD;
+  --g-tipo-texto: rgb(148 163 184 / .16); --g-tipo-texto-texto: #CBD5E1;
+  --g-tipo-lista: rgb(45 212 191 / .14); --g-tipo-lista-texto: #5EEAD4;
+  --g-tipo-imagem: rgb(244 114 182 / .16); --g-tipo-imagem-texto: #F9A8D4;
+  --g-tipo-video: rgb(248 113 113 / .16); --g-tipo-video-texto: #FCA5A5;
+  --g-tipo-redes: rgb(56 189 248 / .14); --g-tipo-redes-texto: #7DD3FC;
+  --g-tipo-carrossel: rgb(232 121 249 / .16); --g-tipo-carrossel-texto: #F0ABFC;
+  --g-tipo-separador: rgb(214 201 182 / .12); --g-tipo-separador-texto: #D6C9B6;
 }
 
 /* o fundo da página acompanha o tema, para a rolagem elástica não mostrar branco no escuro */
