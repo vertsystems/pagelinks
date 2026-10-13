@@ -204,7 +204,9 @@
 .icone:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* --encosto: numa linha de dois blocos, a imagem encosta na vizinha (ver fracoesNaTela) */
-.imagem { width: var(--imagem); border-radius: var(--raio); display: block; margin-inline: var(--encosto); }
+/* imagem enviada (bloco de imagem, banner e carrossel) aparece como o arquivo: sem canto
+   arredondado. Ela não segue o formato dos botões; no "totalmente redondo", virava pílula */
+.imagem { width: var(--imagem); display: block; margin-inline: var(--encosto); }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }
 
@@ -231,7 +233,7 @@
 }
 .trilho::before, .trilho::after { content: ""; flex: 0 0 max(0px, calc((100% - var(--slide)) / 2 - 12px)); }
 .trilho::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 var(--slide); scroll-snap-align: center; border-radius: var(--raio); overflow: hidden; }
+.slide { flex: 0 0 var(--slide); scroll-snap-align: center; overflow: hidden; }
 .slide a { display: block; }
 .slide a:focus-visible { outline: 3px solid var(--texto); outline-offset: -3px; }
 .slide img { width: 100%; height: auto; display: block; -webkit-user-drag: none; user-select: none; }

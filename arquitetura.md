@@ -112,6 +112,13 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Imagens sem canto arredondado — 13/10/2026
+
+Imagem enviada (bloco de imagem, banner com link e carrossel) aparece como o arquivo, com
+os cantos que a arte tiver. Antes ela seguia o formato dos botões (`--raio`), e no
+"totalmente redondo" (999 px) os banners da Infra viravam pílula. Pedido do Bruno: a imagem
+original. O vídeo e a caixa da lista continuam com o canto dos botões.
+
 ## Bloco lista — 13/10/2026
 
 Tipo de bloco para itens um embaixo do outro, como os serviços de um cliente. No painel é
