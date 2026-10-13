@@ -509,7 +509,8 @@ export async function salvarAjuste(
   if (!normal.ok) return { erro: "Esse valor não serve para esse ajuste." };
   // o padrão do celular vira vazio, menos em ajuste que segue outro (o "lado" segue o
   // espaço entre os blocos): ali vazio quer dizer "igual ao outro", não o número padrão
-  const segueOutro = "segue" in def && def.segue;
+  // nem a letra, cujo padrão depende do bloco (15 viraria vazio, e o título voltaria a 13)
+  const segueOutro = ("segue" in def && def.segue) || ("padraoPorBloco" in def && def.padraoPorBloco);
   const gravar = tela === "celular" && !segueOutro && normal.valor === def.padrao.celular ? null : normal.valor;
   const id = String(alvo.id);
 

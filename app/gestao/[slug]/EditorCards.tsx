@@ -13,6 +13,7 @@ import { naPrevia } from "./BarraAjuste";
 import { useTela } from "./Tela";
 import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
 import { MARCADORES, lerItens, lerMarcador } from "@/lib/lista";
+import { PADRAO_DA_LETRA } from "@/lib/tema";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -416,6 +417,19 @@ export default function EditorCards({
                           </div>
                         )}
                       </div>
+
+                      {/* tamanho da letra do título e do texto, por tela; grava sozinho */}
+                      {(card.tipo === "titulo" || card.tipo === "texto") && (
+                        <div className={estilos.campo}>
+                          <ControleAjuste
+                            alvo={{ tipo: "card", id: card.id }}
+                            chave="letra"
+                            valores={valoresPorTela(card, "letra")}
+                            rotulo="Tamanho do texto"
+                            padrao={PADRAO_DA_LETRA[card.tipo]}
+                          />
+                        </div>
+                      )}
 
                       {usa.subtitulo && (
                         <div className={estilos.campo}>

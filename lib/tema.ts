@@ -27,6 +27,10 @@ export const AJUSTE_PAGINA = {
   bio: { min: 12, max: 28, passo: 1, padrao: 16, unidade: "px" },
 } as const;
 
+/** Tamanho da letra dos blocos de título e de texto. O padrão depende do bloco (PADRAO_DA_LETRA). */
+export const TAMANHO_DA_LETRA = { min: 10, max: 48, passo: 1, padrao: 15, unidade: "px" } as const;
+export const PADRAO_DA_LETRA: Record<string, number> = { titulo: 13, texto: 15 };
+
 export type AjustePagina = keyof typeof AJUSTE_PAGINA;
 
 const RAIO: Record<string, string> = {

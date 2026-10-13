@@ -38,6 +38,7 @@ export default function ControleAjuste({
   nomeAcessivel,
   padraoDe,
   rotuloPadrao,
+  padrao: padraoDoBloco,
 }: {
   alvo: AlvoAjuste;
   chave: ChaveAjuste;
@@ -48,6 +49,8 @@ export default function ControleAjuste({
   padraoDe?: { chave: ChaveAjuste; valores: ValoresTela };
   /** como chamar o padrão, quando não é o número fixo ("igual ao espaço entre os blocos") */
   rotuloPadrao?: string;
+  /** padrão que depende do bloco, no lugar do de AJUSTES (a letra: 13 no título, 15 no texto) */
+  padrao?: number;
 }) {
   const { tela } = useTela();
   const [erro, setErro] = useState<string | null>(null);
@@ -55,7 +58,7 @@ export default function ControleAjuste({
   const def = AJUSTES[chave];
   if (def.tipo !== "numero") return null;
 
-  const padrao = padraoDe ? valorNaTela(padraoDe.valores, padraoDe.chave, tela).valor : undefined;
+  const padrao = padraoDe ? valorNaTela(padraoDe.valores, padraoDe.chave, tela).valor : padraoDoBloco;
   const { valor, proprio, seguiria } = valorNaTela({ ...valores, ...locais }, chave, tela, padrao);
 
   function aplicar(v: ValorAjuste | null, naTela: Tela) {

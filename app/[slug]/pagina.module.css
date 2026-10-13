@@ -6,7 +6,8 @@
    resolvida por tela (--fr-m, --fr-t, --fr-d), porque depende dos vizinhos (blocos que
    não cabem dividem a linha, ver fracoesNaTela). O resto do arquivo só lê --topo,
    --blocos, --lado, --avatar, --cabecalho, --titulo, --bio, --fracao, --encosto,
-   --imagem, --icone, --vao e --slide.
+   --imagem, --icone, --vao, --slide e --letra (esta sem padrão aqui: cada bloco usa
+   var(--letra, <o seu>), porque título e texto têm tamanhos diferentes).
    --lado (vão entre blocos lado a lado) sem valor segue o --blocos da tela. */
 .tela {
   --topo: var(--topo-m, 36px);
@@ -24,6 +25,7 @@
   --icone: var(--icone-m, 28px);
   --vao: var(--vao-m, 24px);
   --slide: var(--slide-m, 80%);
+  --letra: var(--letra-m);
 }
 @media (min-width: 768px) {
   .tela {
@@ -42,6 +44,7 @@
     --icone: var(--icone-t, var(--icone-m, 28px));
     --vao: var(--vao-t, var(--vao-m, 24px));
     --slide: var(--slide-t, var(--slide-m, 60%));
+    --letra: var(--letra-t, var(--letra-m));
   }
 }
 @media (min-width: 1024px) {
@@ -61,6 +64,7 @@
     --icone: var(--icone-d, var(--icone-t, var(--icone-m, 28px)));
     --vao: var(--vao-d, var(--vao-t, var(--vao-m, 24px)));
     --slide: var(--slide-d, var(--slide-t, var(--slide-m, 60%)));
+    --letra: var(--letra-d, var(--letra-t, var(--letra-m)));
   }
 }
 
@@ -152,7 +156,7 @@
 }
 
 .tituloSecao {
-  font-size: 13px;
+  font-size: var(--letra, 13px);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -161,7 +165,7 @@
   text-align: center;
 }
 
-.texto { font-size: 15px; line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
+.texto { font-size: var(--letra, 15px); line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
 
 /* lista (serviços, horários…): numa caixa como o botão secundário, alinhada à esquerda,
    que é como lista se lê; o marcador vai na cor dos botões */

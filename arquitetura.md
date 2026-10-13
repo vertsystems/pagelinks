@@ -112,6 +112,21 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Tamanho do texto nos blocos de título e texto, e confirmação ao excluir — 13/10/2026
+
+**Tamanho do texto**: barra por tela nos blocos de título e de texto (`AJUSTES.letra`, coluna
+`letraTamanho`). O padrão depende do bloco: 13 px no título, 15 px no texto
+(`PADRAO_DA_LETRA` em `lib/tema.ts`). Por isso a variável `--letra` não tem padrão no CSS:
+cada bloco usa `var(--letra, <o seu>)`, e o painel passa o padrão do bloco ao `ControleAjuste`
+(prop `padrao`). E por isso esse ajuste nunca grava vazio: o `salvarAjuste` transforma em vazio
+o valor igual ao padrão da tabela (15), e o título em 15 px voltaria para 13
+(`padraoPorBloco` em `lib/ajustes.ts`).
+
+**Excluir cliente pede confirmação** (`BotaoExcluir.tsx`): antes, um clique apagava cliente,
+página, blocos, cliques e imagens. Em 13/10 duas páginas foram excluídas pelo painel
+(Milene Almeida e Renata Amaral, de propósito, confirmado pelo Bruno); a investigação pelos
+registros da Vercel mostrou que é fácil apagar sem querer. Cancelar não envia o formulário.
+
 ## Imagens sem canto arredondado — 13/10/2026
 
 Imagem enviada (bloco de imagem, banner com link e carrossel) aparece como o arquivo, com

@@ -1,7 +1,7 @@
 import { LARGURA_DO_SLIDE } from "@/lib/carrossel";
 import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
 import { AJUSTE_ICONES } from "@/lib/redes";
-import { AJUSTE_PAGINA, LARGURAS, fracaoDaLargura } from "@/lib/tema";
+import { AJUSTE_PAGINA, LARGURAS, TAMANHO_DA_LETRA, fracaoDaLargura } from "@/lib/tema";
 
 /**
  * Layout por tela: celular, tablet e computador.
@@ -38,6 +38,8 @@ type Numerico = {
   padrao: Record<Tela, number>;
   /** sem valor gravado, segue outro ajuste (e não um número fixo) */
   segue?: string;
+  /** o padrão muda com o tipo do bloco (a letra): o número fica gravado, nunca vira vazio */
+  padraoPorBloco?: true;
 };
 type Largura = { alvo: "card"; coluna: "largura"; variavel: "largura"; tipo: "largura"; padrao: Record<Tela, string> };
 
@@ -58,6 +60,9 @@ export const AJUSTES = {
   icone: { alvo: "card", coluna: "iconeTamanho", variavel: "icone", tipo: "numero", faixa: AJUSTE_ICONES.tamanho, padrao: igual(28) },
   vao: { alvo: "card", coluna: "iconeEspaco", variavel: "vao", tipo: "numero", faixa: AJUSTE_ICONES.espaco, padrao: igual(24) },
   largura: { alvo: "card", coluna: "largura", variavel: "largura", tipo: "largura", padrao: { celular: "inteira", tablet: "inteira", computador: "inteira" } },
+  // título e texto: tamanho da letra. Sem valor, cada bloco fica no seu (13 no título, 15 no
+  // texto, PADRAO_DA_LETRA): o CSS usa var(--letra, <padrão do bloco>), e o painel passa o padrão
+  letra: { alvo: "card", coluna: "letraTamanho", variavel: "letra", tipo: "numero", faixa: TAMANHO_DA_LETRA, padrao: igual(15), padraoPorBloco: true },
   // carrossel: largura de cada imagem; na coluna de 620 px do tablet e do computador, 60% já mostra as vizinhas
   slide: { alvo: "card", coluna: "slideLargura", variavel: "slide", tipo: "numero", faixa: LARGURA_DO_SLIDE, padrao: { celular: 80, tablet: 60, computador: 60 } },
 } satisfies Record<string, Numerico | Largura>;
