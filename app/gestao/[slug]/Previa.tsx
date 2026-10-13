@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { TELAS } from "@/lib/ajustes";
+import { useTela } from "./Tela";
 import estilos from "../gestao.module.css";
 
-// tela de computador simulada: a página é desenhada nesse tamanho e reduzida para caber
-const COMPUTADOR = { largura: 1280, altura: 800 };
+// tablet e computador simulados: a página é desenhada nesse tamanho e reduzida para caber.
+// As larguras caem nas faixas do pagina.module.css (tablet de 768 a 1023, computador de 1024).
+const SIMULADA = { tablet: { largura: 820, altura: 1000 }, computador: { largura: 1280, altura: 800 } };
 
 /**
  * Prévia ao vivo da página do cliente.
@@ -14,15 +17,17 @@ const COMPUTADOR = { largura: 1280, altura: 800 };
  * pode jogar a prévia para o topo. O data-previa é por onde as barras do editor
  * mexem na página ao vivo.
  *
- * Dois modos: celular (a página na largura de um telefone) e computador (desenhada
- * em 1280×800 e reduzida em escala; a coluna da prévia alarga, ver .editor:has()).
- * O iframe é o mesmo nos dois: trocar de modo não recarrega nem perde a rolagem.
+ * Três telas: celular (a página na largura de um telefone), tablet (820×1000) e
+ * computador (1280×800), as duas últimas reduzidas em escala; a coluna da prévia
+ * alarga (ver .editor:has()). A tela escolhida aqui é a que o editor inteiro edita
+ * (ver Tela.tsx). O iframe é o mesmo nas três: trocar não recarrega nem perde a rolagem.
  */
 export default function Previa({ slug, versao }: { slug: string; versao: string }) {
   const quadro = useRef<HTMLIFrameElement>(null);
   const area = useRef<HTMLDivElement>(null);
-  const [modo, setModo] = useState<"celular" | "computador">("celular");
+  const { tela, setTela } = useTela();
   const [escala, setEscala] = useState(0.5);
+  const simulada = tela === "celular" ? null : SIMULADA[tela];
 
   useEffect(() => {
     const iframe = quadro.current;
@@ -34,23 +39,21 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
     return () => iframe.removeEventListener("load", voltar);
   }, [slug, versao]);
 
-  // no modo computador, a escala acompanha a largura disponível
+  // no tablet e no computador, a escala acompanha a largura disponível
   useEffect(() => {
-    if (modo !== "computador" || !area.current) return;
-    const observar = new ResizeObserver(([medida]) => setEscala(medida.contentRect.width / COMPUTADOR.largura));
+    if (!simulada || !area.current) return;
+    const observar = new ResizeObserver(([medida]) => setEscala(medida.contentRect.width / simulada.largura));
     observar.observe(area.current);
     return () => observar.disconnect();
-  }, [modo]);
-
-  const noComputador = modo === "computador";
+  }, [simulada]);
 
   return (
-    <div className={`${estilos.previa} ${noComputador ? estilos.previaComputador : ""}`}>
+    <div className={`${estilos.previa} ${simulada ? estilos.previaComputador : ""}`}>
       <div className={estilos.previaBarra}>
-        <div className={estilos.alternador} role="group" aria-label="Ver a prévia como">
-          {(["celular", "computador"] as const).map((m) => (
-            <button key={m} type="button" aria-pressed={modo === m} onClick={() => setModo(m)}>
-              {m === "celular" ? "Celular" : "Computador"}
+        <div className={estilos.alternador} role="group" aria-label="Tela que está sendo vista e editada">
+          {TELAS.map((t) => (
+            <button key={t.id} type="button" aria-pressed={tela === t.id} onClick={() => setTela(t.id)}>
+              {t.nome}
             </button>
           ))}
         </div>
@@ -64,10 +67,10 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
         </a>
       </div>
       <div
-        className={`${estilos.previaMoldura} ${noComputador ? estilos.molduraComputador : ""}`}
-        style={noComputador ? undefined : { maxWidth: 380, marginInline: "auto" }}
+        className={`${estilos.previaMoldura} ${simulada ? estilos.molduraComputador : ""}`}
+        style={simulada ? undefined : { maxWidth: 380, marginInline: "auto" }}
       >
-        {noComputador && (
+        {simulada && (
           <div className={estilos.navegador} aria-hidden="true">
             <i /><i /><i />
             <span>dnms.fun/{slug}</span>
@@ -76,7 +79,7 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
         <div
           ref={area}
           className={estilos.previaArea}
-          style={noComputador ? { height: COMPUTADOR.altura * escala } : undefined}
+          style={simulada ? { height: simulada.altura * escala } : undefined}
         >
           <iframe
             ref={quadro}
@@ -84,8 +87,8 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
             title={`Prévia de ${slug}`}
             data-previa
             style={
-              noComputador
-                ? { width: COMPUTADOR.largura, height: COMPUTADOR.altura, transform: `scale(${escala})`, transformOrigin: "0 0" }
+              simulada
+                ? { width: simulada.largura, height: simulada.altura, transform: `scale(${escala})`, transformOrigin: "0 0" }
                 : undefined
             }
           />

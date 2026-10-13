@@ -90,7 +90,15 @@
 }
 .editor:has(.previaComputador) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
 
-/* Celular | Computador */
+/* tela que está sendo editada, quando não é o celular */
+.avisoTela {
+  background: var(--g-acento-fundo); color: var(--g-texto); border: 1px solid var(--g-linha-forte);
+  border-radius: 12px; padding: 12px 14px; margin-bottom: 18px; font-size: 13.5px; line-height: 1.5;
+}
+.avisoTela button { background: none; border: 0; padding: 0; font: inherit; color: var(--g-destaque); text-decoration: underline; cursor: pointer; }
+.notaTela { font-size: 12px; color: var(--g-suave); font-style: italic; }
+
+/* Celular | Tablet | Computador */
 .alternador { display: inline-flex; border: 1px solid var(--g-linha-forte); border-radius: 8px; overflow: hidden; }
 .alternador button {
   background: transparent; border: 0; padding: 6px 12px; font: inherit; font-size: 12.5px; font-weight: 600;

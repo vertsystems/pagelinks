@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarAjustePagina, salvarCard } from "../acoes";
+import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
 import EscolhaLargura from "./EscolhaLargura";
-import BarraAjuste, { naPrevia } from "./BarraAjuste";
-import { AJUSTE_PAGINA } from "@/lib/tema";
+import ControleAjuste from "./ControleAjuste";
+import { useTela } from "./Tela";
+import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -24,6 +25,8 @@ type Card = {
   corTexto: string | null;
   destaque: boolean;
   largura: string | null;
+  ajustesTablet: string | null;
+  ajustesComputador: string | null;
   ativo: boolean;
   publicarEm: Date | null;
   despublicarEm: Date | null;
@@ -75,16 +78,17 @@ function paraInput(d: Date | null) {
 export default function EditorCards({
   paginaId,
   corFundo,
-  espacoBlocos,
+  blocos,
   cards,
 }: {
   paginaId: string;
   corFundo: string;
-  espacoBlocos: number | null;
+  /** espaço entre os blocos, por tela */
+  blocos: ValoresTela;
   cards: Card[];
 }) {
   const [aberto, setAberto] = useState<string | null>(null);
-  const [erroEspaco, setErroEspaco] = useState<string | null>(null);
+  const { tela } = useTela();
 
   return (
     <div className={estilos.bloco}>
@@ -96,14 +100,7 @@ export default function EditorCards({
       </h2>
 
       <div className={estilos.campo} style={{ marginBottom: 14 }}>
-        <BarraAjuste
-          rotulo="Espaço entre os blocos"
-          valor={espacoBlocos}
-          faixa={AJUSTE_PAGINA.blocos}
-          aoMover={(v) => naPrevia("[data-pl-tela]")?.style.setProperty("--espaco-blocos", `${v}px`)}
-          aoGravar={async (v) => setErroEspaco((await salvarAjustePagina(paginaId, "blocos", v)).erro ?? null)}
-        />
-        {erroEspaco && <span className={estilos.erroCampo} role="alert">{erroEspaco}</span>}
+        <ControleAjuste alvo={{ tipo: "pagina", id: paginaId }} chave="blocos" valores={blocos} rotulo="Espaço entre os blocos" />
       </div>
 
       <div className={estilos.listaCards}>
@@ -119,7 +116,11 @@ export default function EditorCards({
             >
               <div className={estilos.cardTopo}>
                 <span className={estilos.cardTipo}>{nomeTipo}</span>
-                {card.largura && <span className={estilos.cardLargura} title="Largura na linha">{card.largura}</span>}
+                {(() => {
+                  // largura do bloco na tela que está sendo editada
+                  const largura = String(valorNaTela(valoresPorTela(card, "largura"), "largura", tela).valor);
+                  return largura !== "inteira" && <span className={estilos.cardLargura} title="Largura na linha">{largura}</span>;
+                })()}
                 <button
                   type="button"
                   className={estilos.cardTitulo}
@@ -208,7 +209,7 @@ export default function EditorCards({
                               : "Com imagem, o card vira a própria arte, clicável, no lugar do botão. O título não aparece na página: fica como texto alternativo e como nome do bloco aqui."
                           }
                           fundo={corFundo}
-                          tamanho={card.imagemTamanho}
+                          ajuste={{ chave: "imagem", valores: valoresPorTela(card, "imagem") }}
                         />
                       )}
 
@@ -217,8 +218,8 @@ export default function EditorCards({
                           cardId={card.id}
                           icones={card.icones}
                           titulo={card.titulo}
-                          iconeTamanho={card.iconeTamanho}
-                          iconeEspaco={card.iconeEspaco}
+                          valoresIcone={valoresPorTela(card, "icone")}
+                          valoresVao={valoresPorTela(card, "vao")}
                         />
                       )}
 
@@ -235,7 +236,7 @@ export default function EditorCards({
                         </div>
                       )}
 
-                      <EscolhaLargura cardId={card.id} largura={card.largura} />
+                      <EscolhaLargura cardId={card.id} valores={valoresPorTela(card, "largura")} />
 
                       <div className={estilos.doisCampos}>
                         <div className={estilos.campo}>

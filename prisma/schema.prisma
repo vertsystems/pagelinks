@@ -63,6 +63,12 @@ model Pagina {
   espacoTopo   Int? // acima do primeiro elemento da página; vazio = 36 no celular, 48 no computador
   espacoBlocos Int? // entre um bloco e outro; vazio = 14
 
+  // Layout por tela (lib/ajustes.ts). As colunas de tamanho e espaço acima são as do
+  // celular; tablet e computador guardam só o que mudou, em JSON ({"topo": 80, ...}).
+  // O que falta segue a tela menor.
+  ajustesTablet     String?
+  ajustesComputador String?
+
   // SEO e compartilhamento
   seoTitulo    String?
   seoDescricao String?
@@ -104,6 +110,11 @@ model Card {
   corTexto String?
   destaque Boolean @default(false)
   largura  String? // fração da linha: 3/4 | 2/3 | 1/2 | 1/3 | 1/4; vazio = inteira (lib/tema.ts)
+
+  // Layout por tela, como na Pagina: imagemTamanho, iconeTamanho, iconeEspaco e largura
+  // são do celular; tablet e computador guardam só o que mudou, em JSON.
+  ajustesTablet     String?
+  ajustesComputador String?
 
   ordem Int     @default(0)
   ativo Boolean @default(true)

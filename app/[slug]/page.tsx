@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { fracaoDaLargura, variaveisDoTema, urlDaFonte } from "@/lib/tema";
-import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
-import { AJUSTE_ICONES, REDE_POR_ID } from "@/lib/redes";
+import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
+import { variaveisDeAjuste } from "@/lib/ajustes";
+import { REDE_POR_ID } from "@/lib/redes";
 import DesenhoRede from "./DesenhoRede";
 import estilos from "./pagina.module.css";
 
@@ -81,14 +81,19 @@ export default async function PaginaPublica({ params }: Props) {
   if (!pagina) notFound();
 
   const fonte = urlDaFonte(pagina.fonte);
-  // tamanhos escolhidos na barra do painel; data-pl-tamanho é por onde a prévia ajusta ao vivo
-  const avatar = pagina.avatarTamanho ?? TAMANHO_NA_PAGINA.avatar.padrao;
-  const cabecalho = pagina.cabecalhoTamanho ?? TAMANHO_NA_PAGINA.cabecalho.padrao;
+  // Tamanhos, espaços e larguras por tela (lib/ajustes.ts) vão como variáveis de CSS na
+  // página e em cada bloco; o pagina.module.css escolhe a da tela. data-pl-tela e
+  // data-pl-bloco são por onde as barras do painel mexem na prévia ao vivo.
+  const avatar = pagina.avatarTamanho ?? 104;
 
   return (
     <>
       {fonte && <link rel="stylesheet" href={fonte} />}
-      <main className={estilos.tela} style={variaveisDoTema(pagina)} data-pl-tela>
+      <main
+        className={estilos.tela}
+        style={{ ...variaveisDoTema(pagina), ...variaveisDeAjuste(pagina, "pagina") }}
+        data-pl-tela
+      >
         <div className={estilos.conteudo}>
           {pagina.avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -98,8 +103,6 @@ export default async function PaginaPublica({ params }: Props) {
               alt={pagina.titulo}
               width={avatar}
               height={avatar}
-              style={{ width: avatar, height: avatar }}
-              data-pl-tamanho="avatar"
             />
           )}
           {pagina.cabecalhoImagemUrl ? (
@@ -109,8 +112,6 @@ export default async function PaginaPublica({ params }: Props) {
               <img
                 src={pagina.cabecalhoImagemUrl}
                 alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")}
-                style={{ width: `${cabecalho}%` }}
-                data-pl-tamanho="cabecalho"
               />
             </h1>
           ) : (
@@ -122,8 +123,8 @@ export default async function PaginaPublica({ params }: Props) {
 
           <div className={estilos.blocos}>
             {pagina.cards.map((card) => {
-              // Cada bloco vai numa célula que ocupa a fração escolhida da linha (--fracao);
-              // data-pl-bloco é por onde a escolha de largura no painel mexe na prévia ao vivo.
+              // Cada bloco vai numa célula com os ajustes dele por tela (largura na linha,
+              // tamanho da imagem, dos ícones…), lidos pelo pagina.module.css.
               const conteudo = (() => {
                 const destino = `/ir/${card.id}`;
                 const imagem = card.imagemUrl ? (
@@ -132,8 +133,6 @@ export default async function PaginaPublica({ params }: Props) {
                     className={estilos.imagem}
                     src={card.imagemUrl}
                     alt={card.titulo ?? ""}
-                    style={{ width: `${card.imagemTamanho ?? TAMANHO_NA_PAGINA.card.padrao}%` }}
-                    data-pl-tamanho={`card-${card.id}`}
                   />
                 ) : null;
                 // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
@@ -178,14 +177,7 @@ export default async function PaginaPublica({ params }: Props) {
                           key={card.id}
                           className={estilos.redes}
                           aria-label={card.titulo ?? "Redes sociais"}
-                          data-pl-redes={card.id}
-                          style={
-                            {
-                              "--icone": `${card.iconeTamanho ?? AJUSTE_ICONES.tamanho.padrao}px`,
-                              "--espaco": `${card.iconeEspaco ?? AJUSTE_ICONES.espaco.padrao}px`,
-                              color: card.corTexto ?? undefined,
-                            } as React.CSSProperties
-                          }
+                          style={card.corTexto ? { color: card.corTexto } : undefined}
                         >
                           {card.icones.map((icone) => {
                             const rede = REDE_POR_ID[icone.rede];
@@ -225,14 +217,8 @@ export default async function PaginaPublica({ params }: Props) {
                 }
               })();
               if (!conteudo) return null;
-              const fracao = fracaoDaLargura(card.largura);
               return (
-                <div
-                  key={card.id}
-                  className={estilos.celula}
-                  data-pl-bloco={card.id}
-                  style={fracao === 1 ? undefined : ({ "--fracao": fracao } as React.CSSProperties)}
-                >
+                <div key={card.id} className={estilos.celula} data-pl-bloco={card.id} style={variaveisDeAjuste(card, "card")}>
                   {conteudo}
                 </div>
               );

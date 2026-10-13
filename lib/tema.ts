@@ -10,16 +10,12 @@ type TemaPagina = {
   fundoTipo: string;
   fundoCorFim: string | null;
   fundoImagemUrl: string | null;
-  espacoTopo?: number | null;
-  espacoBlocos?: number | null;
 };
 
 /**
  * Barras de espaço da página, em px: acima do primeiro elemento (empurra tudo
- * para baixo) e entre um bloco e outro. Vazio no banco = padrão, e aí o topo
- * segue o de antes: 36 no celular e 48 no computador (pagina.module.css). Com
- * valor escolhido, vale nos dois. O padrão da barra é o do celular, que é o modo
- * da prévia que abre primeiro.
+ * para baixo) e entre um bloco e outro. O padrão do topo muda com a tela (36 no
+ * celular, 48 no tablet e no computador): ver AJUSTES em lib/ajustes.ts.
  */
 export const AJUSTE_PAGINA = {
   topo: { min: 0, max: 320, passo: 4, padrao: 36, unidade: "px" },
@@ -53,9 +49,6 @@ export function variaveisDoTema(p: TemaPagina): React.CSSProperties {
     "--borda": p.estiloBotao === "contorno" ? `2px solid ${p.corDestaque}` : "none",
     "--preenchimento": p.estiloBotao === "contorno" ? "transparent" : p.corDestaque,
     "--cor-do-texto-do-botao": p.estiloBotao === "contorno" ? p.corDestaque : p.corTextoBotao,
-    // só quando escolhido: vazio deixa valer o padrão de cada tela, no CSS
-    ...(p.espacoTopo != null && { "--espaco-topo": `${p.espacoTopo}px` }),
-    ...(p.espacoBlocos != null && { "--espaco-blocos": `${p.espacoBlocos}px` }),
     fontFamily: `"${p.fonte}", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`,
   } as React.CSSProperties;
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { exigirAdmin } from "@/lib/acesso";
 import { FONTES } from "@/lib/tema";
+import { valoresPorTela } from "@/lib/ajustes";
 import { excluirCliente, salvarPagina } from "../acoes";
 import FormCadastro from "./FormCadastro";
 import CampoImagem from "./CampoImagem";
@@ -10,6 +11,7 @@ import CamposTopo from "./CamposTopo";
 import CampoCor from "./CampoCor";
 import EditorCards from "./EditorCards";
 import Previa from "./Previa";
+import { AvisoTela, ProvedorTela } from "./Tela";
 import { BotaoSalvar } from "./Salvar";
 import estilos from "../gestao.module.css";
 
@@ -66,8 +68,12 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
         </div>
       </div>
 
+      {/* A tela escolhida na prévia (celular, tablet, computador) vale para todas as barras
+          e larguras do editor: cada tela tem os seus tamanhos e espaços (lib/ajustes.ts). */}
+      <ProvedorTela>
       <div className={estilos.editor}>
         <div className={estilos.coluna}>
+          <AvisoTela />
           {/* dados da página */}
           <form action={salvarPagina.bind(null, pagina.id)} className={estilos.bloco}>
             <h2>Página<small>o que aparece no topo</small></h2>
@@ -77,11 +83,13 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                 titulo={pagina.titulo}
                 bio={pagina.bio}
                 avatarUrl={pagina.avatarUrl}
-                avatarTamanho={pagina.avatarTamanho}
                 cabecalhoImagemUrl={pagina.cabecalhoImagemUrl}
-                cabecalhoTamanho={pagina.cabecalhoTamanho}
                 corFundo={pagina.corFundo}
-                espacoTopo={pagina.espacoTopo}
+                ajustes={{
+                  avatar: valoresPorTela(pagina, "avatar"),
+                  cabecalho: valoresPorTela(pagina, "cabecalho"),
+                  topo: valoresPorTela(pagina, "topo"),
+                }}
               />
               {/* marca que este formulário cuida da chave: desmarcada, ela não iria no envio */}
               <input type="hidden" name="publicada" value="" />
@@ -96,7 +104,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           </form>
 
           {/* blocos */}
-          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} espacoBlocos={pagina.espacoBlocos} cards={pagina.cards} />
+          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} blocos={valoresPorTela(pagina, "blocos")} cards={pagina.cards} />
 
           {/* aparência. As listas têm key no valor gravado: depois de salvar, o React 19 reseta
               o formulário, e um <select> volta à opção de quando foi montado. Recriado com o
@@ -201,6 +209,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
 
         <Previa slug={cliente.slug} versao={versaoDaPrevia} />
       </div>
+      </ProvedorTela>
     </main>
   );
 }

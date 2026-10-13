@@ -1,9 +1,10 @@
 "use client";
 
 import { useId, useRef, useState, useTransition } from "react";
-import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
-import { enviarImagem, removerImagem, salvarTamanhoImagem, type AlvoImagem } from "../acoes";
-import BarraAjuste, { naPrevia } from "./BarraAjuste";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_MAXIMO, USO_DO_CAMPO, type UsoImagem } from "@/lib/imagens-limites";
+import type { ChaveAjuste, ValoresTela } from "@/lib/ajustes";
+import { enviarImagem, removerImagem, type AlvoImagem } from "../acoes";
+import ControleAjuste from "./ControleAjuste";
 import estilos from "../gestao.module.css";
 
 /**
@@ -39,9 +40,8 @@ async function reduzirNoNavegador(arquivo: File, uso: UsoImagem): Promise<File> 
  * Salvar do formulário em volta. O input de arquivo não tem name, então não
  * entra no envio desse formulário.
  *
- * Com `tamanho` (foto, cabeçalho, bloco), mostra a barra de tamanho: arrastar
- * muda a prévia na hora, direto no iframe (mesma origem), e o valor é gravado
- * meio segundo depois que a barra para.
+ * Com `ajuste` (foto, cabeçalho, bloco), mostra a barra de tamanho da tela que
+ * está sendo editada (ver ControleAjuste).
  */
 export default function CampoImagem({
   alvo,
@@ -50,7 +50,7 @@ export default function CampoImagem({
   dica,
   redonda = false,
   fundo,
-  tamanho: tamanhoInicial,
+  ajuste,
   aoMudar,
 }: {
   alvo: AlvoImagem;
@@ -60,8 +60,8 @@ export default function CampoImagem({
   redonda?: boolean;
   /** cor de fundo da página do cliente, atrás da miniatura: logo branco some no xadrez claro */
   fundo?: string;
-  /** tamanho gravado (null = padrão); sem a prop, não há barra */
-  tamanho?: number | null;
+  /** barra de tamanho, por tela (foto, cabeçalho, bloco); sem a prop, não há barra */
+  ajuste?: { chave: ChaveAjuste; valores: ValoresTela };
   aoMudar?: (url: string | null) => void;
 }) {
   const id = useId();
@@ -71,21 +71,6 @@ export default function CampoImagem({
   const [ocupado, iniciar] = useTransition();
 
   const uso: UsoImagem = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
-  const exibicao = tamanhoInicial !== undefined && uso !== "fundo" ? TAMANHO_NA_PAGINA[uso] : null;
-
-  /** Aplica o tamanho no elemento marcado da prévia, sem recarregar. */
-  function aplicarNaPrevia(valor: number) {
-    if (!exibicao) return;
-    const elemento = naPrevia(`[data-pl-tamanho="${alvo.tipo === "card" ? `card-${alvo.id}` : uso}"]`);
-    if (!elemento) return;
-    elemento.style.width = `${valor}${exibicao.unidade}`;
-    if (exibicao.unidade === "px") elemento.style.height = `${valor}px`;
-  }
-
-  async function gravarTamanho(valor: number) {
-    const resposta = await salvarTamanhoImagem(alvo, valor);
-    setErro(resposta.erro ?? null);
-  }
 
   function concluir(resposta: { url?: string | null; erro?: string }) {
     if (resposta.erro) {
@@ -164,8 +149,14 @@ export default function CampoImagem({
           )}
         </div>
       </div>
-      {url && exibicao && (
-        <BarraAjuste rotulo="Tamanho" nomeAcessivel={`Tamanho de: ${rotulo}`} valor={tamanhoInicial ?? null} faixa={exibicao} aoMover={aplicarNaPrevia} aoGravar={gravarTamanho} />
+      {url && ajuste && (
+        <ControleAjuste
+          alvo={{ tipo: alvo.tipo, id: alvo.id }}
+          chave={ajuste.chave}
+          valores={ajuste.valores}
+          rotulo="Tamanho"
+          nomeAcessivel={`Tamanho de: ${rotulo}`}
+        />
       )}
       {erro && <span className={estilos.erroCampo} role="alert">{erro}</span>}
       {dica && <span className={estilos.dica}>{dica}</span>}

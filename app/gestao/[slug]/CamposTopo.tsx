@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AJUSTE_PAGINA } from "@/lib/tema";
-import { salvarAjustePagina } from "../acoes";
-import BarraAjuste, { naPrevia } from "./BarraAjuste";
+import type { ValoresTela } from "@/lib/ajustes";
 import CampoImagem from "./CampoImagem";
+import ControleAjuste from "./ControleAjuste";
 import estilos from "../gestao.module.css";
 
 /**
@@ -17,24 +16,20 @@ export default function CamposTopo({
   titulo,
   bio,
   avatarUrl,
-  avatarTamanho,
   cabecalhoImagemUrl,
-  cabecalhoTamanho,
   corFundo,
-  espacoTopo,
+  ajustes,
 }: {
   paginaId: string;
   titulo: string;
   bio: string | null;
   avatarUrl: string | null;
-  avatarTamanho: number | null;
   cabecalhoImagemUrl: string | null;
-  cabecalhoTamanho: number | null;
   corFundo: string;
-  espacoTopo: number | null;
+  /** valores por tela dos ajustes do topo */
+  ajustes: { avatar: ValoresTela; cabecalho: ValoresTela; topo: ValoresTela };
 }) {
   const [comImagem, setComImagem] = useState(!!cabecalhoImagemUrl);
-  const [erroEspaco, setErroEspaco] = useState<string | null>(null);
 
   return (
     <>
@@ -45,7 +40,7 @@ export default function CamposTopo({
         dica="Aparece redonda no topo."
         redonda
         fundo={corFundo}
-        tamanho={avatarTamanho}
+        ajuste={{ chave: "avatar", valores: ajustes.avatar }}
       />
       <div className={estilos.campo}>
         <label htmlFor="titulo">Título</label>
@@ -65,19 +60,12 @@ export default function CamposTopo({
             : "Para quando a arte da marca já traz o nome e a frase juntos. Ela substitui os dois na página."
         }
         fundo={corFundo}
-        tamanho={cabecalhoTamanho}
+        ajuste={{ chave: "cabecalho", valores: ajustes.cabecalho }}
         aoMudar={(url) => setComImagem(!!url)}
       />
       <div className={estilos.campo}>
-        <BarraAjuste
-          rotulo="Espaço acima do topo"
-          valor={espacoTopo}
-          faixa={AJUSTE_PAGINA.topo}
-          aoMover={(v) => naPrevia("[data-pl-tela]")?.style.setProperty("--espaco-topo", `${v}px`)}
-          aoGravar={async (v) => setErroEspaco((await salvarAjustePagina(paginaId, "topo", v)).erro ?? null)}
-        />
+        <ControleAjuste alvo={{ tipo: "pagina", id: paginaId }} chave="topo" valores={ajustes.topo} rotulo="Espaço acima do topo" />
         <span className={estilos.dica}>Empurra a foto (ou o que vier primeiro) e o resto da página para baixo. Grava sozinho.</span>
-        {erroEspaco && <span className={estilos.erroCampo} role="alert">{erroEspaco}</span>}
       </div>
     </>
   );

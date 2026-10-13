@@ -6,10 +6,10 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
-import { AJUSTE_ICONES, REDE_POR_ID, type AjusteIcones } from "@/lib/redes";
-import { AJUSTE_PAGINA, LARGURAS, type AjustePagina } from "@/lib/tema";
+import { REDE_POR_ID } from "@/lib/redes";
+import { AJUSTES, TELAS, lerJson, normalizarAjuste, type ChaveAjuste, type Tela, type ValorAjuste } from "@/lib/ajustes";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
-import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
+import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -339,12 +339,24 @@ export type EstadoImagem = { url?: string | null; erro?: string };
  * Onde a imagem mora, de qual cliente é e qual endereço tem agora. O alvo vem
  * do navegador, então só passa campo que está na lista acima.
  */
+/** O JSON de ajustes de uma tela sem uma chave (null se ficar vazio). */
+function semAjuste(texto: string | null, chave: ChaveAjuste) {
+  const ajustes = lerJson(texto);
+  delete ajustes[chave];
+  return Object.keys(ajustes).length ? JSON.stringify(ajustes) : null;
+}
+
 async function localizarAlvo(alvo: AlvoImagem) {
   if (alvo?.tipo === "card") {
     const id = String(alvo.id);
     const card = await prisma.card.findUnique({
       where: { id },
-      select: { imagemUrl: true, pagina: { select: { clienteId: true, cliente: { select: { slug: true } } } } },
+      select: {
+        imagemUrl: true,
+        ajustesTablet: true,
+        ajustesComputador: true,
+        pagina: { select: { clienteId: true, cliente: { select: { slug: true } } } },
+      },
     });
     if (!card) return null;
     return {
@@ -352,9 +364,19 @@ async function localizarAlvo(alvo: AlvoImagem) {
       atual: card.imagemUrl,
       clienteId: card.pagina.clienteId,
       slug: card.pagina.cliente.slug,
-      // sem imagem, o tamanho também volta ao padrão: a próxima imagem não herda o ajuste
+      // sem imagem, o tamanho volta ao padrão nas três telas: a próxima imagem não herda o ajuste
       gravar: (url: string | null) =>
-        prisma.card.update({ where: { id }, data: url ? { imagemUrl: url } : { imagemUrl: null, imagemTamanho: null } }),
+        prisma.card.update({
+          where: { id },
+          data: url
+            ? { imagemUrl: url }
+            : {
+                imagemUrl: null,
+                imagemTamanho: null,
+                ajustesTablet: semAjuste(card.ajustesTablet, "imagem"),
+                ajustesComputador: semAjuste(card.ajustesComputador, "imagem"),
+              },
+        }),
     };
   }
 
@@ -367,11 +389,14 @@ async function localizarAlvo(alvo: AlvoImagem) {
         avatarUrl: true,
         cabecalhoImagemUrl: true,
         fundoImagemUrl: true,
+        ajustesTablet: true,
+        ajustesComputador: true,
         clienteId: true,
         cliente: { select: { slug: true } },
       },
     });
     if (!pagina) return null;
+    const chaveDoTamanho: ChaveAjuste | null = campo === "avatarUrl" ? "avatar" : campo === "cabecalhoImagemUrl" ? "cabecalho" : null;
     return {
       uso: USO_DO_CAMPO[campo],
       atual: pagina[campo],
@@ -380,8 +405,12 @@ async function localizarAlvo(alvo: AlvoImagem) {
       gravar: (url: string | null) => {
         const data: Prisma.PaginaUpdateInput = {};
         data[campo] = url;
-        if (!url && campo === "avatarUrl") data.avatarTamanho = null;
-        if (!url && campo === "cabecalhoImagemUrl") data.cabecalhoTamanho = null;
+        if (!url && chaveDoTamanho) {
+          if (chaveDoTamanho === "avatar") data.avatarTamanho = null;
+          else data.cabecalhoTamanho = null;
+          data.ajustesTablet = semAjuste(pagina.ajustesTablet, chaveDoTamanho);
+          data.ajustesComputador = semAjuste(pagina.ajustesComputador, chaveDoTamanho);
+        }
         return prisma.pagina.update({ where: { id }, data });
       },
     };
@@ -434,97 +463,56 @@ export async function removerImagem(alvo: AlvoImagem): Promise<EstadoImagem> {
   return { url: null };
 }
 
-/** Grava o tamanho escolhido na barra. Valor fora do intervalo encosta no limite. */
-export async function salvarTamanhoImagem(alvo: AlvoImagem, valor: number): Promise<EstadoImagem> {
+/**
+ * Grava um ajuste de layout (tamanho, espaço, largura) numa tela. No celular vai para
+ * a coluna de sempre, e o padrão do celular fica gravado como vazio. No tablet e no
+ * computador vai para o JSON da tela, e null apaga: a tela volta a seguir a menor.
+ * Valor fora do intervalo encosta no limite (lib/ajustes.ts).
+ */
+export async function salvarAjuste(
+  alvo: { tipo: "pagina" | "card"; id: string },
+  chave: ChaveAjuste,
+  tela: Tela,
+  valor: ValorAjuste | null,
+): Promise<EstadoImagem> {
   await exigirAdmin();
-  const uso =
-    alvo?.tipo === "card" ? "card" : alvo?.tipo === "pagina" && Object.hasOwn(USO_DO_CAMPO, alvo.campo) ? USO_DO_CAMPO[alvo.campo] : null;
-  if (!uso || uso === "fundo" || !Number.isFinite(valor)) return { erro: "Esse tamanho não pode ser gravado." };
-
-  const { min, max, padrao } = TAMANHO_NA_PAGINA[uso];
-  const escolhido = Math.round(Math.min(max, Math.max(min, valor)));
-  // o padrão fica gravado como vazio: se um dia o padrão mudar, quem não mexeu acompanha
-  const tamanho = escolhido === padrao ? null : escolhido;
+  const def = Object.hasOwn(AJUSTES, chave) ? AJUSTES[chave] : null;
+  if (!def || def.alvo !== alvo?.tipo || !TELAS.some((t) => t.id === tela)) return { erro: "Esse ajuste não pode ser gravado." };
+  const normal = normalizarAjuste(chave, valor);
+  if (!normal.ok) return { erro: "Esse valor não serve para esse ajuste." };
+  const gravar = tela === "celular" && normal.valor === def.padrao.celular ? null : normal.valor;
   const id = String(alvo.id);
 
   try {
-    const slug =
-      uso === "card"
-        ? (await prisma.card.update({
+    const atual =
+      alvo.tipo === "pagina"
+        ? await prisma.pagina.findUnique({
             where: { id },
-            data: { imagemTamanho: tamanho },
-            select: { pagina: { select: { cliente: { select: { slug: true } } } } },
-          })).pagina.cliente.slug
-        : (await prisma.pagina.update({
+            select: { ajustesTablet: true, ajustesComputador: true, cliente: { select: { slug: true } } },
+          })
+        : await prisma.card.findUnique({
             where: { id },
-            data: uso === "avatar" ? { avatarTamanho: tamanho } : { cabecalhoTamanho: tamanho },
-            select: { cliente: { select: { slug: true } } },
-          })).cliente.slug;
-    revalidar(slug);
-    return {};
-  } catch {
-    return { erro: "Não consegui gravar o tamanho. Recarregue a página." };
-  }
-}
+            select: { ajustesTablet: true, ajustesComputador: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+          });
+    if (!atual) return { erro: "Não encontrei o que ajustar. Recarregue a página." };
 
-/** Barras do bloco de redes: tamanho dos ícones ou espaço entre eles. O padrão fica gravado como vazio. */
-export async function salvarAjusteIcones(cardId: string, ajuste: AjusteIcones, valor: number): Promise<EstadoImagem> {
-  await exigirAdmin();
-  if (!Object.hasOwn(AJUSTE_ICONES, ajuste) || !Number.isFinite(valor)) return { erro: "Esse ajuste não pode ser gravado." };
+    const data: Record<string, ValorAjuste | null> = {};
+    if (tela === "celular") {
+      data[def.coluna] = gravar;
+    } else {
+      const coluna = tela === "tablet" ? "ajustesTablet" : "ajustesComputador";
+      const ajustes = lerJson(atual[coluna]);
+      if (gravar === null) delete ajustes[chave];
+      else ajustes[chave] = gravar;
+      data[coluna] = Object.keys(ajustes).length ? JSON.stringify(ajustes) : null;
+    }
 
-  const { min, max, padrao } = AJUSTE_ICONES[ajuste];
-  const escolhido = Math.round(Math.min(max, Math.max(min, valor)));
-  const gravar = escolhido === padrao ? null : escolhido;
+    if (alvo.tipo === "pagina") await prisma.pagina.update({ where: { id }, data: data as Prisma.PaginaUpdateInput });
+    else await prisma.card.update({ where: { id }, data: data as Prisma.CardUpdateInput });
 
-  try {
-    const card = await prisma.card.update({
-      where: { id: String(cardId) },
-      data: ajuste === "tamanho" ? { iconeTamanho: gravar } : { iconeEspaco: gravar },
-      select: { pagina: { select: { cliente: { select: { slug: true } } } } },
-    });
-    revalidar(card.pagina.cliente.slug);
+    revalidar("cliente" in atual ? atual.cliente.slug : atual.pagina.cliente.slug);
     return {};
   } catch {
     return { erro: "Não consegui gravar o ajuste. Recarregue a página." };
-  }
-}
-
-/** Barras de espaço da página: acima do topo ou entre os blocos. O padrão fica gravado como vazio. */
-export async function salvarAjustePagina(paginaId: string, ajuste: AjustePagina, valor: number): Promise<EstadoImagem> {
-  await exigirAdmin();
-  if (!Object.hasOwn(AJUSTE_PAGINA, ajuste) || !Number.isFinite(valor)) return { erro: "Esse ajuste não pode ser gravado." };
-
-  const { min, max, padrao } = AJUSTE_PAGINA[ajuste];
-  const escolhido = Math.round(Math.min(max, Math.max(min, valor)));
-  const gravar = escolhido === padrao ? null : escolhido;
-
-  try {
-    const pagina = await prisma.pagina.update({
-      where: { id: String(paginaId) },
-      data: ajuste === "topo" ? { espacoTopo: gravar } : { espacoBlocos: gravar },
-      select: { cliente: { select: { slug: true } } },
-    });
-    revalidar(pagina.cliente.slug);
-    return {};
-  } catch {
-    return { erro: "Não consegui gravar o ajuste. Recarregue a página." };
-  }
-}
-
-/** Largura do bloco na linha (blocos lado a lado). Grava na hora; "inteira" fica como vazio. */
-export async function salvarLarguraCard(cardId: string, largura: string): Promise<EstadoImagem> {
-  await exigirAdmin();
-  if (!LARGURAS.some((l) => l.valor === largura)) return { erro: "Essa largura não existe." };
-
-  try {
-    const card = await prisma.card.update({
-      where: { id: String(cardId) },
-      data: { largura: largura === "inteira" ? null : largura },
-      select: { pagina: { select: { cliente: { select: { slug: true } } } } },
-    });
-    revalidar(card.pagina.cliente.slug);
-    return {};
-  } catch {
-    return { erro: "Não consegui gravar a largura. Recarregue a página." };
   }
 }

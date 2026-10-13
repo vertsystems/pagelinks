@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AJUSTE_ICONES, REDES, REDE_POR_ID, redesNoTexto, type AjusteIcones } from "@/lib/redes";
-import { salvarAjusteIcones } from "../acoes";
-import BarraAjuste, { naPrevia } from "./BarraAjuste";
+import { REDES, REDE_POR_ID, redesNoTexto } from "@/lib/redes";
+import type { ValoresTela } from "@/lib/ajustes";
+import ControleAjuste from "./ControleAjuste";
 import DesenhoRede from "../../[slug]/DesenhoRede";
 import estilos from "../gestao.module.css";
 
@@ -22,27 +22,16 @@ export default function EditorIcones({
   cardId,
   icones,
   titulo,
-  iconeTamanho,
-  iconeEspaco,
+  valoresIcone,
+  valoresVao,
 }: {
   cardId: string;
   icones: Icone[];
   titulo: string | null;
-  iconeTamanho: number | null;
-  iconeEspaco: number | null;
+  /** tamanho dos ícones e espaço entre eles, por tela */
+  valoresIcone: ValoresTela;
+  valoresVao: ValoresTela;
 }) {
-  const [erroAjuste, setErroAjuste] = useState<string | null>(null);
-
-  /** A fileira da prévia lê --icone e --espaco: muda na hora, sem recarregar. */
-  function aplicarNaPrevia(ajuste: AjusteIcones, valor: number) {
-    naPrevia(`[data-pl-redes="${cardId}"]`)?.style.setProperty(ajuste === "tamanho" ? "--icone" : "--espaco", `${valor}px`);
-  }
-
-  async function gravarAjuste(ajuste: AjusteIcones, valor: number) {
-    const resposta = await salvarAjusteIcones(cardId, ajuste, valor);
-    setErroAjuste(resposta.erro ?? null);
-  }
-
   const [linhas, setLinhas] = useState<Linha[]>(() =>
     icones.length
       ? icones.map((i) => ({ ...i, chave: i.id }))
@@ -139,22 +128,9 @@ export default function EditorIcones({
         WhatsApp aceita só o número com DDD. E-mail e telefone abrem o app certo. A ordem aqui é a ordem na página.
       </span>
 
-      <BarraAjuste
-        rotulo="Tamanho dos ícones"
-        valor={iconeTamanho}
-        faixa={AJUSTE_ICONES.tamanho}
-        aoMover={(v) => aplicarNaPrevia("tamanho", v)}
-        aoGravar={(v) => gravarAjuste("tamanho", v)}
-      />
-      <BarraAjuste
-        rotulo="Espaço entre eles"
-        valor={iconeEspaco}
-        faixa={AJUSTE_ICONES.espaco}
-        aoMover={(v) => aplicarNaPrevia("espaco", v)}
-        aoGravar={(v) => gravarAjuste("espaco", v)}
-      />
+      <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="icone" valores={valoresIcone} rotulo="Tamanho dos ícones" />
+      <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="vao" valores={valoresVao} rotulo="Espaço entre eles" />
       <span className={estilos.dica}>As barras gravam sozinhas; os ícones e os links, no Salvar bloco.</span>
-      {erroAjuste && <span className={estilos.erroCampo} role="alert">{erroAjuste}</span>}
     </div>
   );
 }

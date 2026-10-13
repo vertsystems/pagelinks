@@ -194,6 +194,38 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Layout por tela: celular, tablet e computador — 14/10/2026
+
+Tamanhos, espaços e larguras são escolhidos **por tela**; conteúdo (texto, link, imagem,
+cor, fonte) é o mesmo nas três. A tela escolhida na prévia ("Celular | Tablet |
+Computador") é a que o editor inteiro edita, e um aviso no topo do editor diz quando não é
+o celular. Tudo está em `lib/ajustes.ts`, que é a fonte da verdade.
+
+- **Ajustes por tela:** foto (`avatar`), cabeçalho, espaço acima do topo (`topo`), espaço
+  entre os blocos (`blocos`), imagem do bloco (`imagem`), tamanho dos ícones (`icone`),
+  espaço entre ícones (`vao`) e largura do bloco na linha (`largura`)
+- **Onde mora:** o celular é a base e fica nas colunas de sempre (`avatarTamanho`,
+  `espacoTopo`, `largura`…). Tablet e computador guardam só o que mudou, em JSON nas colunas
+  `ajustesTablet` e `ajustesComputador` (Pagina e Card)
+- **Herança:** tela sem valor próprio segue a tela menor (computador → tablet → celular);
+  sem nenhum, vale o padrão da tela. Foi escolhido assim para as páginas já ajustadas no
+  celular não mudarem no computador até alguém mexer lá. Cada barra mostra "segue o
+  celular" quando herda e "seguir o celular" para apagar o valor próprio
+- **Na página:** cada ajuste vira até três variáveis no elemento (`--topo-m`, `--topo-t`,
+  `--topo-d`, só as gravadas). O `pagina.module.css` escolhe a da tela pela largura (até
+  767 px celular, de 768 a 1023 tablet, de 1024 em diante computador) e faz a herança com
+  `var()` encadeado
+- **Uma ação só grava tudo:** `salvarAjuste(alvo, chave, tela, valor)`; null apaga. Remover
+  uma imagem zera o tamanho dela nas três telas
+- **No editor:** o que foi gravado nesta sessão vale por cima do que veio do servidor
+  (trocar de tela logo depois de mexer mostrava o valor antigo), e a barra que sai da tela
+  com gravação pendente grava na hora (trocar de tela em menos de meio segundo perdia a
+  mudança)
+- Testado de ponta a ponta na demo e na página pública aberta a 390, 820 e 1280 px: cada
+  tela com os seus valores, tablet herdando do celular e computador do tablet
+- O padrão do espaço do topo passou a mudar em 768 px (era 480): de 481 a 767 px, sem
+  ajuste, o topo agora é 36 px, e não 48
+
 ## Blocos lado a lado — 14/10/2026
 
 Cada bloco tem **largura na linha** (`Card.largura`: 3/4, 2/3, 1/2, 1/3, 1/4; vazio = inteira),

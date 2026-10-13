@@ -1,8 +1,56 @@
+/* ===== Layout por tela =====
+   Celular até 767 px, tablet de 768 a 1023, computador de 1024 em diante. Cada ajuste
+   do painel chega como até três variáveis no elemento (--x-m, --x-t, --x-d: só as
+   gravadas, ver lib/ajustes.ts). Aqui cada tela escolhe a sua; se faltar, segue a tela
+   menor; sem nenhuma, vale o padrão da tela. O resto do arquivo só lê --topo, --blocos,
+   --avatar, --cabecalho, --fracao, --imagem, --icone e --vao. */
+.tela {
+  --topo: var(--topo-m, 36px);
+  --blocos: var(--blocos-m, 14px);
+  --avatar: var(--avatar-m, 104px);
+  --cabecalho: var(--cabecalho-m, 100%);
+}
+.celula {
+  --fracao: var(--largura-m, 1);
+  --imagem: var(--imagem-m, 100%);
+  --icone: var(--icone-m, 28px);
+  --vao: var(--vao-m, 24px);
+}
+@media (min-width: 768px) {
+  .tela {
+    --topo: var(--topo-t, var(--topo-m, 48px));
+    --blocos: var(--blocos-t, var(--blocos-m, 14px));
+    --avatar: var(--avatar-t, var(--avatar-m, 104px));
+    --cabecalho: var(--cabecalho-t, var(--cabecalho-m, 100%));
+  }
+  .celula {
+    --fracao: var(--largura-t, var(--largura-m, 1));
+    --imagem: var(--imagem-t, var(--imagem-m, 100%));
+    --icone: var(--icone-t, var(--icone-m, 28px));
+    --vao: var(--vao-t, var(--vao-m, 24px));
+  }
+}
+@media (min-width: 1024px) {
+  .tela {
+    --topo: var(--topo-d, var(--topo-t, var(--topo-m, 48px)));
+    --blocos: var(--blocos-d, var(--blocos-t, var(--blocos-m, 14px)));
+    --avatar: var(--avatar-d, var(--avatar-t, var(--avatar-m, 104px)));
+    --cabecalho: var(--cabecalho-d, var(--cabecalho-t, var(--cabecalho-m, 100%)));
+  }
+  .celula {
+    --fracao: var(--largura-d, var(--largura-t, var(--largura-m, 1)));
+    --imagem: var(--imagem-d, var(--imagem-t, var(--imagem-m, 100%)));
+    --icone: var(--icone-d, var(--icone-t, var(--icone-m, 28px)));
+    --vao: var(--vao-d, var(--vao-t, var(--vao-m, 24px)));
+  }
+}
+
 .tela {
   min-height: 100dvh;
   background: var(--fundo-camada);
   color: var(--texto);
-  padding: var(--espaco-topo, 48px) 20px 72px;
+  padding: 48px 20px 72px;
+  padding-top: var(--topo);
   display: flex;
   justify-content: center;
 }
@@ -16,8 +64,8 @@
 }
 
 .avatar {
-  width: 104px;
-  height: 104px;
+  width: var(--avatar);
+  height: var(--avatar);
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--destaque);
@@ -41,22 +89,19 @@
   max-width: 46ch;
 }
 
-.blocos { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--espaco-blocos, 14px); }
+.blocos { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--blocos); }
 
-/* Cada bloco numa célula que ocupa uma fração da linha (--fracao, do painel; 1 = inteira).
+/* Cada bloco numa célula que ocupa uma fração da linha (--fracao, da tela; 1 = inteira).
    largura = fração × 100% − (1 − fração) × espaço: frações que somam 1 fecham a linha
    exata, já descontado o espaço entre elas. Na mesma linha, as células ficam da mesma
    altura, e o botão ocupa a altura toda; imagem e texto ficam centralizados. */
 .celula {
-  --fracao: 1;
-  flex: 0 0 calc(var(--fracao) * 100% - (1 - var(--fracao)) * var(--espaco-blocos, 14px));
+  flex: 0 0 calc(var(--fracao) * 100% - (1 - var(--fracao)) * var(--blocos));
   min-width: 0;
   display: flex; flex-direction: column; justify-content: center;
 }
-.celula > .botao { flex: 1; }
-/* bloco que não ocupa a linha toda: botão com menos margem interna, para o texto caber.
-   O seletor olha o atributo style porque é ali que a fração entra, inclusive ao vivo na prévia. */
-.celula[style*="--fracao"] > .botao { padding: 14px 12px; }
+/* a margem lateral do botão encolhe com o bloco (22 px inteiro, ~15 px em 1/3), para o texto caber */
+.celula > .botao { flex: 1; padding-inline: calc(10px + 12px * var(--fracao)); }
 
 .botao {
   display: flex; flex-direction: column; justify-content: center;
@@ -98,17 +143,17 @@
 .texto { font-size: 15px; line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
 
 .cabecalho { margin: 0 0 32px; width: 100%; } /* mesmo respiro que a frase deixa antes dos blocos */
-.cabecalho img { width: 100%; height: auto; display: block; margin-inline: auto; }
+.cabecalho img { width: var(--cabecalho); height: auto; display: block; margin-inline: auto; }
 
-/* bloco de redes: ícones lado a lado. --icone e --espaco vêm das barras do painel.
+/* bloco de redes: ícones lado a lado. --icone e --vao vêm das barras do painel, por tela.
    O espaço é entre os desenhos: a área de toque (10 px em volta, 48 px no padrão)
    tem margem negativa do mesmo tamanho, então não empurra os vizinhos. */
 .redes {
   display: flex; flex-wrap: wrap; justify-content: center; color: var(--texto);
-  gap: var(--espaco, 24px); padding: 10px 0;
+  gap: var(--vao); padding: 10px 0;
 }
 .icone {
-  width: var(--icone, 28px); height: var(--icone, 28px); padding: 10px; margin: -10px; box-sizing: content-box;
+  width: var(--icone); height: var(--icone); padding: 10px; margin: -10px; box-sizing: content-box;
   display: grid; place-items: center; border-radius: 50%;
   color: inherit; transition: transform .15s ease, opacity .15s ease;
 }
@@ -116,7 +161,7 @@
 .icone:hover { transform: translateY(-2px); opacity: .85; }
 .icone:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
-.imagem { width: 100%; border-radius: var(--raio); display: block; margin-inline: auto; }
+.imagem { width: var(--imagem); border-radius: var(--raio); display: block; margin-inline: auto; }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }
 
@@ -126,6 +171,6 @@
 .rodape a { color: inherit; }
 
 @media (max-width: 480px) {
-  .tela { padding: var(--espaco-topo, 36px) 16px 56px; }
+  .tela { padding: 36px 16px 56px; padding-top: var(--topo); }
   .titulo { font-size: 24px; }
 }
