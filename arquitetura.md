@@ -112,6 +112,30 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Bloco carrossel — 13/10/2026
+
+Tipo de bloco novo: várias imagens passando sozinhas, a da vez no centro e as vizinhas nas
+pontas, cada uma com link opcional. Pedido do Bruno para páginas como a do Antônio Fernandes,
+que no WordPress tinham um carrossel de antes e depois.
+
+- **Dados:** tabela `ImagemCarrossel` (cardId, imagemUrl, url, ordem), com RLS ligado como as
+  outras. No `Card`, `carrosselTempo` (segundos em cada imagem; vazio = 4) e `slideLargura`
+  (largura de cada imagem em % da coluna, por tela como os outros ajustes: `AJUSTES.slide`,
+  padrão 80% no celular e 60% no tablet e no computador). Regras em `lib/carrossel.ts`
+- **Painel** (`EditorCarrossel.tsx`): tudo grava na hora. Envia várias imagens de uma vez
+  (WebP q90, a de mais de 4 MB é reduzida no navegador), link de cada uma ao sair do campo,
+  ← → para a ordem, ✕ para tirar (com confirmação), tempo e largura. Até 20 imagens. Cada
+  mudança marca o bloco (`atualizadoEm`), para a prévia recarregar e a lista ordenar
+- **Página** (`app/[slug]/Carrossel.tsx`): rolagem horizontal com encaixe, então o dedo arrasta
+  sem biblioteca. Passa sozinho e para com mouse em cima, foco dentro, logo depois de alguém
+  arrastar, fora da tela ou com a aba escondida. Quem pede menos movimento no sistema não vê
+  passar sozinho, e o botão de pausa existe para todos. Da última volta para a primeira
+- **Largura:** as pontas são dois espaçadores (::before e ::after), não padding. A % do
+  flex-basis conta sobre a área sem o padding, e 70% saía 49%, fora do centro
+- **Clique:** imagem com link vai por `/ir/<bloco>?imagem=<id>` e conta para o bloco
+- **Arquivos:** `apagarImagensOrfas` conta também as imagens de carrossel. Excluir bloco ou
+  cliente leva os arquivos do carrossel junto, e duplicar o bloco divide os arquivos
+
 ## Lista de clientes em três modos, e a prévia sem piscar — 13/10/2026
 
 **Modos da lista** (`app/gestao/ListaClientes.tsx`): Lista (a tabela), Grade (cartões com a
@@ -497,7 +521,7 @@ sólido/degradê/imagem), SEO e Open Graph, e cadastro com endereço e anotaçã
 
 **Tipos de card que a página já sabe renderizar:** `link`, `destaque`, `whatsapp`
 (com mensagem pronta), `titulo`, `texto`, `imagem` (clicável ou não), `video`
-(YouTube e Vimeo), `redes`, `separador`.
+(YouTube e Vimeo), `redes`, `separador`, `carrossel` (desde 13/10/2026).
 
 **Por que o clique passa pelo servidor:** o link vai para `/ir/<cardId>`, que registra e
 redireciona. Assim a contagem não depende de JavaScript, de bloqueador de anúncio nem

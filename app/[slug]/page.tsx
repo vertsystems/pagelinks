@@ -4,7 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
+import { TEMPO_PADRAO } from "@/lib/carrossel";
 import DesenhoRede from "./DesenhoRede";
+import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -28,7 +30,7 @@ async function buscarPagina(slug: string) {
               ],
             },
             orderBy: { ordem: "asc" },
-            include: { icones: { orderBy: { ordem: "asc" } } },
+            include: { icones: { orderBy: { ordem: "asc" } }, imagens: { orderBy: { ordem: "asc" } } },
           },
         },
       },
@@ -178,6 +180,22 @@ export default async function PaginaPublica({ params }: Props) {
           <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino} {...aba}>
             {card.titulo}
           </a>
+        );
+
+      case "carrossel":
+        if (!card.imagens.length) return null;
+        return (
+          <Carrossel
+            key={card.id}
+            titulo={card.titulo || "Imagens"}
+            tempo={card.carrosselTempo ?? TEMPO_PADRAO}
+            itens={card.imagens.map((i) => ({
+              id: i.id,
+              imagemUrl: i.imagemUrl,
+              destino: i.url ? `${destino}?imagem=${i.id}` : null,
+              novaAba: !!i.url && "target" in abrirEmNovaAba(i.url),
+            }))}
+          />
         );
 
       case "link":

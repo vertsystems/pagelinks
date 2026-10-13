@@ -10,6 +10,7 @@ import { REDE_POR_ID, corDosIconesValida } from "@/lib/redes";
 import { AJUSTES, TELAS, lerJson, normalizarAjuste, type ChaveAjuste, type Tela, type ValorAjuste } from "@/lib/ajustes";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
+import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -87,7 +88,7 @@ export async function excluirCliente(id: string) {
           fundoImagemUrl: true,
           seoImagemUrl: true,
           faviconUrl: true,
-          cards: { select: { imagemUrl: true } },
+          cards: { select: { imagemUrl: true, imagens: { select: { imagemUrl: true } } } },
         },
       },
     },
@@ -102,7 +103,7 @@ export async function excluirCliente(id: string) {
       p.fundoImagemUrl,
       p.seoImagemUrl,
       p.faviconUrl,
-      ...p.cards.map((card) => card.imagemUrl),
+      ...p.cards.flatMap((card) => [card.imagemUrl, ...card.imagens.map((i) => i.imagemUrl)]),
     ]),
   );
   revalidar(c?.slug);
@@ -172,6 +173,7 @@ export async function criarCard(paginaId: string, tipo: string) {
     video: "",
     redes: "Redes sociais",
     separador: "",
+    carrossel: "Carrossel",
   };
 
   const card = await prisma.card.create({
@@ -274,13 +276,18 @@ export async function excluirCard(cardId: string) {
   await exigirAdmin();
   const c = await prisma.card.findUnique({
     where: { id: cardId },
-    select: { imagemUrl: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+    select: {
+      imagemUrl: true,
+      imagens: { select: { imagemUrl: true } },
+      paginaId: true,
+      pagina: { select: { cliente: { select: { slug: true } } } },
+    },
   });
   await prisma.card.delete({ where: { id: cardId } });
   // o bloco sumiu e não tem mais data para contar: a página guarda a mudança (a lista
   // de clientes ordena pela última mudança da página e dos blocos)
   if (c) await prisma.pagina.update({ where: { id: c.paginaId }, data: { atualizadoEm: new Date() } });
-  await apagarImagensOrfas([c?.imagemUrl]);
+  await apagarImagensOrfas([c?.imagemUrl, ...(c?.imagens.map((i) => i.imagemUrl) ?? [])]);
   revalidar(c?.pagina.cliente.slug);
 }
 
@@ -326,6 +333,9 @@ export async function duplicarCard(cardId: string) {
   const copia = await prisma.card.create({ data: { ...resto, ordem: card.ordem + 1 } });
   const icones = await prisma.icone.findMany({ where: { cardId }, select: { rede: true, url: true, ordem: true } });
   if (icones.length) await prisma.icone.createMany({ data: icones.map((i) => ({ ...i, cardId: copia.id })) });
+  // o carrossel copia os endereços das imagens: os arquivos ficam compartilhados (apagarImagensOrfas confere)
+  const imagens = await prisma.imagemCarrossel.findMany({ where: { cardId }, select: { imagemUrl: true, url: true, ordem: true } });
+  if (imagens.length) await prisma.imagemCarrossel.createMany({ data: imagens.map((i) => ({ ...i, cardId: copia.id })) });
 
   const c = await prisma.pagina.findUnique({
     where: { id: card.paginaId },
@@ -423,37 +433,45 @@ async function localizarAlvo(alvo: AlvoImagem) {
   return null;
 }
 
-/** Recebe WebP ou PNG, converte para WebP q90, guarda no Storage e já grava no banco: não depende de apertar Salvar. */
-export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<EstadoImagem> {
-  await exigirAdmin();
+/** Confere o arquivo enviado (WebP ou PNG, até 4 MB) e devolve em WebP q90 no tamanho do uso. */
+async function arquivoOtimizado(dados: FormData, uso: UsoImagem): Promise<{ otimizada: Buffer } | { erro: string }> {
   const arquivo = dados.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha uma imagem." };
   if (arquivo.type && !FORMATOS_ACEITOS.includes(arquivo.type)) return { erro: "A imagem precisa estar em WebP ou PNG." };
   if (arquivo.size > LIMITE_ENVIO) return { erro: "A imagem passa de 4 MB. Exporte de novo num tamanho menor." };
-
-  const local = await localizarAlvo(alvo);
-  if (!local) return { erro: "Não encontrei onde guardar essa imagem. Recarregue a página." };
-
-  let otimizada: Buffer;
   try {
-    otimizada = await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), local.uso);
+    return { otimizada: await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), uso) };
   } catch {
     return { erro: "Esse arquivo não é um WebP nem um PNG válido." };
   }
+}
 
-  let url: string;
+/** Guarda no Storage; o erro volta em texto para a tela. */
+async function guardarNoStorage(clienteId: string, uso: UsoImagem, otimizada: Buffer): Promise<{ url: string } | { erro: string }> {
   try {
-    url = await guardarImagem(local.clienteId, local.uso, otimizada);
+    return { url: await guardarImagem(clienteId, uso, otimizada) };
   } catch (erro) {
     console.error(erro);
     const desligado = erro instanceof Error && erro.message.startsWith("Envio de imagem desligado");
     return { erro: desligado ? erro.message : "Não consegui guardar a imagem agora. Tente de novo em instantes." };
   }
+}
 
-  await local.gravar(url);
+/** Recebe WebP ou PNG, converte para WebP q90, guarda no Storage e já grava no banco: não depende de apertar Salvar. */
+export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const local = await localizarAlvo(alvo);
+  if (!local) return { erro: "Não encontrei onde guardar essa imagem. Recarregue a página." };
+
+  const arquivo = await arquivoOtimizado(dados, local.uso);
+  if ("erro" in arquivo) return arquivo;
+  const guardada = await guardarNoStorage(local.clienteId, local.uso, arquivo.otimizada);
+  if ("erro" in guardada) return guardada;
+
+  await local.gravar(guardada.url);
   await apagarImagensOrfas([local.atual]);
   revalidar(local.slug);
-  return { url };
+  return { url: guardada.url };
 }
 
 export async function removerImagem(alvo: AlvoImagem): Promise<EstadoImagem> {
@@ -568,4 +586,107 @@ export async function marcarConferido(clienteId: string, conferido: boolean): Pr
   } catch {
     return { erro: "Não consegui gravar a marcação." };
   }
+}
+
+// ---------- carrossel ----------
+
+export type ImagemDoCarrossel = { id: string; imagemUrl: string; url: string | null };
+
+/**
+ * Bloco de carrossel com o cliente dele. Toda mudança nas imagens marca o bloco
+ * (atualizadoEm): é por essa data que a prévia recarrega e a lista de clientes ordena.
+ */
+async function carrossel(cardId: string) {
+  return prisma.card.findFirst({
+    where: { id: String(cardId), tipo: "carrossel" },
+    select: { id: true, pagina: { select: { clienteId: true, cliente: { select: { slug: true } } } } },
+  });
+}
+const marcarBloco = (cardId: string) => prisma.card.update({ where: { id: cardId }, data: { atualizadoEm: new Date() } });
+
+/** Uma imagem nova no fim do carrossel. Grava na hora, como o campo de imagem. */
+export async function adicionarImagemCarrossel(cardId: string, dados: FormData): Promise<{ imagem?: ImagemDoCarrossel; erro?: string }> {
+  await exigirAdmin();
+  const card = await carrossel(cardId);
+  if (!card) return { erro: "Não encontrei esse carrossel. Recarregue a página." };
+  const ultima = await prisma.imagemCarrossel.findFirst({ where: { cardId: card.id }, orderBy: { ordem: "desc" }, select: { ordem: true } });
+  if ((await prisma.imagemCarrossel.count({ where: { cardId: card.id } })) >= MAXIMO_DE_IMAGENS) {
+    return { erro: `O carrossel já tem ${MAXIMO_DE_IMAGENS} imagens, o máximo.` };
+  }
+
+  const arquivo = await arquivoOtimizado(dados, "card");
+  if ("erro" in arquivo) return arquivo;
+  const guardada = await guardarNoStorage(card.pagina.clienteId, "card", arquivo.otimizada);
+  if ("erro" in guardada) return guardada;
+
+  const imagem = await prisma.imagemCarrossel.create({
+    data: { cardId: card.id, imagemUrl: guardada.url, ordem: (ultima?.ordem ?? 0) + 1 },
+    select: { id: true, imagemUrl: true, url: true },
+  });
+  await marcarBloco(card.id);
+  revalidar(card.pagina.cliente.slug);
+  return { imagem };
+}
+
+/** Tira uma imagem do carrossel (e o arquivo, se nada mais usa). */
+export async function removerImagemCarrossel(imagemId: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const imagem = await prisma.imagemCarrossel.findUnique({
+    where: { id: String(imagemId) },
+    select: { imagemUrl: true, cardId: true, card: { select: { pagina: { select: { cliente: { select: { slug: true } } } } } } },
+  });
+  if (!imagem) return { erro: "Essa imagem já não está no carrossel. Recarregue a página." };
+  await prisma.imagemCarrossel.delete({ where: { id: String(imagemId) } });
+  await marcarBloco(imagem.cardId);
+  await apagarImagensOrfas([imagem.imagemUrl]);
+  revalidar(imagem.card.pagina.cliente.slug);
+  return {};
+}
+
+/** Para onde a imagem leva. Vazio = a imagem só aparece, sem link. */
+export async function salvarLinkCarrossel(imagemId: string, link: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const url = String(link ?? "").trim().slice(0, 2000) || null;
+  try {
+    const imagem = await prisma.imagemCarrossel.update({
+      where: { id: String(imagemId) },
+      data: { url },
+      select: { cardId: true, card: { select: { pagina: { select: { cliente: { select: { slug: true } } } } } } },
+    });
+    await marcarBloco(imagem.cardId);
+    revalidar(imagem.card.pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar o link. Recarregue a página." };
+  }
+}
+
+/** A ordem das imagens como ficou no painel: a lista inteira, como a dos blocos (reordenarCards). */
+export async function ordenarImagensCarrossel(cardId: string, ids: string[]): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const card = await carrossel(cardId);
+  if (!card) return { erro: "Não encontrei esse carrossel. Recarregue a página." };
+  const atuais = new Map((await prisma.imagemCarrossel.findMany({ where: { cardId: card.id }, select: { id: true, ordem: true } })).map((i) => [i.id, i.ordem]));
+  const lista = Array.isArray(ids) ? ids.map(String) : [];
+  if (lista.length !== atuais.size || new Set(lista).size !== lista.length || lista.some((id) => !atuais.has(id))) {
+    return { erro: "As imagens mudaram enquanto você mexia. Recarregue a página e tente de novo." };
+  }
+  const mudaram = lista.map((id, i) => ({ id, ordem: i + 1 })).filter((i) => atuais.get(i.id) !== i.ordem);
+  if (mudaram.length) {
+    await prisma.$transaction(mudaram.map((i) => prisma.imagemCarrossel.update({ where: { id: i.id }, data: { ordem: i.ordem } })));
+    await marcarBloco(card.id);
+  }
+  revalidar(card.pagina.cliente.slug);
+  return {};
+}
+
+/** Segundos em cada imagem. O padrão (4) fica gravado como vazio. */
+export async function salvarTempoCarrossel(cardId: string, segundos: number): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (!TEMPOS.includes(segundos as (typeof TEMPOS)[number])) return { erro: "Esse tempo não está na lista." };
+  const card = await carrossel(cardId);
+  if (!card) return { erro: "Não encontrei esse carrossel. Recarregue a página." };
+  await prisma.card.update({ where: { id: card.id }, data: { carrosselTempo: segundos === TEMPO_PADRAO ? null : segundos } });
+  revalidar(card.pagina.cliente.slug);
+  return {};
 }

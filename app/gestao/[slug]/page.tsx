@@ -34,7 +34,15 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
     include: {
       paginas: {
         take: 1,
-        include: { cards: { orderBy: { ordem: "asc" }, include: { icones: { orderBy: { ordem: "asc" } } } } },
+        include: {
+          cards: {
+            orderBy: { ordem: "asc" },
+            include: {
+              icones: { orderBy: { ordem: "asc" } },
+              imagens: { orderBy: { ordem: "asc" }, select: { id: true, imagemUrl: true, url: true } },
+            },
+          },
+        },
       },
     },
   });

@@ -133,9 +133,12 @@ model Card {
 
   cliques Clique[]
   icones  Icone[] // tipo = redes
+  imagens ImagemCarrossel[] // tipo = carrossel
   iconeTamanho Int? // tipo = redes: tamanho do ícone em px; vazio = 28
   iconeEspaco  Int? // tipo = redes: espaço entre os ícones em px; vazio = 24
   iconeCor     String? // tipo = redes: vazio = cor do texto · "marcas" · "#RRGGBB" (lib/redes.ts)
+  carrosselTempo Int? // tipo = carrossel: segundos em cada imagem; vazio = 4
+  slideLargura   Int? // tipo = carrossel: largura de cada imagem em % da coluna; vazio = 80 no celular, 60 no tablet e no computador
 
   @@index([paginaId, ordem])
   @@index([ativo])
@@ -152,6 +155,20 @@ model Icone {
   ordem  Int    @default(0)
 
   cliques Clique[]
+
+  @@index([cardId, ordem])
+}
+
+/// Imagem de um bloco "carrossel": vão passando sozinhas, na ordem de `ordem`, cada
+/// uma com link opcional (vazio = só aparece).
+model ImagemCarrossel {
+  id        String   @id @default(cuid())
+  cardId    String
+  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  imagemUrl String
+  url       String?
+  ordem     Int      @default(0)
+  criadoEm  DateTime @default(now())
 
   @@index([cardId, ordem])
 }

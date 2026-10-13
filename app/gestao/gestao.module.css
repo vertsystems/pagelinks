@@ -207,6 +207,35 @@
 .campo input:disabled, .campo textarea:disabled { opacity: .55; cursor: not-allowed; }
 .erroCampo { font-size: 12.5px; color: var(--g-perigo); }
 
+/* editor do carrossel: as imagens em grade, cada uma com link, ordem e tirar */
+.carrosselGrade { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.carrosselItem { background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.carrosselFoto { position: relative; aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; }
+.carrosselFoto img { width: 100%; height: 100%; object-fit: contain; }
+.carrosselNumero {
+  position: absolute; top: 6px; left: 6px; font-family: var(--g-mono); font-size: 11px; font-weight: 600;
+  background: rgb(0 0 0 / .6); color: #fff; padding: 2px 7px; border-radius: 5px;
+}
+.campo .carrosselItem input[type="url"] {
+  border: 0; border-top: 1px solid var(--g-linha); border-radius: 0; background: var(--g-card);
+  font-size: 12.5px; padding: 8px 10px;
+}
+.campo .carrosselItem input[type="url"]:focus { box-shadow: inset 0 0 0 2px var(--g-foco); }
+.carrosselBotoes { display: flex; align-items: center; gap: 2px; padding: 4px; border-top: 1px solid var(--g-linha); }
+.carrosselGravado { flex: 1; text-align: center; font-size: 11px; color: var(--g-ok); white-space: nowrap; overflow: hidden; }
+.carrosselAdicionar {
+  min-height: 150px; border: 1.5px dashed var(--g-linha-forte); border-radius: 10px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  text-align: center; padding: 12px; color: var(--g-texto); font-size: 13px;
+}
+.carrosselAdicionar small { color: var(--g-suave); font-size: 11.5px; }
+.carrosselAdicionar:hover { border-color: var(--g-destaque); color: var(--g-destaque); }
+.carrosselAdicionar[aria-disabled="true"] { cursor: progress; opacity: .7; }
+.campo:has(> input[type="file"]:focus-visible) .carrosselAdicionar { outline: 2px solid var(--g-foco); outline-offset: 2px; }
+.carrosselOpcoes { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 4px; }
+.carrosselOpcoes label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--g-suave); }
+.campo .carrosselOpcoes select { width: auto; padding: 6px 10px; font-size: 13px; }
+
 /* campo de imagem: miniatura + enviar/trocar/remover */
 .imagemCampo { display: flex; align-items: center; gap: 14px; }
 .imagemMiniatura {

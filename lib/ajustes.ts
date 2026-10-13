@@ -1,3 +1,4 @@
+import { LARGURA_DO_SLIDE } from "@/lib/carrossel";
 import { TAMANHO_NA_PAGINA } from "@/lib/imagens-limites";
 import { AJUSTE_ICONES } from "@/lib/redes";
 import { AJUSTE_PAGINA, LARGURAS, fracaoDaLargura } from "@/lib/tema";
@@ -57,6 +58,8 @@ export const AJUSTES = {
   icone: { alvo: "card", coluna: "iconeTamanho", variavel: "icone", tipo: "numero", faixa: AJUSTE_ICONES.tamanho, padrao: igual(28) },
   vao: { alvo: "card", coluna: "iconeEspaco", variavel: "vao", tipo: "numero", faixa: AJUSTE_ICONES.espaco, padrao: igual(24) },
   largura: { alvo: "card", coluna: "largura", variavel: "largura", tipo: "largura", padrao: { celular: "inteira", tablet: "inteira", computador: "inteira" } },
+  // carrossel: largura de cada imagem; na coluna de 620 px do tablet e do computador, 60% já mostra as vizinhas
+  slide: { alvo: "card", coluna: "slideLargura", variavel: "slide", tipo: "numero", faixa: LARGURA_DO_SLIDE, padrao: { celular: 80, tablet: 60, computador: 60 } },
 } satisfies Record<string, Numerico | Largura>;
 
 export type ChaveAjuste = keyof typeof AJUSTES;

@@ -13,7 +13,7 @@ import estilos from "../gestao.module.css";
  * O servidor regrava em WebP q90 do mesmo jeito. Qualidade 1 não serve: no teste,
  * uma arte de 16 MB reduzida saiu acima de 4 MB.
  */
-async function reduzirNoNavegador(arquivo: File, uso: UsoImagem): Promise<File> {
+export async function reduzirNoNavegador(arquivo: File, uso: UsoImagem): Promise<File> {
   const bitmap = await createImageBitmap(arquivo);
   const { largura, altura } = TAMANHO_MAXIMO[uso];
   const escala = Math.min(1, largura / bitmap.width, altura ? altura / bitmap.height : 1);

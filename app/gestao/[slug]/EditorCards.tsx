@@ -6,6 +6,7 @@ import { alternarCard, criarCard, duplicarCard, excluirCard, reordenarCards, sal
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
+import EditorCarrossel from "./EditorCarrossel";
 import EscolhaLargura from "./EscolhaLargura";
 import ControleAjuste from "./ControleAjuste";
 import { naPrevia } from "./BarraAjuste";
@@ -34,6 +35,9 @@ type Card = {
   publicarEm: Date | null;
   despublicarEm: Date | null;
   icones: { id: string; rede: string; url: string }[];
+  imagens: { id: string; imagemUrl: string; url: string | null }[];
+  carrosselTempo: number | null;
+  slideLargura: number | null;
   iconeTamanho: number | null;
   iconeEspaco: number | null;
 };
@@ -47,6 +51,7 @@ const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
   { valor: "imagem", nome: "Imagem", ajuda: "Foto ou banner, clicável se tiver link" },
   { valor: "video", nome: "Vídeo", ajuda: "YouTube ou Vimeo, tocando na página" },
   { valor: "redes", nome: "Redes", ajuda: "Ícones lado a lado (WhatsApp, Instagram…), cada um com o seu link" },
+  { valor: "carrossel", nome: "Carrossel", ajuda: "Várias imagens passando sozinhas, cada uma com link se quiser" },
   { valor: "separador", nome: "Separador", ajuda: "Uma linha para dar respiro" },
 ];
 
@@ -55,20 +60,22 @@ function camposDoTipo(tipo: string) {
   switch (tipo) {
     case "titulo":
     case "texto":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false };
     case "separador":
-      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false };
+      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false };
     case "imagem":
-      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false };
     case "video":
-      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false };
+    case "carrossel":
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: true };
     case "redes":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true, carrossel: false };
     // nos blocos clicáveis, a imagem é opcional e, quando existe, vira o próprio card (banner)
     case "whatsapp":
-      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false };
+      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false, carrossel: false };
     default:
-      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false };
   }
 }
 
@@ -397,7 +404,7 @@ export default function EditorCards({
                         {usa.titulo && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
-                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : "Título"}
+                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : "Título"}
                             </label>
                             <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
                           </div>
@@ -442,6 +449,16 @@ export default function EditorCards({
                           valoresVao={valoresPorTela(card, "vao")}
                           iconeCor={card.iconeCor}
                           corTexto={corTexto}
+                        />
+                      )}
+
+                      {usa.carrossel && (
+                        <EditorCarrossel
+                          cardId={card.id}
+                          imagens={card.imagens}
+                          tempo={card.carrosselTempo}
+                          valoresSlide={valoresPorTela(card, "slide")}
+                          fundo={corFundo}
                         />
                       )}
 
