@@ -536,3 +536,20 @@ export async function salvarCorIcones(cardId: string, cor: string | null): Promi
     return { erro: "Não consegui gravar a cor. Recarregue a página." };
   }
 }
+
+/** Formato da foto do topo: "redonda" (padrão, fica vazio) ou "livre" (o logo inteiro, sem cortar). */
+export async function salvarFormatoFoto(paginaId: string, formato: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (formato !== "redonda" && formato !== "livre") return { erro: "Esse formato não existe." };
+  try {
+    const pagina = await prisma.pagina.update({
+      where: { id: String(paginaId) },
+      data: { avatarFormato: formato === "livre" ? "livre" : null },
+      select: { cliente: { select: { slug: true } } },
+    });
+    revalidar(pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar o formato. Recarregue a página." };
+  }
+}

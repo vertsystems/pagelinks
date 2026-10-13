@@ -199,6 +199,27 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Importação das imagens da carteira — 13/10/2026
+
+O Bruno exportou as imagens das páginas antigas para uma pasta por cliente
+(`~/Downloads/PageLinks Imagens/NN - Nome/`): `01-logo.png`, `02-nome.png` e
+`03-card-NN.png`. O `prisma/importar-imagens.ts` lê essa pasta e preenche as páginas:
+logo na foto, nome no cabeçalho, cards nos blocos clicáveis em ordem. Cada arquivo é casado
+com a imagem da página antiga de proporção parecida, e o link dela vai junto (WhatsApp vira
+número e mensagem). Só preenche página que ainda não tinha imagem, e guarda o antes num JSON
+ao lado das imagens.
+
+- 33 páginas preenchidas na primeira rodada (Amanda Tabet pulada: o Bruno já tinha feito);
+  a **Hydramaq Hidráulica** foi criada (`/hydramaq`), a partir da página própria dela em
+  dnms.fun/hydramaq (fora do WordPress): tema, fundo e os 4 cards com link
+- "Cabana Ubirici" é a Chalés Urubici; "Ste Bernardo" é Ste Bernards
+- **Formato da foto** (`Pagina.avatarFormato`): "Sem cortar" mostra o logo inteiro, sem
+  círculo nem borda, e o tamanho vira a largura. Logo largo ou comprido entra assim na
+  importação (SpaceFM, Studio Sarah Sampaio, Gesqual, Litoral Relógios, Hydramaq). O teto da
+  foto subiu para 640 px de arquivo e 320 px na barra
+- Ficaram de fora as imagens de `extras/` (30, em 10 clientes): carrosséis, fileiras de logos,
+  prints de avaliação. O lugar delas são os blocos de imagem vazios que vieram dos prints
+
 ## Blocos lado a lado mais juntos — 13/10/2026
 
 Na Amanda Tabet, dois cards em 1/2 com a imagem a ~90% pareciam longe no centro: a sobra

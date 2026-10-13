@@ -211,7 +211,9 @@ export default async function PaginaPublica({ params }: Props) {
               src={pagina.avatarUrl}
               alt={pagina.titulo}
               width={avatar}
-              height={avatar}
+              height={pagina.avatarFormato === "livre" ? undefined : avatar}
+              data-pl-avatar
+              data-formato={pagina.avatarFormato ?? undefined}
             />
           )}
           {pagina.cabecalhoImagemUrl ? (

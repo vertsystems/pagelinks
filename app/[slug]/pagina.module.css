@@ -80,6 +80,8 @@
   border: 3px solid var(--destaque);
   margin-bottom: 18px;
 }
+/* formato "livre": o logo inteiro, sem cortar nem borda; o tamanho escolhido é a largura */
+.avatar[data-formato="livre"] { height: auto; border-radius: 0; border: none; object-fit: contain; }
 
 .titulo {
   font-size: 28px;

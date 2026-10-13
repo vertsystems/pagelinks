@@ -14,9 +14,9 @@ export const LIMITE_ENVIO = 4 * 1024 * 1024;
 
 // A coluna da página tem 620 px: bloco e cabeçalho limitam só a largura (1240
 // cobre tela 2x), porque arte comprida é comum e não pode perder nitidez.
-// A foto do topo aparece com 104 px (400 sobra até para 3x); o fundo cobre a tela.
+// A foto do topo vai até 640 px: redonda (até 200 px) em tela 3x, ou logo sem cortar; o fundo cobre a tela.
 export const TAMANHO_MAXIMO: Record<UsoImagem, { largura: number; altura?: number }> = {
-  avatar: { largura: 400, altura: 400 },
+  avatar: { largura: 640, altura: 640 }, // até 200 px redonda em tela 3x, ou logo sem cortar até 320 px
   cabecalho: { largura: 1240 },
   card: { largura: 1240 },
   fundo: { largura: 1920, altura: 1920 },
@@ -36,7 +36,7 @@ export const USO_DO_CAMPO: Record<CampoImagemPagina, UsoImagem> = {
 export type ExibicaoImagem = { min: number; max: number; passo: number; padrao: number; unidade: "px" | "%" };
 
 export const TAMANHO_NA_PAGINA: Record<Exclude<UsoImagem, "fundo">, ExibicaoImagem> = {
-  avatar: { min: 48, max: 200, passo: 4, padrao: 104, unidade: "px" },
+  avatar: { min: 48, max: 320, passo: 4, padrao: 104, unidade: "px" },
   cabecalho: { min: 20, max: 100, passo: 5, padrao: 100, unidade: "%" },
   card: { min: 20, max: 100, passo: 5, padrao: 100, unidade: "%" },
 };

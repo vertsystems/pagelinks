@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ValoresTela } from "@/lib/ajustes";
 import CampoImagem from "./CampoImagem";
 import ControleAjuste from "./ControleAjuste";
+import FormatoFoto from "./FormatoFoto";
 import estilos from "../gestao.module.css";
 
 /**
@@ -16,6 +17,7 @@ export default function CamposTopo({
   titulo,
   bio,
   avatarUrl,
+  avatarFormato,
   cabecalhoImagemUrl,
   corFundo,
   ajustes,
@@ -24,6 +26,7 @@ export default function CamposTopo({
   titulo: string;
   bio: string | null;
   avatarUrl: string | null;
+  avatarFormato: string | null;
   cabecalhoImagemUrl: string | null;
   corFundo: string;
   /** valores por tela dos ajustes do topo */
@@ -37,11 +40,12 @@ export default function CamposTopo({
         alvo={{ tipo: "pagina", id: paginaId, campo: "avatarUrl" }}
         url={avatarUrl}
         rotulo="Foto ou logo"
-        dica="Aparece redonda no topo."
+        dica="Aparece no topo. Logo com nome escrito, largo ou comprido: use “Sem cortar”."
         redonda
         fundo={corFundo}
         ajuste={{ chave: "avatar", valores: ajustes.avatar }}
       />
+      {avatarUrl && <FormatoFoto paginaId={paginaId} formato={avatarFormato} />}
       <div className={estilos.campo}>
         <label htmlFor="titulo">Título</label>
         <input id="titulo" type="text" name="titulo" defaultValue={titulo} required={!comImagem} disabled={comImagem} />
