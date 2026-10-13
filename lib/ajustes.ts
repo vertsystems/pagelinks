@@ -112,11 +112,14 @@ export function variavelCss(chave: ChaveAjuste, tela: Tela) {
   return `--${AJUSTES[chave].variavel}-${TELAS.find((t) => t.id === tela)!.sufixo}`;
 }
 
-/** As variáveis gravadas de um registro, para o style do elemento na página. */
+/**
+ * As variáveis gravadas de um registro, para o style do elemento na página. A largura
+ * fica de fora: a fração real depende dos vizinhos e vem de variaveisDeLinha.
+ */
 export function variaveisDeAjuste(registro: ComAjustes, alvo: "pagina" | "card"): React.CSSProperties {
   const estilo: Record<string, string> = {};
   for (const chave of Object.keys(AJUSTES) as ChaveAjuste[]) {
-    if (AJUSTES[chave].alvo !== alvo) continue;
+    if (AJUSTES[chave].alvo !== alvo || chave === "largura") continue;
     const valores = valoresPorTela(registro, chave);
     for (const { id } of TELAS) {
       const v = valores[id];
@@ -136,4 +139,61 @@ export function normalizarAjuste(chave: ChaveAjuste, valor: unknown): { ok: true
   const n = Number(valor);
   if (!Number.isFinite(n)) return { ok: false };
   return { ok: true, valor: Math.round(Math.min(def.faixa.max, Math.max(def.faixa.min, n))) };
+}
+
+/**
+ * Fração da linha que cada bloco ocupa de verdade numa tela. Blocos seguidos que não
+ * são inteiros dividem a linha enquanto couberem; se o próximo não couber e a linha só
+ * tiver um, ele entra assim mesmo (pelo menos dois por linha) e a linha encolhe na mesma
+ * proporção: 3/4 + 3/4 vira metade e metade, 3/4 + 1/2 vira 60% e 40%. Linha que soma
+ * até 1 fica como está (1/2 + 1/2 exato; 1/2 sozinho, centralizado).
+ * Recebe só os blocos que aparecem na página, na ordem.
+ */
+export function fracoesNaTela(blocos: (ComAjustes & { id: string })[], tela: Tela) {
+  const fracoes = new Map<string, number>();
+  let linha: { id: string; fracao: number }[] = [];
+  const fechar = () => {
+    const soma = linha.reduce((s, b) => s + b.fracao, 0);
+    for (const b of linha) fracoes.set(b.id, soma > 1 ? b.fracao / soma : b.fracao);
+    linha = [];
+  };
+
+  for (const bloco of blocos) {
+    const fracao = fracaoDaLargura(String(valorNaTela(valoresPorTela(bloco, "largura"), "largura", tela).valor));
+    if (fracao >= 1) {
+      fechar();
+      fracoes.set(bloco.id, 1);
+      continue;
+    }
+    const soma = linha.reduce((s, b) => s + b.fracao, 0);
+    if (linha.length > 0 && soma + fracao > 1 + 1e-6) {
+      if (linha.length === 1) {
+        linha.push({ id: bloco.id, fracao });
+        fechar();
+        continue;
+      }
+      fechar();
+    }
+    linha.push({ id: bloco.id, fracao });
+  }
+  fechar();
+  return fracoes;
+}
+
+/** Variável de CSS da fração real de um bloco numa tela: --fr-m, --fr-t, --fr-d. */
+export const variavelDaLinha = (tela: Tela) => `--fr-${TELAS.find((t) => t.id === tela)!.sufixo}`;
+
+/** As variáveis de linha de cada bloco, nas três telas (só as diferentes de inteira). */
+export function variaveisDeLinha(blocos: (ComAjustes & { id: string })[]) {
+  const porTela = TELAS.map((t) => ({ tela: t.id, fracoes: fracoesNaTela(blocos, t.id) }));
+  const estilos = new Map<string, React.CSSProperties>();
+  for (const { id } of blocos) {
+    const estilo: Record<string, string> = {};
+    for (const { tela, fracoes } of porTela) {
+      const f = fracoes.get(id) ?? 1;
+      if (f < 1) estilo[variavelDaLinha(tela)] = String(Math.round(f * 1e4) / 1e4);
+    }
+    estilos.set(id, estilo as React.CSSProperties);
+  }
+  return estilos;
 }

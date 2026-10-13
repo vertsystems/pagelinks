@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { valorCss, valorNaTela, variavelCss, type Tela, type ValoresTela } from "@/lib/ajustes";
+import { valorCss, valorNaTela, variavelDaLinha, type Tela, type ValoresTela } from "@/lib/ajustes";
 import { LARGURAS } from "@/lib/tema";
 import { salvarAjuste } from "../acoes";
 import { naPrevia } from "./BarraAjuste";
@@ -40,12 +40,13 @@ function EscolhaNaTela({
   const [atual, setAtual] = useState(String(inicio.valor));
   const [proprio, setProprio] = useState(inicio.proprio);
   const [erro, setErro] = useState<string | null>(null);
-  const variavel = variavelCss("largura", tela);
+  const variavel = variavelDaLinha(tela);
 
+  // Na prévia, mostra na hora a fração escolhida; quem divide a linha com quem (3/4 + 3/4
+  // vira metade e metade) sai certo quando a prévia recarrega, logo depois de gravar.
   async function gravar(valor: string | null) {
     const celula = naPrevia(`[data-pl-bloco="${cardId}"]`);
-    if (valor === null) celula?.style.removeProperty(variavel);
-    else celula?.style.setProperty(variavel, valorCss("largura", valor));
+    celula?.style.setProperty(variavel, valorCss("largura", valor ?? inicio.seguiria.valor));
     aoGravar(tela, valor);
     setErro((await salvarAjuste({ tipo: "card", id: cardId }, "largura", tela, valor)).erro ?? null);
   }
@@ -90,7 +91,8 @@ function EscolhaNaTela({
           ))}
       </div>
       <span className={estilos.dica}>
-        Blocos seguidos que somam uma linha ficam lado a lado: 1/2 + 1/2, 1/3 + 2/3, três de 1/3. Grava na hora.
+        Blocos seguidos que não são inteiros ficam lado a lado, pelo menos dois por linha. Se passarem da linha, dividem
+        na mesma proporção: 3/4 + 3/4 vira metade e metade. Grava na hora.
       </span>
       {erro && <span className={estilos.erroCampo} role="alert">{erro}</span>}
     </div>

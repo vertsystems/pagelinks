@@ -2,8 +2,10 @@
    Celular até 767 px, tablet de 768 a 1023, computador de 1024 em diante. Cada ajuste
    do painel chega como até três variáveis no elemento (--x-m, --x-t, --x-d: só as
    gravadas, ver lib/ajustes.ts). Aqui cada tela escolhe a sua; se faltar, segue a tela
-   menor; sem nenhuma, vale o padrão da tela. O resto do arquivo só lê --topo, --blocos,
-   --avatar, --cabecalho, --fracao, --imagem, --icone e --vao. */
+   menor; sem nenhuma, vale o padrão da tela. A largura na linha é diferente: vem já
+   resolvida por tela (--fr-m, --fr-t, --fr-d), porque depende dos vizinhos (blocos que
+   não cabem dividem a linha, ver fracoesNaTela). O resto do arquivo só lê --topo,
+   --blocos, --avatar, --cabecalho, --fracao, --imagem, --icone e --vao. */
 .tela {
   --topo: var(--topo-m, 36px);
   --blocos: var(--blocos-m, 14px);
@@ -11,7 +13,7 @@
   --cabecalho: var(--cabecalho-m, 100%);
 }
 .celula {
-  --fracao: var(--largura-m, 1);
+  --fracao: var(--fr-m, 1);
   --imagem: var(--imagem-m, 100%);
   --icone: var(--icone-m, 28px);
   --vao: var(--vao-m, 24px);
@@ -24,7 +26,7 @@
     --cabecalho: var(--cabecalho-t, var(--cabecalho-m, 100%));
   }
   .celula {
-    --fracao: var(--largura-t, var(--largura-m, 1));
+    --fracao: var(--fr-t, 1);
     --imagem: var(--imagem-t, var(--imagem-m, 100%));
     --icone: var(--icone-t, var(--icone-m, 28px));
     --vao: var(--vao-t, var(--vao-m, 24px));
@@ -38,7 +40,7 @@
     --cabecalho: var(--cabecalho-d, var(--cabecalho-t, var(--cabecalho-m, 100%)));
   }
   .celula {
-    --fracao: var(--largura-d, var(--largura-t, var(--largura-m, 1)));
+    --fracao: var(--fr-d, 1);
     --imagem: var(--imagem-d, var(--imagem-t, var(--imagem-m, 100%)));
     --icone: var(--icone-d, var(--icone-t, var(--icone-m, 28px)));
     --vao: var(--vao-d, var(--vao-t, var(--vao-m, 24px)));

@@ -199,6 +199,23 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Pelo menos dois por linha — 13/10/2026
+
+Pedido do Bruno: no computador, dois blocos seguidos em 3/4 devem ficar lado a lado.
+Regra nova (`fracoesNaTela`, em `lib/ajustes.ts`): blocos seguidos que não são inteiros
+dividem a linha enquanto couberem; se o próximo não couber e a linha só tiver um, ele entra
+assim mesmo, e a linha encolhe na mesma proporção. 3/4 + 3/4 vira metade e metade, 3/4 + 1/2
+vira 60% e 40%, três de 3/4 viram 2 numa linha e 1 na seguinte. Combinações que fecham a
+linha (1/2 + 1/2, 1/3 + 2/3, 3/4 + 1/4) ficam exatas, como antes.
+
+- A fração real depende dos vizinhos, então é resolvida no servidor para cada tela, só com
+  os blocos que aparecem na página (`conteudoDoBloco` primeiro, depois as linhas), e chega
+  pronta como `--fr-m`, `--fr-t`, `--fr-d`. A largura escolhida (`--largura-*`) não vai mais
+  para a página
+- Na prévia, a escolha aparece na hora com a fração crua; o par certo sai quando a prévia
+  recarrega, logo depois de gravar
+- Testado na página pública: 303 + 14 + 303 = 620 px no 3/4 + 3/4; celular intacto
+
 ## Bloco em edição em foco — 13/10/2026
 
 Abrir um bloco no editor dá a ele uma borda em degradê verde-claro com halo (`.cardAberto`),

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
-import { variaveisDeAjuste } from "@/lib/ajustes";
+import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID } from "@/lib/redes";
 import DesenhoRede from "./DesenhoRede";
 import estilos from "./pagina.module.css";
@@ -86,6 +86,115 @@ export default async function PaginaPublica({ params }: Props) {
   // data-pl-bloco são por onde as barras do painel mexem na prévia ao vivo.
   const avatar = pagina.avatarTamanho ?? 104;
 
+  /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
+  function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
+    const destino = `/ir/${card.id}`;
+    const imagem = card.imagemUrl ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        className={estilos.imagem}
+        src={card.imagemUrl}
+        alt={card.titulo ?? ""}
+      />
+    ) : null;
+    // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
+    // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
+    const banner = imagem && <a key={card.id} href={destino}>{imagem}</a>;
+
+    switch (card.tipo) {
+      case "titulo":
+        return <p key={card.id} className={estilos.tituloSecao}>{card.titulo}</p>;
+
+      case "texto":
+        return <p key={card.id} className={estilos.texto}>{card.titulo}</p>;
+
+      case "separador":
+        return <hr key={card.id} className={estilos.separador} />;
+
+      case "imagem":
+        if (!imagem) return null;
+        return card.url ? banner : <div key={card.id}>{imagem}</div>;
+
+      case "video": {
+        const player = card.url ? urlDeVideo(card.url) : null;
+        return player ? (
+          <iframe key={card.id} className={estilos.video} src={player} title={card.titulo ?? "Vídeo"} allowFullScreen />
+        ) : null;
+      }
+
+      case "whatsapp":
+        if (!card.telefone) return null;
+        if (banner) return banner;
+        return (
+          <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino}>
+            {card.titulo ?? "Chamar no WhatsApp"}
+            {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
+          </a>
+        );
+
+      case "redes":
+        if (card.icones.length) {
+          return (
+            <nav
+              key={card.id}
+              className={estilos.redes}
+              aria-label={card.titulo ?? "Redes sociais"}
+              data-cor={card.iconeCor === "marcas" ? "marcas" : undefined}
+              style={card.iconeCor?.startsWith("#") ? { color: card.iconeCor } : undefined}
+            >
+              {card.icones.map((icone) => {
+                const rede = REDE_POR_ID[icone.rede];
+                return rede ? (
+                  <a
+                    key={icone.id}
+                    className={estilos.icone}
+                    href={`${destino}?icone=${icone.id}`}
+                    aria-label={rede.nome}
+                    title={rede.nome}
+                    style={rede.cor ? ({ "--marca": rede.cor } as React.CSSProperties) : undefined}
+                  >
+                    <DesenhoRede rede={rede} tamanho={28} />
+                  </a>
+                ) : null;
+              })}
+            </nav>
+          );
+        }
+        // Sem ícone: só aparece se tiver link (o botão de antes). Os blocos de redes
+        // que vieram do WordPress sem link eram espaço reservado e levavam para lugar nenhum.
+        if (!card.url) return null;
+        return (
+          <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino}>
+            {card.titulo}
+          </a>
+        );
+
+      case "link":
+      case "destaque":
+      default:
+        if (banner) return banner;
+        return (
+          <a
+            key={card.id}
+            className={`${estilos.botao} ${card.destaque || card.tipo === "destaque" ? estilos.destaque : ""} ${card.tipo === "redes" ? estilos.secundario : ""}`}
+            href={destino}
+            style={card.corFundo ? { background: card.corFundo, color: card.corTexto ?? undefined } : undefined}
+          >
+            {card.titulo}
+            {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
+          </a>
+        );
+    }
+  }
+
+  // Só os blocos que aparecem entram na conta das linhas: cada um vai numa célula com
+  // os ajustes dele por tela e a fração real da linha em cada tela (lib/ajustes.ts),
+  // lidos pelo pagina.module.css.
+  const blocos = pagina.cards
+    .map((card) => ({ card, conteudo: conteudoDoBloco(card) }))
+    .filter((b) => b.conteudo !== null);
+  const linhasDosBlocos = variaveisDeLinha(blocos.map((b) => b.card));
+
   return (
     <>
       {fonte && <link rel="stylesheet" href={fonte} />}
@@ -122,115 +231,16 @@ export default async function PaginaPublica({ params }: Props) {
           )}
 
           <div className={estilos.blocos}>
-            {pagina.cards.map((card) => {
-              // Cada bloco vai numa célula com os ajustes dele por tela (largura na linha,
-              // tamanho da imagem, dos ícones…), lidos pelo pagina.module.css.
-              const conteudo = (() => {
-                const destino = `/ir/${card.id}`;
-                const imagem = card.imagemUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    className={estilos.imagem}
-                    src={card.imagemUrl}
-                    alt={card.titulo ?? ""}
-                  />
-                ) : null;
-                // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
-                // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
-                const banner = imagem && <a key={card.id} href={destino}>{imagem}</a>;
-
-                switch (card.tipo) {
-                  case "titulo":
-                    return <p key={card.id} className={estilos.tituloSecao}>{card.titulo}</p>;
-
-                  case "texto":
-                    return <p key={card.id} className={estilos.texto}>{card.titulo}</p>;
-
-                  case "separador":
-                    return <hr key={card.id} className={estilos.separador} />;
-
-                  case "imagem":
-                    if (!imagem) return null;
-                    return card.url ? banner : <div key={card.id}>{imagem}</div>;
-
-                  case "video": {
-                    const player = card.url ? urlDeVideo(card.url) : null;
-                    return player ? (
-                      <iframe key={card.id} className={estilos.video} src={player} title={card.titulo ?? "Vídeo"} allowFullScreen />
-                    ) : null;
-                  }
-
-                  case "whatsapp":
-                    if (!card.telefone) return null;
-                    if (banner) return banner;
-                    return (
-                      <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino}>
-                        {card.titulo ?? "Chamar no WhatsApp"}
-                        {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
-                      </a>
-                    );
-
-                  case "redes":
-                    if (card.icones.length) {
-                      return (
-                        <nav
-                          key={card.id}
-                          className={estilos.redes}
-                          aria-label={card.titulo ?? "Redes sociais"}
-                          data-cor={card.iconeCor === "marcas" ? "marcas" : undefined}
-                          style={card.iconeCor?.startsWith("#") ? { color: card.iconeCor } : undefined}
-                        >
-                          {card.icones.map((icone) => {
-                            const rede = REDE_POR_ID[icone.rede];
-                            return rede ? (
-                              <a
-                                key={icone.id}
-                                className={estilos.icone}
-                                href={`${destino}?icone=${icone.id}`}
-                                aria-label={rede.nome}
-                                title={rede.nome}
-                                style={rede.cor ? ({ "--marca": rede.cor } as React.CSSProperties) : undefined}
-                              >
-                                <DesenhoRede rede={rede} tamanho={28} />
-                              </a>
-                            ) : null;
-                          })}
-                        </nav>
-                      );
-                    }
-                    // Sem ícone: só aparece se tiver link (o botão de antes). Os blocos de redes
-                    // que vieram do WordPress sem link eram espaço reservado e levavam para lugar nenhum.
-                    if (!card.url) return null;
-                    return (
-                      <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino}>
-                        {card.titulo}
-                      </a>
-                    );
-
-                  case "link":
-                  case "destaque":
-                  default:
-                    if (banner) return banner;
-                    return (
-                      <a
-                        key={card.id}
-                        className={`${estilos.botao} ${card.destaque || card.tipo === "destaque" ? estilos.destaque : ""} ${card.tipo === "redes" ? estilos.secundario : ""}`}
-                        href={destino}
-                        style={card.corFundo ? { background: card.corFundo, color: card.corTexto ?? undefined } : undefined}
-                      >
-                        {card.titulo}
-                        {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
-                      </a>
-                    );
-                }
-              })();
-              if (!conteudo) return null;
-              return (
-                <div key={card.id} className={estilos.celula} data-pl-bloco={card.id} style={variaveisDeAjuste(card, "card")}>
-                  {conteudo}
-                </div>
-              );
-            })}
+            {blocos.map(({ card, conteudo }) => (
+              <div
+                key={card.id}
+                className={estilos.celula}
+                data-pl-bloco={card.id}
+                style={{ ...variaveisDeAjuste(card, "card"), ...linhasDosBlocos.get(card.id) }}
+              >
+                {conteudo}
+              </div>
+            ))}
           </div>
 
           <p className={estilos.rodape}>feito com PageLinks</p>
