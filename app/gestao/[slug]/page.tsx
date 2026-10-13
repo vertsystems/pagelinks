@@ -14,6 +14,7 @@ import Previa from "./Previa";
 import { AvisoTela, ProvedorTela } from "./Tela";
 import Conferido from "../Conferido";
 import { BotaoSalvar } from "./Salvar";
+import BotaoExcluir from "./BotaoExcluir";
 import estilos from "../gestao.module.css";
 
 export const dynamic = "force-dynamic";
@@ -216,9 +217,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               Apaga o cliente, a página, os {pagina.cards.length} blocos e o histórico de cliques.
               Se a ideia é só tirar do ar, desmarque “Cliente ativo” acima.
             </p>
-            <button className={`${estilos.btn} ${estilos.btnPerigo}`} type="submit">
-              Excluir {cliente.nome}
-            </button>
+            <BotaoExcluir nome={cliente.nome} blocos={pagina.cards.length} />
           </form>
         </div>
 
