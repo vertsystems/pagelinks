@@ -11,6 +11,7 @@ import { AJUSTES, TELAS, lerJson, normalizarAjuste, type ChaveAjuste, type Tela,
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
+import { lerMarcador } from "@/lib/lista";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -174,6 +175,7 @@ export async function criarCard(paginaId: string, tipo: string) {
     redes: "Redes sociais",
     separador: "",
     carrossel: "Carrossel",
+    lista: "",
   };
 
   const card = await prisma.card.create({
@@ -218,6 +220,9 @@ export async function salvarCard(cardId: string, dados: FormData) {
       ativo: dados.get("ativo") === "on",
       publicarEm: data("publicarEm"),
       despublicarEm: data("despublicarEm"),
+      // lista: só quando o formulário traz os campos, para trocar o tipo do bloco não apagar os itens
+      ...(dados.has("itens") && { itens: String(dados.get("itens") ?? "").trim().slice(0, 5000) || null }),
+      ...(dados.has("marcador") && { marcador: lerMarcador(String(dados.get("marcador"))) === "ponto" ? null : lerMarcador(String(dados.get("marcador"))) }),
     },
   });
   if (dados.has("icones")) await salvarIcones(cardId, dados);

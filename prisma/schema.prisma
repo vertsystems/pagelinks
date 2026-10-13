@@ -137,6 +137,8 @@ model Card {
   iconeTamanho Int? // tipo = redes: tamanho do ícone em px; vazio = 28
   iconeEspaco  Int? // tipo = redes: espaço entre os ícones em px; vazio = 24
   iconeCor     String? // tipo = redes: vazio = cor do texto · "marcas" · "#RRGGBB" (lib/redes.ts)
+  itens    String? // tipo = lista: os itens, um por linha
+  marcador String? // tipo = lista: vazio = bolinha · "check" · "numero" (lib/lista.ts)
   carrosselTempo Int? // tipo = carrossel: segundos em cada imagem; vazio = 4
   slideLargura   Int? // tipo = carrossel: largura de cada imagem em % da coluna; vazio = 80 no celular, 60 no tablet e no computador
 

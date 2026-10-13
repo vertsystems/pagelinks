@@ -12,6 +12,7 @@ import ControleAjuste from "./ControleAjuste";
 import { naPrevia } from "./BarraAjuste";
 import { useTela } from "./Tela";
 import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
+import { MARCADORES, lerItens, lerMarcador } from "@/lib/lista";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -37,6 +38,8 @@ type Card = {
   icones: { id: string; rede: string; url: string }[];
   imagens: { id: string; imagemUrl: string; url: string | null }[];
   carrosselTempo: number | null;
+  itens: string | null;
+  marcador: string | null;
   slideLargura: number | null;
   iconeTamanho: number | null;
   iconeEspaco: number | null;
@@ -48,6 +51,7 @@ const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
   { valor: "whatsapp", nome: "WhatsApp", ajuda: "Abre a conversa já com a mensagem escrita" },
   { valor: "titulo", nome: "Título", ajuda: "Divide a página em seções" },
   { valor: "texto", nome: "Texto", ajuda: "Um parágrafo curto, sem link" },
+  { valor: "lista", nome: "Lista", ajuda: "Itens um embaixo do outro (serviços, horários…), um por linha" },
   { valor: "imagem", nome: "Imagem", ajuda: "Foto ou banner, clicável se tiver link" },
   { valor: "video", nome: "Vídeo", ajuda: "YouTube ou Vimeo, tocando na página" },
   { valor: "redes", nome: "Redes", ajuda: "Ícones lado a lado (WhatsApp, Instagram…), cada um com o seu link" },
@@ -60,22 +64,24 @@ function camposDoTipo(tipo: string) {
   switch (tipo) {
     case "titulo":
     case "texto":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
     case "separador":
-      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false };
+      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
     case "imagem":
-      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false };
     case "video":
-      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
+    case "lista":
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: true };
     case "carrossel":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: true };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: true, lista: false };
     case "redes":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true, carrossel: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true, carrossel: false, lista: false };
     // nos blocos clicáveis, a imagem é opcional e, quando existe, vira o próprio card (banner)
     case "whatsapp":
-      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false, carrossel: false };
+      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false, carrossel: false, lista: false };
     default:
-      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false };
   }
 }
 
@@ -360,7 +366,7 @@ export default function EditorCards({
                   onClick={() => setAberto(estaAberto ? null : card.id)}
                   style={{ background: "none", border: 0, color: "inherit", textAlign: "left", cursor: "pointer", font: "inherit" }}
                 >
-                  {card.titulo || <em>sem texto</em>}
+                  {card.titulo || (card.tipo === "lista" && lerItens(card.itens)[0]) || <em>{card.tipo === "lista" ? "sem itens" : "sem texto"}</em>}
                 </button>
 
                 <div className={estilos.cardAcoes}>
@@ -404,7 +410,7 @@ export default function EditorCards({
                         {usa.titulo && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
-                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : "Título"}
+                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
                             </label>
                             <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
                           </div>
@@ -450,6 +456,32 @@ export default function EditorCards({
                           iconeCor={card.iconeCor}
                           corTexto={corTexto}
                         />
+                      )}
+
+                      {usa.lista && (
+                        <div className={estilos.doisCampos}>
+                          <div className={estilos.campo}>
+                            <label htmlFor={`itens-${card.id}`}>Itens, um por linha</label>
+                            <textarea
+                              id={`itens-${card.id}`}
+                              name="itens"
+                              rows={Math.min(12, Math.max(4, lerItens(card.itens).length + 1))}
+                              defaultValue={card.itens ?? ""}
+                              placeholder={"Treino personalizado\nAvaliação física\nAcompanhamento online"}
+                            />
+                            <span className={estilos.dica}>
+                              Pode colar uma lista pronta: marcadores como “-”, “•” ou “1.” saem sozinhos. Sem nenhum item, o bloco não aparece na página.
+                            </span>
+                          </div>
+                          <div className={estilos.campo}>
+                            <label htmlFor={`marcador-${card.id}`}>Marcador</label>
+                            <select key={card.marcador ?? "ponto"} id={`marcador-${card.id}`} name="marcador" defaultValue={lerMarcador(card.marcador)}>
+                              {MARCADORES.map((m) => (
+                                <option key={m.valor} value={m.valor}>{m.nome}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
                       )}
 
                       {usa.carrossel && (

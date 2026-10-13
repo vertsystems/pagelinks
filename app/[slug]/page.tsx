@@ -5,6 +5,7 @@ import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import { TEMPO_PADRAO } from "@/lib/carrossel";
+import { lerItens, lerMarcador } from "@/lib/lista";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
@@ -119,6 +120,24 @@ export default async function PaginaPublica({ params }: Props) {
 
       case "texto":
         return <p key={card.id} className={estilos.texto}>{card.titulo}</p>;
+
+      case "lista": {
+        // sem item, nada aparece (bloco recém-criado fica fora da página até ter o primeiro)
+        const itens = lerItens(card.itens);
+        if (!itens.length) return null;
+        const marcador = lerMarcador(card.marcador);
+        const Itens = marcador === "numero" ? "ol" : "ul";
+        return (
+          <div key={card.id} className={estilos.lista} data-marcador={marcador}>
+            {card.titulo && <p className={estilos.listaTitulo}>{card.titulo}</p>}
+            <Itens className={estilos.listaItens}>
+              {itens.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </Itens>
+          </div>
+        );
+      }
 
       case "separador":
         return <hr key={card.id} className={estilos.separador} />;

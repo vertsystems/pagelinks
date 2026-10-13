@@ -112,6 +112,20 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Bloco lista — 13/10/2026
+
+Tipo de bloco para itens um embaixo do outro, como os serviços de um cliente. No painel é
+um campo de texto, **um item por linha**, que aceita colar uma lista pronta: `lerItens`
+(`lib/lista.ts`) tira o marcador do começo ("- ", "• ", "✓ ", "1. ", "1) ") para a página não
+mostrar dois, e ignora linha vazia. Título opcional em cima (o `titulo` do bloco) e marcador
+à escolha: bolinha (padrão, vazio no banco), visto ✓ ou número (vira `<ol>`). Colunas
+`itens` e `marcador` no `Card`.
+
+Na página fica numa caixa como o botão secundário, alinhada à esquerda (lista centralizada
+não se lê), com o marcador na cor dos botões. Sem item, o bloco não aparece: o bloco recém-criado
+não vai ao ar vazio. O `salvarCard` só grava itens e marcador quando o formulário traz os
+campos, para trocar o tipo do bloco e voltar não apagar a lista.
+
 ## Bloco carrossel — 13/10/2026
 
 Tipo de bloco novo: várias imagens passando sozinhas, a da vez no centro e as vizinhas nas
@@ -521,7 +535,7 @@ sólido/degradê/imagem), SEO e Open Graph, e cadastro com endereço e anotaçã
 
 **Tipos de card que a página já sabe renderizar:** `link`, `destaque`, `whatsapp`
 (com mensagem pronta), `titulo`, `texto`, `imagem` (clicável ou não), `video`
-(YouTube e Vimeo), `redes`, `separador`, `carrossel` (desde 13/10/2026).
+(YouTube e Vimeo), `redes`, `separador`, `carrossel` e `lista` (desde 13/10/2026).
 
 **Por que o clique passa pelo servidor:** o link vai para `/ir/<cardId>`, que registra e
 redireciona. Assim a contagem não depende de JavaScript, de bloqueador de anúncio nem

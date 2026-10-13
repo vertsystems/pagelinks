@@ -163,6 +163,24 @@
 
 .texto { font-size: 15px; line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
 
+/* lista (serviços, horários…): numa caixa como o botão secundário, alinhada à esquerda,
+   que é como lista se lê; o marcador vai na cor dos botões */
+.lista {
+  width: 100%; text-align: left; border-radius: var(--raio); padding: 16px 20px;
+  background: color-mix(in srgb, var(--texto) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--texto) 16%, transparent);
+}
+.listaTitulo { font-size: 16px; font-weight: 700; margin: 0 0 10px; }
+.listaItens { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; counter-reset: item; }
+.listaItens li { position: relative; padding-left: 26px; font-size: 15px; line-height: 1.45; }
+.listaItens li::before { position: absolute; left: 0; color: var(--destaque); font-weight: 700; }
+.lista[data-marcador="ponto"] li::before {
+  content: ""; top: 0.52em; left: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--destaque);
+}
+.lista[data-marcador="check"] li::before { content: "✓"; top: 0; }
+.lista[data-marcador="numero"] li { counter-increment: item; }
+.lista[data-marcador="numero"] li::before { content: counter(item) "."; top: 0; font-variant-numeric: tabular-nums; }
+
 .cabecalho { margin: 0 0 32px; width: 100%; } /* mesmo respiro que a frase deixa antes dos blocos */
 .cabecalho img { width: var(--cabecalho); height: auto; display: block; margin-inline: auto; }
 
