@@ -12,6 +12,7 @@ import CampoCor from "./CampoCor";
 import EditorCards from "./EditorCards";
 import Previa from "./Previa";
 import { AvisoTela, ProvedorTela } from "./Tela";
+import Conferido from "../Conferido";
 import { BotaoSalvar } from "./Salvar";
 import estilos from "../gestao.module.css";
 
@@ -59,7 +60,10 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               ← Todos os clientes
             </Link>
           </p>
-          <h1>{cliente.nome}</h1>
+          <h1 style={{ display: "flex", alignItems: "center" }}>
+            <Conferido clienteId={cliente.id} nome={cliente.nome} conferido={cliente.conferido} />
+            {cliente.nome}
+          </h1>
           <p>
             {pagina.cards.length} {pagina.cards.length === 1 ? "bloco" : "blocos"} ·{" "}
             {cliques} {cliques === 1 ? "clique" : "cliques"} ·{" "}

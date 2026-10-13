@@ -53,6 +53,21 @@
 .tabela tbody tr { border-bottom: 1px solid var(--g-linha); }
 .tabela tbody tr:hover { background: var(--g-card); }
 .tabela td { padding: 11px 14px; vertical-align: middle; }
+/* bolinha de revisão: área de toque de 28 px, bolinha de 18 */
+.conferido {
+  width: 28px; height: 28px; padding: 0; margin: -5px 6px -5px -6px; border: 0; background: none; border-radius: 50%;
+  display: inline-grid; place-items: center; vertical-align: middle; cursor: pointer; flex-shrink: 0;
+}
+.conferido:disabled { cursor: progress; }
+.conferido:focus-visible { outline: 2px solid var(--g-foco); outline-offset: 0; }
+.conferidoPendente, .conferidoOk {
+  width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center;
+  border: 2px solid; transition: transform .12s ease, background-color .15s ease;
+}
+.conferido:hover .conferidoPendente, .conferido:hover .conferidoOk { transform: scale(1.15); }
+.conferidoPendente { background: var(--g-pendente); border-color: var(--g-pendente-borda); }
+.conferidoOk { background: var(--g-ok); border-color: var(--g-ok-borda); color: #fff; }
+.conferidoOk svg { width: 11px; height: 11px; }
 .nomeCliente { font-weight: 600; color: var(--g-texto); text-decoration: none; }
 .nomeCliente:hover { color: var(--g-destaque); }
 .endereco { font-family: var(--g-mono); font-size: 12.5px; color: var(--g-suave); text-decoration: none; }

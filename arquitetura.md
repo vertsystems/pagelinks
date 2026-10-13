@@ -112,6 +112,18 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Bolinha de conferido — 13/10/2026
+
+Para o Bruno marcar, página a página, o que já revisou. Cada cliente tem `conferido`
+(`Cliente.conferido`, falso por padrão): na lista do `/gestao`, uma bolinha antes do
+nome, **amarela** (falta algo) ou **verde com ✓** (está certo); um clique troca e grava
+na hora (`marcarConferido` em `app/gestao/acoes.ts`). A mesma bolinha fica ao lado do
+nome no editor, e o topo da lista conta quantos estão conferidos.
+
+O botão (`app/gestao/Conferido.tsx`) troca a cor antes da resposta do servidor e volta
+atrás se a gravação falhar. As cores são tokens nos dois temas (`--g-pendente`, `--g-ok`
+em `gestao.css`). É marcação interna: não muda nada na página pública.
+
 ## Bloco de redes: ícones — 13/10/2026
 
 O bloco **Redes** virou uma fileira de ícones lado a lado, cada um com o próprio link,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { exigirAdmin } from "@/lib/acesso";
+import Conferido from "./Conferido";
 import estilos from "./gestao.module.css";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +47,7 @@ export default async function ListaClientes({
           <h1>Clientes</h1>
           <p>
             {clientes.length} {clientes.length === 1 ? "cliente" : "clientes"} ·{" "}
-            {publicadas} com página no ar
+            {publicadas} com página no ar · {clientes.filter((c) => c.conferido).length} conferidos
           </p>
         </div>
         <Link className={estilos.btn} href="/gestao/novo">
@@ -92,6 +93,7 @@ export default async function ListaClientes({
               return (
                 <tr key={c.id}>
                   <td>
+                    <Conferido clienteId={c.id} nome={c.nome} conferido={c.conferido} />
                     <Link className={estilos.nomeCliente} href={`/gestao/${c.slug}`}>
                       {c.nome}
                     </Link>

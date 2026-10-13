@@ -23,6 +23,7 @@ model Cliente {
   dominio   String?  @unique // domínio próprio, quando houver
   ativo     Boolean  @default(true)
   observacao String?
+  conferido Boolean  @default(false) // marcação do painel: página revisada (verde) ou faltando algo (amarelo)
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt

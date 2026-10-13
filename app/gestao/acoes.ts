@@ -553,3 +553,15 @@ export async function salvarFormatoFoto(paginaId: string, formato: string): Prom
     return { erro: "Não consegui gravar o formato. Recarregue a página." };
   }
 }
+
+/** Marcação de revisão do cliente: conferido (verde) ou faltando algo (amarelo). Recebe o valor, não alterna: dois cliques seguidos não se atropelam. */
+export async function marcarConferido(clienteId: string, conferido: boolean): Promise<EstadoImagem> {
+  await exigirAdmin();
+  try {
+    const cliente = await prisma.cliente.update({ where: { id: String(clienteId) }, data: { conferido: conferido === true }, select: { slug: true } });
+    revalidar(cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar a marcação." };
+  }
+}

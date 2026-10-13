@@ -36,6 +36,10 @@
   --g-perigo-borda: #F4C7C3;
   --g-topo: rgba(255,255,255,.88);
   --g-moldura: #395886;
+  --g-pendente: #F5B700;
+  --g-pendente-borda: #B88A00;
+  --g-ok: #16A34A;
+  --g-ok-borda: #11843B;
   --g-sombra: 0 20px 50px rgb(57 88 134 / .22);
 }
 
@@ -63,6 +67,10 @@
   --g-perigo-borda: rgba(248,113,113,.3);
   --g-topo: rgba(11,15,13,.92);
   --g-moldura: #000;
+  --g-pendente: #FACC15;
+  --g-pendente-borda: #CA9A04;
+  --g-ok: #22C55E;
+  --g-ok-borda: #16A34A;
   --g-sombra: 0 20px 50px rgb(0 0 0 / .4);
 }
 
