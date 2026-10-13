@@ -140,7 +140,7 @@ model Card {
   letraTamanho Int? // tipo = titulo ou texto: tamanho da letra em px; vazio = 13 no título, 15 no texto
   itens    String? // tipo = lista: os itens, um por linha
   marcador String? // tipo = lista: vazio = bolinha · "check" · "numero" (lib/lista.ts)
-  carrosselTempo Int? // tipo = carrossel: segundos em cada imagem; vazio = 4
+  carrosselTempo Int? // tipo = carrossel: velocidade, segundos para cada imagem passar; vazio = 4
   slideLargura   Int? // tipo = carrossel: largura de cada imagem em % da coluna; vazio = 80 no celular, 60 no tablet e no computador
 
   @@index([paginaId, ordem])

@@ -7,7 +7,7 @@
 /** Largura de cada imagem, em % da coluna. Abaixo de 100, as vizinhas aparecem nas pontas. */
 export const LARGURA_DO_SLIDE = { min: 40, max: 100, passo: 5, padrao: 80, unidade: "%" } as const;
 
-/** Segundos em cada imagem antes de passar para a próxima. */
+/** Velocidade da esteira: segundos para cada imagem passar. */
 export const TEMPOS = [2, 3, 4, 5, 6, 8, 10] as const;
 export const TEMPO_PADRAO = 4;
 

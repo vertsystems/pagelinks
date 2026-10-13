@@ -223,35 +223,42 @@
   .tela { padding: 36px 16px 56px; padding-top: var(--topo); }
 }
 
-/* ===== Carrossel =====
-   Rolagem horizontal com encaixe: a imagem da vez no centro, as vizinhas nas pontas.
-   As pontas são dois espaçadores (::before e ::after) com metade do que sobra da coluna,
-   menos o vão, para a primeira e a última também ficarem no centro. Não dá para ser
-   padding: a % do flex-basis conta sobre a área sem o padding, e 70% virava 49%.
-   A barra de rolagem some; quem navega são o dedo e as bolinhas. */
-.carrossel { width: 100%; }
+/* ===== Carrossel (esteira) =====
+   As imagens deslizam sem parar, da direita para a esquerda, e depois da última vem a
+   primeira, sem emenda. A volta (o conjunto de imagens, --n delas) aparece duas vezes
+   seguidas no trilho, e a animação anda exatamente uma volta: no fim, a segunda cópia está
+   onde a primeira começou, e recomeçar não dá salto. Cada imagem ocupa --slide mais o vão
+   (como margem à direita, não gap: com gap a conta da volta sairia meio vão errada), e as
+   duas porcentagens (flex-basis e translateX) contam sobre a largura do trilho, que é a do
+   carrossel. Velocidade: --tempo segundos por imagem.
+   Para com o mouse em cima ou o foco dentro da janela (para clicar com calma) e no botão.
+   Quem pede menos movimento vê as imagens paradas, numa fileira que arrasta com o dedo. */
+.carrossel { width: 100%; --vao-esteira: 12px; }
+.janela { overflow: hidden; }
 .trilho {
-  position: relative; display: flex; align-items: center; gap: 12px;
-  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
-  scrollbar-width: none;
+  display: flex; align-items: center; width: 100%;
+  animation: esteira calc(var(--n) * var(--tempo) * 1s) linear infinite;
 }
-.trilho::before, .trilho::after { content: ""; flex: 0 0 max(0px, calc((100% - var(--slide)) / 2 - 12px)); }
-.trilho::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 var(--slide); scroll-snap-align: center; overflow: hidden; }
+@keyframes esteira {
+  to { transform: translateX(calc(var(--n) * (var(--slide) + var(--vao-esteira)) * -1)); }
+}
+.janela:hover .trilho, .janela:focus-within .trilho, .carrossel[data-parado] .trilho { animation-play-state: paused; }
+.slide { flex: 0 0 var(--slide); margin-right: var(--vao-esteira); overflow: hidden; }
 .slide a { display: block; }
 .slide a:focus-visible { outline: 3px solid var(--texto); outline-offset: -3px; }
 .slide img { width: 100%; height: auto; display: block; -webkit-user-drag: none; user-select: none; }
-.controles { display: flex; align-items: center; justify-content: center; gap: 2px; margin-top: 10px; }
-/* bolinhas e pausa: o desenho é pequeno, a área de toque tem 24 px */
-.bolinha, .pausar {
+.controles { display: flex; justify-content: center; margin-top: 8px; }
+/* pausa: o desenho é pequeno, a área de toque tem 24 px */
+.pausar {
   width: 24px; height: 24px; padding: 0; border: 0; background: none; color: var(--texto);
-  display: grid; place-items: center; cursor: pointer; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer; border-radius: 50%; opacity: .55;
 }
-.bolinha::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%;
-  background: currentColor; opacity: .3; transition: opacity .2s ease, transform .2s ease;
-}
-.bolinha[aria-current="true"]::before { opacity: .9; transform: scale(1.25); }
-.pausar { opacity: .55; margin-right: 4px; }
 .pausar:hover { opacity: .9; }
-.bolinha:focus-visible, .pausar:focus-visible { outline: 2px solid var(--texto); outline-offset: 1px; }
+.pausar:focus-visible { outline: 2px solid var(--texto); outline-offset: 1px; }
+@media (prefers-reduced-motion: reduce) {
+  .trilho { animation: none; }
+  .janela { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .janela::-webkit-scrollbar { display: none; }
+  .slide { scroll-snap-align: start; }
+  .slide[data-copia], .controles { display: none; }
+}

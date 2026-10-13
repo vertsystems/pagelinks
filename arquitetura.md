@@ -158,8 +158,7 @@ campos, para trocar o tipo do bloco e voltar não apagar a lista.
 
 ## Bloco carrossel — 13/10/2026
 
-Tipo de bloco novo: várias imagens passando sozinhas, a da vez no centro e as vizinhas nas
-pontas, cada uma com link opcional. Pedido do Bruno para páginas como a do Antônio Fernandes,
+Tipo de bloco novo: várias imagens deslizando sem parar, cada uma com link opcional. Pedido do Bruno para páginas como a do Antônio Fernandes,
 que no WordPress tinham um carrossel de antes e depois.
 
 - **Dados:** tabela `ImagemCarrossel` (cardId, imagemUrl, url, ordem), com RLS ligado como as
@@ -170,12 +169,18 @@ que no WordPress tinham um carrossel de antes e depois.
   (WebP q90, a de mais de 4 MB é reduzida no navegador), link de cada uma ao sair do campo,
   ← → para a ordem, ✕ para tirar (com confirmação), tempo e largura. Até 20 imagens. Cada
   mudança marca o bloco (`atualizadoEm`), para a prévia recarregar e a lista ordenar
-- **Página** (`app/[slug]/Carrossel.tsx`): rolagem horizontal com encaixe, então o dedo arrasta
-  sem biblioteca. Passa sozinho e para com mouse em cima, foco dentro, logo depois de alguém
-  arrastar, fora da tela ou com a aba escondida. Quem pede menos movimento no sistema não vê
-  passar sozinho, e o botão de pausa existe para todos. Da última volta para a primeira
-- **Largura:** as pontas são dois espaçadores (::before e ::after), não padding. A % do
-  flex-basis conta sobre a área sem o padding, e 70% saía 49%, fora do centro
+- **Página** (`app/[slug]/Carrossel.tsx`), **em esteira** desde o fim de 13/10 (pedido do
+  Bruno: deslizar sem parar, como no WordPress, em vez de passar uma por uma): as imagens
+  andam da direita para a esquerda e depois da última vem a primeira, sem emenda. A volta (o
+  conjunto) aparece duas vezes e a animação anda exatamente uma volta, n × (largura + vão),
+  então recomeçar não dá salto; com menos de 3 imagens a volta se repete até cobrir a
+  largura. O vão é margem à direita e não gap (com gap a volta sairia meio vão errada).
+  `carrosselTempo` virou a velocidade: segundos para cada imagem passar. Para com o mouse em
+  cima ou o foco dentro (para clicar) e no botão de pausa. Quem pede menos movimento vê as
+  imagens paradas, numa fileira que arrasta com o dedo. As cópias são aria-hidden e fora do Tab
+- **Medido** (13/10): a cópia termina a volta no mesmo pixel em que a primeira começou, em 390
+  e 1440 px; com 1 imagem não abre buraco. Para testar por JavaScript, pausar e retomar a
+  animação a tira do controle do CSS: as pausas se testam numa página recarregada
 - **Clique:** imagem com link vai por `/ir/<bloco>?imagem=<id>` e conta para o bloco
 - **Arquivos:** `apagarImagensOrfas` conta também as imagens de carrossel. Excluir bloco ou
   cliente leva os arquivos do carrossel junto, e duplicar o bloco divide os arquivos

@@ -21,7 +21,7 @@ import estilos from "../gestao.module.css";
 /**
  * As imagens de um bloco carrossel. Tudo grava na hora, sem o Salvar bloco: enviar (várias
  * de uma vez, uma depois da outra), tirar, mudar a ordem, o link de cada uma (ao sair do
- * campo), o tempo em cada imagem e a largura de cada uma (por tela). Os campos não têm
+ * campo), a velocidade e a largura de cada uma (por tela). Os campos não têm
  * name: não entram no formulário do bloco em volta.
  */
 export default function EditorCarrossel({
@@ -188,11 +188,11 @@ export default function EditorCarrossel({
 
       <div className={estilos.carrosselOpcoes}>
         <label>
-          Tempo em cada imagem
+          Velocidade
           <select value={tempo} onChange={(e) => escolherTempo(Number(e.target.value))}>
             {TEMPOS.map((s) => (
               <option key={s} value={s}>
-                {s} segundos{s === TEMPO_PADRAO ? " (padrão)" : ""}
+                {s} segundos por imagem{s === TEMPO_PADRAO ? " (padrão)" : ""}
               </option>
             ))}
           </select>
@@ -200,8 +200,8 @@ export default function EditorCarrossel({
       </div>
       <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="slide" valores={valoresSlide} rotulo="Largura de cada imagem" />
       <span className={estilos.dica}>
-        Abaixo de 100%, as imagens vizinhas aparecem nas pontas. Na página elas passam sozinhas, param quando a pessoa
-        mexe, e dá para arrastar com o dedo. Tudo aqui grava na hora.
+        Na página as imagens deslizam sem parar e, depois da última, vem a primeira de novo. Param com o mouse em
+        cima e têm botão de pausa. Abaixo de 100%, aparecem várias ao mesmo tempo. Tudo aqui grava na hora.
       </span>
     </div>
   );
