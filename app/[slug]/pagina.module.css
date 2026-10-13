@@ -5,7 +5,8 @@
    menor; sem nenhuma, vale o padrão da tela. A largura na linha é diferente: vem já
    resolvida por tela (--fr-m, --fr-t, --fr-d), porque depende dos vizinhos (blocos que
    não cabem dividem a linha, ver fracoesNaTela). O resto do arquivo só lê --topo,
-   --blocos, --lado, --avatar, --cabecalho, --fracao, --encosto, --imagem, --icone e --vao.
+   --blocos, --lado, --avatar, --cabecalho, --titulo, --bio, --fracao, --encosto,
+   --imagem, --icone e --vao.
    --lado (vão entre blocos lado a lado) sem valor segue o --blocos da tela. */
 .tela {
   --topo: var(--topo-m, 36px);
@@ -13,6 +14,8 @@
   --lado: var(--lado-m, var(--blocos));
   --avatar: var(--avatar-m, 104px);
   --cabecalho: var(--cabecalho-m, 100%);
+  --titulo: var(--titulo-m, 24px);
+  --bio: var(--bio-m, 16px);
 }
 .celula {
   --fracao: var(--fr-m, 1);
@@ -28,6 +31,8 @@
     --lado: var(--lado-t, var(--lado-m, var(--blocos)));
     --avatar: var(--avatar-t, var(--avatar-m, 104px));
     --cabecalho: var(--cabecalho-t, var(--cabecalho-m, 100%));
+    --titulo: var(--titulo-t, var(--titulo-m, 28px));
+    --bio: var(--bio-t, var(--bio-m, 16px));
   }
   .celula {
     --fracao: var(--fr-t, 1);
@@ -44,6 +49,8 @@
     --lado: var(--lado-d, var(--lado-t, var(--lado-m, var(--blocos))));
     --avatar: var(--avatar-d, var(--avatar-t, var(--avatar-m, 104px)));
     --cabecalho: var(--cabecalho-d, var(--cabecalho-t, var(--cabecalho-m, 100%)));
+    --titulo: var(--titulo-d, var(--titulo-t, var(--titulo-m, 28px)));
+    --bio: var(--bio-d, var(--bio-t, var(--bio-m, 16px)));
   }
   .celula {
     --fracao: var(--fr-d, 1);
@@ -84,7 +91,7 @@
 .avatar[data-formato="livre"] { height: auto; border-radius: 0; border: none; object-fit: contain; }
 
 .titulo {
-  font-size: 28px;
+  font-size: var(--titulo);
   font-weight: 700;
   letter-spacing: -0.02em;
   text-align: center;
@@ -92,7 +99,7 @@
 }
 
 .bio {
-  font-size: 16px;
+  font-size: var(--bio);
   line-height: 1.5;
   text-align: center;
   opacity: 0.82;
@@ -187,5 +194,4 @@
 
 @media (max-width: 480px) {
   .tela { padding: 36px 16px 56px; padding-top: var(--topo); }
-  .titulo { font-size: 24px; }
 }

@@ -22,6 +22,9 @@ export const AJUSTE_PAGINA = {
   blocos: { min: 0, max: 48, passo: 2, padrao: 14, unidade: "px" },
   // entre blocos lado a lado; sem valor, segue o espaço entre os blocos (ver AJUSTES.lado)
   lado: { min: 0, max: 48, passo: 2, padrao: 14, unidade: "px" },
+  // tamanho da letra do título e da frase de apresentação
+  titulo: { min: 16, max: 56, passo: 1, padrao: 24, unidade: "px" },
+  bio: { min: 12, max: 28, passo: 1, padrao: 16, unidade: "px" },
 } as const;
 
 export type AjustePagina = keyof typeof AJUSTE_PAGINA;

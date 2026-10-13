@@ -281,31 +281,32 @@ export async function excluirCard(cardId: string) {
   revalidar(c?.pagina.cliente.slug);
 }
 
-/** Move o card uma posição para cima ou para baixo, trocando a ordem com o vizinho. */
-export async function moverCard(cardId: string, direcao: "cima" | "baixo") {
+/**
+ * Grava a ordem dos blocos como ficou depois de arrastar: a lista inteira, de uma vez.
+ * Só aceita a lista exata dos blocos da página (nenhum a mais, a menos ou repetido);
+ * se ela mudou no meio do caminho, recusa em vez de gravar meia ordem. Só os blocos
+ * que trocaram de posição são regravados.
+ */
+export async function reordenarCards(paginaId: string, ids: string[]): Promise<EstadoImagem> {
   await exigirAdmin();
-  const card = await prisma.card.findUnique({
-    where: { id: cardId },
-    select: { id: true, ordem: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+  const pagina = await prisma.pagina.findUnique({
+    where: { id: String(paginaId) },
+    select: { cliente: { select: { slug: true } }, cards: { select: { id: true, ordem: true } } },
   });
-  if (!card) return;
+  if (!pagina) return { erro: "Página não encontrada." };
 
-  const vizinho = await prisma.card.findFirst({
-    where:
-      direcao === "cima"
-        ? { paginaId: card.paginaId, ordem: { lt: card.ordem } }
-        : { paginaId: card.paginaId, ordem: { gt: card.ordem } },
-    orderBy: { ordem: direcao === "cima" ? "desc" : "asc" },
-    select: { id: true, ordem: true },
-  });
-  if (!vizinho) return;
+  const lista = Array.isArray(ids) ? ids.map(String) : [];
+  const atual = new Map(pagina.cards.map((c) => [c.id, c.ordem]));
+  if (lista.length !== atual.size || new Set(lista).size !== lista.length || lista.some((id) => !atual.has(id))) {
+    return { erro: "Os blocos mudaram enquanto você arrastava. Recarregue a página e tente de novo." };
+  }
 
-  await prisma.$transaction([
-    prisma.card.update({ where: { id: card.id }, data: { ordem: vizinho.ordem } }),
-    prisma.card.update({ where: { id: vizinho.id }, data: { ordem: card.ordem } }),
-  ]);
-
-  revalidar(card.pagina.cliente.slug);
+  const mudaram = lista.map((id, i) => ({ id, ordem: i + 1 })).filter((c) => atual.get(c.id) !== c.ordem);
+  if (mudaram.length) {
+    await prisma.$transaction(mudaram.map((c) => prisma.card.update({ where: { id: c.id }, data: { ordem: c.ordem } })));
+  }
+  revalidar(pagina.cliente.slug);
+  return {};
 }
 
 /** Duplica um card logo abaixo do original. */

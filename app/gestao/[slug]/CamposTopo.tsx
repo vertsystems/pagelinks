@@ -30,7 +30,7 @@ export default function CamposTopo({
   cabecalhoImagemUrl: string | null;
   corFundo: string;
   /** valores por tela dos ajustes do topo */
-  ajustes: { avatar: ValoresTela; cabecalho: ValoresTela; topo: ValoresTela };
+  ajustes: { avatar: ValoresTela; cabecalho: ValoresTela; topo: ValoresTela; titulo: ValoresTela; bio: ValoresTela };
 }) {
   const [comImagem, setComImagem] = useState(!!cabecalhoImagemUrl);
 
@@ -46,13 +46,20 @@ export default function CamposTopo({
         ajuste={{ chave: "avatar", valores: ajustes.avatar }}
       />
       {avatarUrl && <FormatoFoto paginaId={paginaId} formato={avatarFormato} />}
+      {/* tamanho da letra por tela; com a imagem no lugar dos dois, o texto nem aparece */}
       <div className={estilos.campo}>
         <label htmlFor="titulo">Título</label>
         <input id="titulo" type="text" name="titulo" defaultValue={titulo} required={!comImagem} disabled={comImagem} />
+        {!comImagem && (
+          <ControleAjuste alvo={{ tipo: "pagina", id: paginaId }} chave="titulo" valores={ajustes.titulo} rotulo="Tamanho" nomeAcessivel="Tamanho do título" />
+        )}
       </div>
       <div className={estilos.campo}>
         <label htmlFor="bio">Frase de apresentação</label>
         <textarea id="bio" name="bio" defaultValue={bio ?? ""} rows={2} disabled={comImagem} />
+        {!comImagem && (
+          <ControleAjuste alvo={{ tipo: "pagina", id: paginaId }} chave="bio" valores={ajustes.bio} rotulo="Tamanho" nomeAcessivel="Tamanho da frase de apresentação" />
+        )}
       </div>
       <CampoImagem
         alvo={{ tipo: "pagina", id: paginaId, campo: "cabecalhoImagemUrl" }}

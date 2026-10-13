@@ -94,6 +94,8 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                   avatar: valoresPorTela(pagina, "avatar"),
                   cabecalho: valoresPorTela(pagina, "cabecalho"),
                   topo: valoresPorTela(pagina, "topo"),
+                  titulo: valoresPorTela(pagina, "titulo"),
+                  bio: valoresPorTela(pagina, "bio"),
                 }}
               />
               {/* marca que este formulário cuida da chave: desmarcada, ela não iria no envio */}

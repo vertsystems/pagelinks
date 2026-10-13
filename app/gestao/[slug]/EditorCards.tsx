@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
+import { alternarCard, criarCard, duplicarCard, excluirCard, reordenarCards, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
@@ -77,6 +78,25 @@ function paraInput(d: Date | null) {
   return iso.slice(0, 16);
 }
 
+/** Um arraste em andamento. Fica num ref: muda a cada movimento do ponteiro e não precisa redesenhar. */
+type Arraste = {
+  id: string;
+  ponteiro: number;
+  alca: HTMLElement;
+  /** tira os ouvintes da janela e para a rolagem automática */
+  parar: () => void;
+  /** onde o ponteiro e o bloco estavam no começo, em coordenadas do documento */
+  yInicio: number;
+  topoInicio: number;
+  clientY: number;
+  inicial: string[];
+  atual: string[];
+  quadro: number;
+};
+
+// Perto da borda da janela, a página rola sozinha (a de cima desconta a barra fixa do painel).
+const BORDA_DE_ROLAGEM = { topo: 150, baixo: 70 };
+
 export default function EditorCards({
   paginaId,
   corFundo,
@@ -113,12 +133,168 @@ export default function EditorCards({
   }, [aberto]);
   const { tela } = useTela();
 
+  // Ordem na tela: muda na hora ao arrastar e é gravada ao soltar. A ordem que vem do
+  // servidor (bloco novo, duplicado, excluído, ordem gravada) só é absorvida fora de um
+  // arraste e sem gravação pendente; senão, a resposta de um arraste anterior desfazia
+  // o seguinte no meio do caminho. Gravação recusada zera `vista` e volta à do servidor.
+  const doServidor = cards.map((c) => c.id);
+  const [ordem, setOrdem] = useState(doServidor);
+  const [vista, setVista] = useState(doServidor.join());
+  const [gravando, setGravando] = useState(0);
+  const [arrastando, setArrastando] = useState<string | null>(null);
+  const [erroOrdem, setErroOrdem] = useState<string | null>(null);
+  const [aviso, setAviso] = useState("");
+  if (vista !== doServidor.join() && !gravando && !arrastando) {
+    setVista(doServidor.join());
+    setOrdem(doServidor);
+  }
+  const porId = new Map(cards.map((c) => [c.id, c]));
+  const lista = [...ordem.filter((id) => porId.has(id)), ...doServidor.filter((id) => !ordem.includes(id))].map((id) => porId.get(id)!);
+
+  const listaRef = useRef<HTMLDivElement>(null);
+  const arraste = useRef<Arraste | null>(null);
+  const elemento = (id: string, atributo = "data-editor-bloco") =>
+    listaRef.current?.querySelector<HTMLElement>(`[${atributo}="${id}"]`) ?? null;
+  const nomeDoBloco = (id: string) => porId.get(id)?.titulo || TIPOS.find((t) => t.valor === porId.get(id)?.tipo)?.nome || "Bloco";
+
+  async function gravarOrdem(ids: string[], movido: string) {
+    setGravando((n) => n + 1);
+    setErroOrdem(null);
+    const r = await reordenarCards(paginaId, ids).catch(() => ({ erro: "Não consegui gravar a nova ordem. Tente de novo." }));
+    setGravando((n) => n - 1);
+    if (r.erro) {
+      setErroOrdem(r.erro);
+      setVista("");
+    } else {
+      setAviso(`${nomeDoBloco(movido)}: posição ${ids.indexOf(movido) + 1} de ${ids.length}.`);
+    }
+  }
+
+  // A posição do ponteiro decide o lugar: o bloco vai para depois de todos os outros
+  // cujo meio já ficou acima dele. A lista se reorganiza na hora (flushSync, para medir
+  // o novo lugar no mesmo movimento) e o bloco segue o ponteiro com um translate que
+  // desconta onde ele foi parar. Medido em coordenadas do documento: a rolagem
+  // automática move a página sem mover o ponteiro.
+  function acompanhar() {
+    const a = arraste.current;
+    if (!a) return;
+    const outros = a.atual.filter((id) => id !== a.id);
+    const indice = outros.filter((id) => {
+      const caixa = elemento(id)?.getBoundingClientRect();
+      return caixa && caixa.top + caixa.height / 2 < a.clientY;
+    }).length;
+    const nova = [...outros.slice(0, indice), a.id, ...outros.slice(indice)];
+    if (nova.join() !== a.atual.join()) {
+      a.atual = nova;
+      flushSync(() => setOrdem(nova));
+      // o React move os nós para reordenar, e nó movido perde a captura do ponteiro:
+      // recaptura, para o arraste não escapar para a prévia (outro documento)
+      try {
+        a.alca.setPointerCapture(a.ponteiro);
+      } catch {}
+    }
+    const el = elemento(a.id);
+    if (el) el.style.transform = `translateY(${a.clientY + window.scrollY - a.yInicio - (el.offsetTop - a.topoInicio)}px)`;
+  }
+
+  function rolarNaBorda() {
+    const a = arraste.current;
+    if (!a) return;
+    const { topo, baixo } = BORDA_DE_ROLAGEM;
+    const passo =
+      a.clientY < topo ? -Math.ceil((topo - a.clientY) / 6)
+      : a.clientY > innerHeight - baixo ? Math.ceil((a.clientY - (innerHeight - baixo)) / 6)
+      : 0;
+    if (passo) {
+      window.scrollBy(0, passo);
+      acompanhar();
+    }
+    a.quadro = requestAnimationFrame(rolarNaBorda);
+  }
+
+  // O movimento e a soltura são ouvidos na janela, não na alça: a captura do ponteiro
+  // cai toda vez que a lista se reorganiza, e o arraste não pode acabar por isso.
+  function pegar(e: React.PointerEvent<HTMLButtonElement>, id: string) {
+    if (e.button !== 0 || arraste.current || lista.length < 2) return;
+    const el = elemento(id);
+    if (!el) return;
+    e.preventDefault();
+    const alca = e.currentTarget;
+    alca.setPointerCapture(e.pointerId);
+    const ids = lista.map((c) => c.id);
+    const ponteiro = e.pointerId;
+    const aoMover = (ev: PointerEvent) => {
+      const a = arraste.current;
+      if (!a || ev.pointerId !== ponteiro) return;
+      a.clientY = ev.clientY;
+      acompanhar();
+    };
+    const aoSoltar = (ev: PointerEvent) => {
+      if (ev.pointerId === ponteiro) soltar();
+    };
+    window.addEventListener("pointermove", aoMover);
+    window.addEventListener("pointerup", aoSoltar);
+    window.addEventListener("pointercancel", aoSoltar);
+    arraste.current = {
+      id,
+      ponteiro,
+      alca,
+      parar: () => {
+        window.removeEventListener("pointermove", aoMover);
+        window.removeEventListener("pointerup", aoSoltar);
+        window.removeEventListener("pointercancel", aoSoltar);
+        cancelAnimationFrame(arraste.current?.quadro ?? 0);
+      },
+      yInicio: e.clientY + window.scrollY,
+      topoInicio: el.offsetTop,
+      clientY: e.clientY,
+      inicial: ids,
+      atual: ids,
+      quadro: requestAnimationFrame(rolarNaBorda),
+    };
+    setErroOrdem(null);
+    setArrastando(id);
+  }
+
+  function soltar() {
+    const a = arraste.current;
+    if (!a) return;
+    a.parar();
+    arraste.current = null;
+    const el = elemento(a.id);
+    if (el) el.style.transform = "";
+    setArrastando(null);
+    if (a.atual.join() !== a.inicial.join()) gravarOrdem(a.atual, a.id);
+  }
+
+  // Pelo teclado: com a alça em foco, ↑ e ↓ andam uma posição (e gravam).
+  function teclado(e: React.KeyboardEvent, id: string) {
+    const passo = e.key === "ArrowUp" ? -1 : e.key === "ArrowDown" ? 1 : 0;
+    if (!passo || arraste.current) return;
+    e.preventDefault();
+    const ids = lista.map((c) => c.id);
+    const de = ids.indexOf(id);
+    const para = de + passo;
+    if (para < 0 || para >= ids.length) return;
+    ids.splice(de, 1);
+    ids.splice(para, 0, id);
+    flushSync(() => setOrdem(ids));
+    // mover o nó na página pode tirar o foco dele: devolve, e mantém o bloco à vista
+    elemento(id, "data-alca")?.focus();
+    elemento(id)?.scrollIntoView({ block: "nearest" });
+    gravarOrdem(ids, id);
+  }
+
+  // saiu da tela no meio de um arraste: solta a janela e para a rolagem automática
+  useEffect(() => () => arraste.current?.parar(), []);
+
   return (
     <div className={estilos.bloco}>
       <h2>
         Blocos da página
         <small>
           {cards.length} {cards.length === 1 ? "bloco" : "blocos"} · clique para editar
+          {cards.length > 1 && " · arraste pela alça para mudar a ordem"}
         </small>
       </h2>
 
@@ -134,8 +310,11 @@ export default function EditorCards({
         />
       </div>
 
-      <div className={estilos.listaCards}>
-        {cards.map((card, i) => {
+      {erroOrdem && <p className={estilos.erro} role="alert">{erroOrdem}</p>}
+      <p className={estilos.somenteLeitor} aria-live="polite">{aviso}</p>
+
+      <div ref={listaRef} className={`${estilos.listaCards} ${arrastando ? estilos.listaArrastando : ""}`}>
+        {lista.map((card) => {
           const usa = camposDoTipo(card.tipo);
           const estaAberto = aberto === card.id;
           const nomeTipo = TIPOS.find((t) => t.valor === card.tipo)?.nome ?? card.tipo;
@@ -144,9 +323,24 @@ export default function EditorCards({
             <div
               key={card.id}
               data-editor-bloco={card.id}
-              className={`${estilos.card} ${card.ativo ? "" : estilos.cardInativo} ${estaAberto ? estilos.cardAberto : ""}`}
+              className={`${estilos.card} ${card.ativo ? "" : estilos.cardInativo} ${estaAberto ? estilos.cardAberto : ""} ${arrastando === card.id ? estilos.cardArrastando : ""}`}
             >
               <div className={estilos.cardTopo}>
+                {lista.length > 1 && (
+                  <button
+                    type="button"
+                    className={estilos.alca}
+                    data-alca={card.id}
+                    title="Arraste para mudar a ordem"
+                    aria-label={`Mover ${nomeDoBloco(card.id)}: arraste, ou use as setas para cima e para baixo`}
+                    onPointerDown={(e) => pegar(e, card.id)}
+                    onKeyDown={(e) => teclado(e, card.id)}
+                  >
+                    <svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true">
+                      {[2, 8, 14].flatMap((y) => [2, 8].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" fill="currentColor" />))}
+                    </svg>
+                  </button>
+                )}
                 <span className={estilos.cardTipo}>{nomeTipo}</span>
                 {(() => {
                   // largura do bloco na tela que está sendo editada
@@ -163,12 +357,6 @@ export default function EditorCards({
                 </button>
 
                 <div className={estilos.cardAcoes}>
-                  <form action={moverCard.bind(null, card.id, "cima")}>
-                    <button className={estilos.iconeBtn} disabled={i === 0} title="Subir" aria-label="Subir">↑</button>
-                  </form>
-                  <form action={moverCard.bind(null, card.id, "baixo")}>
-                    <button className={estilos.iconeBtn} disabled={i === cards.length - 1} title="Descer" aria-label="Descer">↓</button>
-                  </form>
                   <form action={alternarCard.bind(null, card.id)}>
                     <button className={estilos.iconeBtn} title={card.ativo ? "Esconder da página" : "Mostrar na página"} aria-label={card.ativo ? "Esconder" : "Mostrar"}>
                       {card.ativo ? "👁" : "🚫"}

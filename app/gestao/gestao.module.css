@@ -184,8 +184,28 @@
 .salvarBarra { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
 .salvarBarra .aviso { font-size: 12.5px; color: var(--g-suave); }
 
-/* cards */
-.listaCards { display: flex; flex-direction: column; gap: 10px; }
+/* cards. position: relative faz o offsetTop dos blocos contar a partir da lista (o
+   arrastar mede por ele onde o bloco foi parar) */
+.listaCards { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.listaArrastando { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+/* alça de arrastar. touch-action: none faz o dedo arrastar o bloco em vez de rolar a tela */
+.alca {
+  flex: none; width: 26px; height: 34px; margin: -4px -4px -4px -6px; padding: 0;
+  display: grid; place-items: center; border: 0; border-radius: 6px;
+  background: transparent; color: var(--g-suave); cursor: grab; touch-action: none;
+}
+.alca:hover { background: var(--g-card-2); color: var(--g-texto); }
+.alca:active, .listaArrastando .alca { cursor: grabbing; }
+.alca:focus-visible { outline: 2px solid var(--g-foco); outline-offset: 1px; }
+/* bloco sendo arrastado: fica por cima dos outros, levantado */
+.cardArrastando {
+  position: relative; z-index: 2; opacity: 1;
+  border-color: var(--g-linha-forte); box-shadow: var(--g-sombra);
+}
+.somenteLeitor {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
 .card { background: var(--g-fundo); border: 1px solid var(--g-linha); border-radius: 12px; overflow: hidden; }
 .cardInativo { opacity: .5; }
 /* bloco em edição: borda em degradê verde-claro (truque das duas camadas de fundo:

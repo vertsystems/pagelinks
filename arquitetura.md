@@ -112,6 +112,30 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Arrastar blocos e tamanho do texto do topo — 13/10/2026
+
+**Arrastar no lugar das setas.** Cada bloco do editor tem uma alça (⠿) à esquerda: arrasta
+com mouse ou dedo, e a lista se reorganiza enquanto arrasta. Ao soltar, a ordem inteira é
+gravada de uma vez (`reordenarCards`, que substituiu o `moverCard`), e só os blocos que
+mudaram de posição são regravados. Com a alça em foco, ↑ e ↓ do teclado andam uma posição.
+Perto da borda da janela a página rola sozinha, para levar um bloco longe.
+
+Três detalhes que custaram tempo, em `EditorCards.tsx`:
+- **O movimento é ouvido na janela, não na alça.** Para reordenar, o React move os nós,
+  e nó movido perde a captura do ponteiro; ouvindo só a alça, o arraste parava depois de
+  uma posição. A cada reorganização a alça recaptura o ponteiro, para o arraste não
+  escapar para a prévia (que é outro documento)
+- **A ordem do servidor só é absorvida fora de arraste e sem gravação pendente.** Senão a
+  resposta de um arraste desfazia o seguinte no meio do caminho
+- A ação recusa a lista que não for exatamente a dos blocos da página (a mais, a menos
+  ou repetido), em vez de gravar meia ordem
+
+**Tamanho do título e da frase.** Duas barras novas no topo do editor, por tela
+(`AJUSTES.titulo` e `AJUSTES.bio`, colunas `tituloTamanho` e `bioTamanho`). Padrão de sempre:
+título 24 px no celular e 28 px no tablet e no computador, frase 16 px. Somem enquanto
+houver imagem no lugar do título e da frase. Medido antes e depois em seis páginas com
+título em texto, nas três larguras: nada mudou.
+
 ## Bolinha de conferido — 13/10/2026
 
 Para o Bruno marcar, página a página, o que já revisou. Cada cliente tem `conferido`

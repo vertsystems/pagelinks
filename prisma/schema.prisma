@@ -48,6 +48,8 @@ model Pagina {
   // arte da marca que já traz o nome e a frase: quando existe, substitui título e bio na página
   cabecalhoImagemUrl String?
   cabecalhoTamanho   Int? // largura em % da coluna; vazio = 100
+  tituloTamanho Int? // tamanho da letra do título em px; vazio = 24 no celular, 28 no tablet e no computador
+  bioTamanho    Int? // tamanho da letra da frase em px; vazio = 16
   publicada Boolean @default(false)
 
   // tema — o que o painel edita sem tocar em código

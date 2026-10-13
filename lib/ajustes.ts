@@ -47,6 +47,8 @@ export const AJUSTES = {
   avatar: { alvo: "pagina", coluna: "avatarTamanho", variavel: "avatar", tipo: "numero", faixa: TAMANHO_NA_PAGINA.avatar, padrao: igual(104) },
   cabecalho: { alvo: "pagina", coluna: "cabecalhoTamanho", variavel: "cabecalho", tipo: "numero", faixa: TAMANHO_NA_PAGINA.cabecalho, padrao: igual(100) },
   topo: { alvo: "pagina", coluna: "espacoTopo", variavel: "topo", tipo: "numero", faixa: AJUSTE_PAGINA.topo, padrao: { celular: 36, tablet: 48, computador: 48 } },
+  titulo: { alvo: "pagina", coluna: "tituloTamanho", variavel: "titulo", tipo: "numero", faixa: AJUSTE_PAGINA.titulo, padrao: { celular: 24, tablet: 28, computador: 28 } },
+  bio: { alvo: "pagina", coluna: "bioTamanho", variavel: "bio", tipo: "numero", faixa: AJUSTE_PAGINA.bio, padrao: igual(16) },
   blocos: { alvo: "pagina", coluna: "espacoBlocos", variavel: "blocos", tipo: "numero", faixa: AJUSTE_PAGINA.blocos, padrao: igual(14) },
   // vão entre blocos lado a lado; sem valor, igual ao espaço entre os blocos daquela tela
   lado: { alvo: "pagina", coluna: "espacoLado", variavel: "lado", tipo: "numero", faixa: AJUSTE_PAGINA.lado, padrao: igual(14), segue: "blocos" },
