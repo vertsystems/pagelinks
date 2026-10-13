@@ -194,6 +194,23 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Espaços da página e prévia no computador — 14/10/2026
+
+- **Espaço acima do topo** (`Pagina.espacoTopo`, de 0 a 320 px), no bloco "Página": empurra a
+  foto, ou o que vier primeiro, e o resto da página para baixo. Vazio segue o de antes (36 px no
+  celular, 48 no computador); com valor escolhido, vale nos dois. Por isso o padrão da barra é
+  36, o do celular
+- **Espaço entre os blocos** (`Pagina.espacoBlocos`, de 0 a 48 px, padrão 14), no topo de
+  "Blocos da página"
+- As duas barras viram as variáveis `--espaco-topo` e `--espaco-blocos` da página (só quando
+  escolhidas, em `variaveisDoTema`), mexem na prévia ao vivo pelo `data-pl-tela` e gravam
+  sozinhas (`salvarAjustePagina`). A regra de celular do `pagina.module.css` também usa a
+  variável: sem isso, a barra não fazia efeito em tela de até 480 px
+- **Prévia "Celular | Computador":** no modo computador a página é desenhada em 1280×800 e
+  reduzida em escala para caber (o `ResizeObserver` acompanha a largura), com uma moldura de
+  navegador, e a coluna da prévia alarga (`.editor:has(.previaComputador)`). O iframe é o
+  mesmo nos dois modos: trocar não recarrega nem perde a rolagem
+
 ## Listas que voltavam depois de salvar — 13/10/2026
 
 O React 19 reseta o formulário quando a ação de servidor termina, e um `<select>` volta à

@@ -76,6 +76,29 @@
   padding: 10px; box-shadow: var(--g-sombra);
 }
 .previaMoldura iframe { width: 100%; height: 660px; border: 0; border-radius: 14px; display: block; background: #fff; }
+.previaArea { overflow: hidden; border-radius: 14px; }
+
+/* modo computador: moldura de navegador e coluna da prévia mais larga */
+.molduraComputador { border-radius: 12px; padding: 0 0 8px; }
+.molduraComputador .previaArea { border-radius: 0 0 6px 6px; margin: 0 8px; }
+.molduraComputador iframe { border-radius: 0; }
+.navegador { display: flex; align-items: center; gap: 6px; padding: 9px 12px; }
+.navegador i { width: 9px; height: 9px; border-radius: 50%; background: rgb(255 255 255 / .28); }
+.navegador span {
+  flex: 1; margin-left: 8px; padding: 3px 10px; border-radius: 6px; background: rgb(255 255 255 / .12);
+  font-family: var(--g-mono); font-size: 11px; color: rgb(255 255 255 / .75);
+}
+.editor:has(.previaComputador) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+
+/* Celular | Computador */
+.alternador { display: inline-flex; border: 1px solid var(--g-linha-forte); border-radius: 8px; overflow: hidden; }
+.alternador button {
+  background: transparent; border: 0; padding: 6px 12px; font: inherit; font-size: 12.5px; font-weight: 600;
+  color: var(--g-suave); cursor: pointer;
+}
+.alternador button + button { border-left: 1px solid var(--g-linha-forte); }
+.alternador button[aria-pressed="true"] { background: var(--g-acento); color: var(--g-acento-texto); }
+.alternador button:focus-visible { outline: 2px solid var(--g-foco); outline-offset: -2px; }
 .previaBarra { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .previaBarra span { font-family: var(--g-mono); font-size: 12px; color: var(--g-suave); }
 
@@ -169,7 +192,7 @@
 .erro { background: var(--g-perigo-fundo); border: 1px solid var(--g-perigo-borda); color: var(--g-perigo-texto); padding: 11px 14px; border-radius: 9px; font-size: 14px; margin-bottom: 14px; }
 
 @media (max-width: 1100px) {
-  .editor { grid-template-columns: 1fr; }
+  .editor, .editor:has(.previaComputador) { grid-template-columns: 1fr; }
   .previa { position: static; }
   .previaMoldura iframe { height: 520px; }
 }

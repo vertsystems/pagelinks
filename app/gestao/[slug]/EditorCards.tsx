@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
+import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarAjustePagina, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
+import BarraAjuste, { naPrevia } from "./BarraAjuste";
+import { AJUSTE_PAGINA } from "@/lib/tema";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -68,8 +70,19 @@ function paraInput(d: Date | null) {
   return iso.slice(0, 16);
 }
 
-export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: string; corFundo: string; cards: Card[] }) {
+export default function EditorCards({
+  paginaId,
+  corFundo,
+  espacoBlocos,
+  cards,
+}: {
+  paginaId: string;
+  corFundo: string;
+  espacoBlocos: number | null;
+  cards: Card[];
+}) {
   const [aberto, setAberto] = useState<string | null>(null);
+  const [erroEspaco, setErroEspaco] = useState<string | null>(null);
 
   return (
     <div className={estilos.bloco}>
@@ -79,6 +92,17 @@ export default function EditorCards({ paginaId, corFundo, cards }: { paginaId: s
           {cards.length} {cards.length === 1 ? "bloco" : "blocos"} · clique para editar
         </small>
       </h2>
+
+      <div className={estilos.campo} style={{ marginBottom: 14 }}>
+        <BarraAjuste
+          rotulo="Espaço entre os blocos"
+          valor={espacoBlocos}
+          faixa={AJUSTE_PAGINA.blocos}
+          aoMover={(v) => naPrevia("[data-pl-tela]")?.style.setProperty("--espaco-blocos", `${v}px`)}
+          aoGravar={async (v) => setErroEspaco((await salvarAjustePagina(paginaId, "blocos", v)).erro ?? null)}
+        />
+        {erroEspaco && <span className={estilos.erroCampo} role="alert">{erroEspaco}</span>}
+      </div>
 
       <div className={estilos.listaCards}>
         {cards.map((card, i) => {

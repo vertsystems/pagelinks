@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { AJUSTE_PAGINA } from "@/lib/tema";
+import { salvarAjustePagina } from "../acoes";
+import BarraAjuste, { naPrevia } from "./BarraAjuste";
 import CampoImagem from "./CampoImagem";
 import estilos from "../gestao.module.css";
 
@@ -18,6 +21,7 @@ export default function CamposTopo({
   cabecalhoImagemUrl,
   cabecalhoTamanho,
   corFundo,
+  espacoTopo,
 }: {
   paginaId: string;
   titulo: string;
@@ -27,8 +31,10 @@ export default function CamposTopo({
   cabecalhoImagemUrl: string | null;
   cabecalhoTamanho: number | null;
   corFundo: string;
+  espacoTopo: number | null;
 }) {
   const [comImagem, setComImagem] = useState(!!cabecalhoImagemUrl);
+  const [erroEspaco, setErroEspaco] = useState<string | null>(null);
 
   return (
     <>
@@ -62,6 +68,17 @@ export default function CamposTopo({
         tamanho={cabecalhoTamanho}
         aoMudar={(url) => setComImagem(!!url)}
       />
+      <div className={estilos.campo}>
+        <BarraAjuste
+          rotulo="Espaço acima do topo"
+          valor={espacoTopo}
+          faixa={AJUSTE_PAGINA.topo}
+          aoMover={(v) => naPrevia("[data-pl-tela]")?.style.setProperty("--espaco-topo", `${v}px`)}
+          aoGravar={async (v) => setErroEspaco((await salvarAjustePagina(paginaId, "topo", v)).erro ?? null)}
+        />
+        <span className={estilos.dica}>Empurra a foto (ou o que vier primeiro) e o resto da página para baixo. Grava sozinho.</span>
+        {erroEspaco && <span className={estilos.erroCampo} role="alert">{erroEspaco}</span>}
+      </div>
     </>
   );
 }

@@ -59,6 +59,10 @@ model Pagina {
   fundoImagemUrl String?
   fundoCorFim   String? // segunda cor, quando fundoTipo = gradiente
 
+  // espaços, em px (barras do painel); vazio = padrão
+  espacoTopo   Int? // acima do primeiro elemento da página; vazio = 36 no celular, 48 no computador
+  espacoBlocos Int? // entre um bloco e outro; vazio = 14
+
   // SEO e compartilhamento
   seoTitulo    String?
   seoDescricao String?

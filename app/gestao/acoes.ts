@@ -7,6 +7,7 @@ import type { Prisma } from "@/lib/generated/prisma/client";
 import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
 import { AJUSTE_ICONES, REDE_POR_ID, type AjusteIcones } from "@/lib/redes";
+import { AJUSTE_PAGINA, type AjustePagina } from "@/lib/tema";
 import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, TAMANHO_NA_PAGINA, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 
@@ -482,6 +483,28 @@ export async function salvarAjusteIcones(cardId: string, ajuste: AjusteIcones, v
       select: { pagina: { select: { cliente: { select: { slug: true } } } } },
     });
     revalidar(card.pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar o ajuste. Recarregue a página." };
+  }
+}
+
+/** Barras de espaço da página: acima do topo ou entre os blocos. O padrão fica gravado como vazio. */
+export async function salvarAjustePagina(paginaId: string, ajuste: AjustePagina, valor: number): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (!Object.hasOwn(AJUSTE_PAGINA, ajuste) || !Number.isFinite(valor)) return { erro: "Esse ajuste não pode ser gravado." };
+
+  const { min, max, padrao } = AJUSTE_PAGINA[ajuste];
+  const escolhido = Math.round(Math.min(max, Math.max(min, valor)));
+  const gravar = escolhido === padrao ? null : escolhido;
+
+  try {
+    const pagina = await prisma.pagina.update({
+      where: { id: String(paginaId) },
+      data: ajuste === "topo" ? { espacoTopo: gravar } : { espacoBlocos: gravar },
+      select: { cliente: { select: { slug: true } } },
+    });
+    revalidar(pagina.cliente.slug);
     return {};
   } catch {
     return { erro: "Não consegui gravar o ajuste. Recarregue a página." };

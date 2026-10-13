@@ -88,7 +88,7 @@ export default async function PaginaPublica({ params }: Props) {
   return (
     <>
       {fonte && <link rel="stylesheet" href={fonte} />}
-      <main className={estilos.tela} style={variaveisDoTema(pagina)}>
+      <main className={estilos.tela} style={variaveisDoTema(pagina)} data-pl-tela>
         <div className={estilos.conteudo}>
           {pagina.avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
