@@ -82,13 +82,15 @@ export default function EditorCards({
   corFundo,
   corTexto,
   blocos,
+  lado,
   cards,
 }: {
   paginaId: string;
   corFundo: string;
   corTexto: string;
-  /** espaço entre os blocos, por tela */
+  /** espaço entre os blocos e entre blocos lado a lado, por tela */
   blocos: ValoresTela;
+  lado: ValoresTela;
   cards: Card[];
 }) {
   const [aberto, setAberto] = useState<string | null>(null);
@@ -122,6 +124,14 @@ export default function EditorCards({
 
       <div className={estilos.campo} style={{ marginBottom: 14 }}>
         <ControleAjuste alvo={{ tipo: "pagina", id: paginaId }} chave="blocos" valores={blocos} rotulo="Espaço entre os blocos" />
+        <ControleAjuste
+          alvo={{ tipo: "pagina", id: paginaId }}
+          chave="lado"
+          valores={lado}
+          rotulo="Espaço entre blocos lado a lado"
+          padraoDe={{ chave: "blocos", valores: blocos }}
+          rotuloPadrao="igual ao espaço entre os blocos"
+        />
       </div>
 
       <div className={estilos.listaCards}>

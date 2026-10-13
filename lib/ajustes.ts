@@ -35,6 +35,8 @@ type Numerico = {
   tipo: "numero";
   faixa: Faixa;
   padrao: Record<Tela, number>;
+  /** sem valor gravado, segue outro ajuste (e não um número fixo) */
+  segue?: string;
 };
 type Largura = { alvo: "card"; coluna: "largura"; variavel: "largura"; tipo: "largura"; padrao: Record<Tela, string> };
 
@@ -46,6 +48,8 @@ export const AJUSTES = {
   cabecalho: { alvo: "pagina", coluna: "cabecalhoTamanho", variavel: "cabecalho", tipo: "numero", faixa: TAMANHO_NA_PAGINA.cabecalho, padrao: igual(100) },
   topo: { alvo: "pagina", coluna: "espacoTopo", variavel: "topo", tipo: "numero", faixa: AJUSTE_PAGINA.topo, padrao: { celular: 36, tablet: 48, computador: 48 } },
   blocos: { alvo: "pagina", coluna: "espacoBlocos", variavel: "blocos", tipo: "numero", faixa: AJUSTE_PAGINA.blocos, padrao: igual(14) },
+  // vão entre blocos lado a lado; sem valor, igual ao espaço entre os blocos daquela tela
+  lado: { alvo: "pagina", coluna: "espacoLado", variavel: "lado", tipo: "numero", faixa: AJUSTE_PAGINA.lado, padrao: igual(14), segue: "blocos" },
   // bloco
   imagem: { alvo: "card", coluna: "imagemTamanho", variavel: "imagem", tipo: "numero", faixa: TAMANHO_NA_PAGINA.card, padrao: igual(100) },
   icone: { alvo: "card", coluna: "iconeTamanho", variavel: "icone", tipo: "numero", faixa: AJUSTE_ICONES.tamanho, padrao: igual(28) },
@@ -86,7 +90,7 @@ export function valoresPorTela(registro: ComAjustes, chave: ChaveAjuste): Valore
  * padrão. `seguiria` é o que ela mostraria sem o valor próprio, para o "seguir o
  * celular" do painel.
  */
-export function valorNaTela(valores: ValoresTela, chave: ChaveAjuste, tela: Tela) {
+export function valorNaTela(valores: ValoresTela, chave: ChaveAjuste, tela: Tela, padrao?: ValorAjuste) {
   const ordem = TELAS.map((t) => t.id);
   const indice = ordem.indexOf(tela);
   const herdado = (ate: number) => {
@@ -94,7 +98,7 @@ export function valorNaTela(valores: ValoresTela, chave: ChaveAjuste, tela: Tela
       const v = valores[ordem[i]];
       if (v !== null) return { valor: v, de: ordem[i] as Tela | null };
     }
-    return { valor: AJUSTES[chave].padrao[tela] as ValorAjuste, de: null as Tela | null };
+    return { valor: padrao ?? (AJUSTES[chave].padrao[tela] as ValorAjuste), de: null as Tela | null };
   };
   const proprio = valores[tela];
   const sem = herdado(indice - 1);
@@ -148,13 +152,22 @@ export function normalizarAjuste(chave: ChaveAjuste, valor: unknown): { ok: true
  * proporção: 3/4 + 3/4 vira metade e metade, 3/4 + 1/2 vira 60% e 40%. Linha que soma
  * até 1 fica como está (1/2 + 1/2 exato; 1/2 sozinho, centralizado).
  * Recebe só os blocos que aparecem na página, na ordem.
+ *
+ * `encosto`: numa linha de dois, o primeiro encosta no fim da célula e o segundo no
+ * começo. Imagem menor que a célula (barra de tamanho abaixo de 100%) fica junto da
+ * vizinha, e a sobra vai para as bordas de fora; sem isso, as duas sobras somavam no meio.
  */
 export function fracoesNaTela(blocos: (ComAjustes & { id: string })[], tela: Tela) {
   const fracoes = new Map<string, number>();
+  const encostos = new Map<string, "fim" | "inicio">();
   let linha: { id: string; fracao: number }[] = [];
   const fechar = () => {
     const soma = linha.reduce((s, b) => s + b.fracao, 0);
     for (const b of linha) fracoes.set(b.id, soma > 1 ? b.fracao / soma : b.fracao);
+    if (linha.length === 2) {
+      encostos.set(linha[0].id, "fim");
+      encostos.set(linha[1].id, "inicio");
+    }
     linha = [];
   };
 
@@ -177,21 +190,27 @@ export function fracoesNaTela(blocos: (ComAjustes & { id: string })[], tela: Tel
     linha.push({ id: bloco.id, fracao });
   }
   fechar();
-  return fracoes;
+  return { fracoes, encostos };
 }
 
 /** Variável de CSS da fração real de um bloco numa tela: --fr-m, --fr-t, --fr-d. */
 export const variavelDaLinha = (tela: Tela) => `--fr-${TELAS.find((t) => t.id === tela)!.sufixo}`;
 
-/** As variáveis de linha de cada bloco, nas três telas (só as diferentes de inteira). */
+/**
+ * As variáveis de linha de cada bloco, nas três telas: a fração real (--fr-*, só a
+ * diferente de inteira) e o encosto da imagem (--enc-*, margin-inline: "auto 0" encosta
+ * no fim, "0 auto" no começo).
+ */
 export function variaveisDeLinha(blocos: (ComAjustes & { id: string })[]) {
-  const porTela = TELAS.map((t) => ({ tela: t.id, fracoes: fracoesNaTela(blocos, t.id) }));
+  const porTela = TELAS.map((t) => ({ tela: t, ...fracoesNaTela(blocos, t.id) }));
   const estilos = new Map<string, React.CSSProperties>();
   for (const { id } of blocos) {
     const estilo: Record<string, string> = {};
-    for (const { tela, fracoes } of porTela) {
+    for (const { tela, fracoes, encostos } of porTela) {
       const f = fracoes.get(id) ?? 1;
-      if (f < 1) estilo[variavelDaLinha(tela)] = String(Math.round(f * 1e4) / 1e4);
+      if (f < 1) estilo[variavelDaLinha(tela.id)] = String(Math.round(f * 1e4) / 1e4);
+      const encosto = encostos.get(id);
+      if (encosto) estilo[`--enc-${tela.sufixo}`] = encosto === "fim" ? "auto 0" : "0 auto";
     }
     estilos.set(id, estilo as React.CSSProperties);
   }

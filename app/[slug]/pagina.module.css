@@ -5,15 +5,18 @@
    menor; sem nenhuma, vale o padrão da tela. A largura na linha é diferente: vem já
    resolvida por tela (--fr-m, --fr-t, --fr-d), porque depende dos vizinhos (blocos que
    não cabem dividem a linha, ver fracoesNaTela). O resto do arquivo só lê --topo,
-   --blocos, --avatar, --cabecalho, --fracao, --imagem, --icone e --vao. */
+   --blocos, --lado, --avatar, --cabecalho, --fracao, --encosto, --imagem, --icone e --vao.
+   --lado (vão entre blocos lado a lado) sem valor segue o --blocos da tela. */
 .tela {
   --topo: var(--topo-m, 36px);
   --blocos: var(--blocos-m, 14px);
+  --lado: var(--lado-m, var(--blocos));
   --avatar: var(--avatar-m, 104px);
   --cabecalho: var(--cabecalho-m, 100%);
 }
 .celula {
   --fracao: var(--fr-m, 1);
+  --encosto: var(--enc-m, auto);
   --imagem: var(--imagem-m, 100%);
   --icone: var(--icone-m, 28px);
   --vao: var(--vao-m, 24px);
@@ -22,11 +25,13 @@
   .tela {
     --topo: var(--topo-t, var(--topo-m, 48px));
     --blocos: var(--blocos-t, var(--blocos-m, 14px));
+    --lado: var(--lado-t, var(--lado-m, var(--blocos)));
     --avatar: var(--avatar-t, var(--avatar-m, 104px));
     --cabecalho: var(--cabecalho-t, var(--cabecalho-m, 100%));
   }
   .celula {
     --fracao: var(--fr-t, 1);
+    --encosto: var(--enc-t, auto);
     --imagem: var(--imagem-t, var(--imagem-m, 100%));
     --icone: var(--icone-t, var(--icone-m, 28px));
     --vao: var(--vao-t, var(--vao-m, 24px));
@@ -36,11 +41,13 @@
   .tela {
     --topo: var(--topo-d, var(--topo-t, var(--topo-m, 48px)));
     --blocos: var(--blocos-d, var(--blocos-t, var(--blocos-m, 14px)));
+    --lado: var(--lado-d, var(--lado-t, var(--lado-m, var(--blocos))));
     --avatar: var(--avatar-d, var(--avatar-t, var(--avatar-m, 104px)));
     --cabecalho: var(--cabecalho-d, var(--cabecalho-t, var(--cabecalho-m, 100%)));
   }
   .celula {
     --fracao: var(--fr-d, 1);
+    --encosto: var(--enc-d, auto);
     --imagem: var(--imagem-d, var(--imagem-t, var(--imagem-m, 100%)));
     --icone: var(--icone-d, var(--icone-t, var(--icone-m, 28px)));
     --vao: var(--vao-d, var(--vao-t, var(--vao-m, 24px)));
@@ -91,14 +98,14 @@
   max-width: 46ch;
 }
 
-.blocos { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: var(--blocos); }
+.blocos { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; row-gap: var(--blocos); column-gap: var(--lado); }
 
 /* Cada bloco numa célula que ocupa uma fração da linha (--fracao, da tela; 1 = inteira).
    largura = fração × 100% − (1 − fração) × espaço: frações que somam 1 fecham a linha
    exata, já descontado o espaço entre elas. Na mesma linha, as células ficam da mesma
    altura, e o botão ocupa a altura toda; imagem e texto ficam centralizados. */
 .celula {
-  flex: 0 0 calc(var(--fracao) * 100% - (1 - var(--fracao)) * var(--blocos));
+  flex: 0 0 calc(var(--fracao) * 100% - (1 - var(--fracao)) * var(--lado));
   min-width: 0;
   display: flex; flex-direction: column; justify-content: center;
 }
@@ -166,7 +173,8 @@
 .icone:hover { transform: translateY(-2px); opacity: .85; }
 .icone:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
-.imagem { width: var(--imagem); border-radius: var(--raio); display: block; margin-inline: auto; }
+/* --encosto: numa linha de dois blocos, a imagem encosta na vizinha (ver fracoesNaTela) */
+.imagem { width: var(--imagem); border-radius: var(--raio); display: block; margin-inline: var(--encosto); }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }
 

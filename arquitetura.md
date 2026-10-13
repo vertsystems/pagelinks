@@ -199,6 +199,21 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Blocos lado a lado mais juntos — 13/10/2026
+
+Na Amanda Tabet, dois cards em 1/2 com a imagem a ~90% pareciam longe no centro: a sobra
+de cada imagem ia para os dois lados, e as duas do meio somavam com o espaço entre os
+blocos (uns 44 px no meio contra 10 entre linhas). Duas mudanças:
+
+- **Encosto:** numa linha de dois blocos, a imagem do primeiro encosta no fim da célula e
+  a do segundo no começo (`--enc-*`, de `fracoesNaTela`); a sobra vai para as bordas de
+  fora. Com três ou mais na linha, continuam centralizadas
+- **"Espaço entre blocos lado a lado"** (`Pagina.espacoLado`, ajuste `lado`, por tela): o vão
+  horizontal, separado do vertical. Sem valor, segue o "Espaço entre os blocos" da tela
+  (por isso, no celular, o valor escolhido é gravado mesmo quando dá 14)
+- Testado com banners largos a 85% em 3/4 + 3/4 no computador: vão no meio igual ao
+  vertical (14 px), e 4 px com a barra em 4
+
 ## Pelo menos dois por linha — 13/10/2026
 
 Pedido do Bruno: no computador, dois blocos seguidos em 3/4 devem ficar lado a lado.

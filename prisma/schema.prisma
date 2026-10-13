@@ -62,6 +62,7 @@ model Pagina {
   // espaços, em px (barras do painel); vazio = padrão
   espacoTopo   Int? // acima do primeiro elemento da página; vazio = 36 no celular, 48 no computador
   espacoBlocos Int? // entre um bloco e outro; vazio = 14
+  espacoLado   Int? // entre blocos lado a lado; vazio = igual ao espacoBlocos
 
   // Layout por tela (lib/ajustes.ts). As colunas de tamanho e espaço acima são as do
   // celular; tablet e computador guardam só o que mudou, em JSON ({"topo": 80, ...}).

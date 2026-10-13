@@ -20,6 +20,8 @@ type TemaPagina = {
 export const AJUSTE_PAGINA = {
   topo: { min: 0, max: 320, passo: 4, padrao: 36, unidade: "px" },
   blocos: { min: 0, max: 48, passo: 2, padrao: 14, unidade: "px" },
+  // entre blocos lado a lado; sem valor, segue o espaço entre os blocos (ver AJUSTES.lado)
+  lado: { min: 0, max: 48, passo: 2, padrao: 14, unidade: "px" },
 } as const;
 
 export type AjustePagina = keyof typeof AJUSTE_PAGINA;

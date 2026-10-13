@@ -480,7 +480,10 @@ export async function salvarAjuste(
   if (!def || def.alvo !== alvo?.tipo || !TELAS.some((t) => t.id === tela)) return { erro: "Esse ajuste não pode ser gravado." };
   const normal = normalizarAjuste(chave, valor);
   if (!normal.ok) return { erro: "Esse valor não serve para esse ajuste." };
-  const gravar = tela === "celular" && normal.valor === def.padrao.celular ? null : normal.valor;
+  // o padrão do celular vira vazio, menos em ajuste que segue outro (o "lado" segue o
+  // espaço entre os blocos): ali vazio quer dizer "igual ao outro", não o número padrão
+  const segueOutro = "segue" in def && def.segue;
+  const gravar = tela === "celular" && !segueOutro && normal.valor === def.padrao.celular ? null : normal.valor;
   const id = String(alvo.id);
 
   try {

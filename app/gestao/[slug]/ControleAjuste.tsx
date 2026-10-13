@@ -36,12 +36,18 @@ export default function ControleAjuste({
   valores,
   rotulo,
   nomeAcessivel,
+  padraoDe,
+  rotuloPadrao,
 }: {
   alvo: AlvoAjuste;
   chave: ChaveAjuste;
   valores: ValoresTela;
   rotulo: string;
   nomeAcessivel?: string;
+  /** sem valor, segue outro ajuste (o "lado" segue o espaço entre os blocos) */
+  padraoDe?: { chave: ChaveAjuste; valores: ValoresTela };
+  /** como chamar o padrão, quando não é o número fixo ("igual ao espaço entre os blocos") */
+  rotuloPadrao?: string;
 }) {
   const { tela } = useTela();
   const [erro, setErro] = useState<string | null>(null);
@@ -49,7 +55,8 @@ export default function ControleAjuste({
   const def = AJUSTES[chave];
   if (def.tipo !== "numero") return null;
 
-  const { valor, proprio, seguiria } = valorNaTela({ ...valores, ...locais }, chave, tela);
+  const padrao = padraoDe ? valorNaTela(padraoDe.valores, padraoDe.chave, tela).valor : undefined;
+  const { valor, proprio, seguiria } = valorNaTela({ ...valores, ...locais }, chave, tela, padrao);
 
   function aplicar(v: ValorAjuste | null, naTela: Tela) {
     const variavel = variavelCss(chave, naTela);
@@ -64,7 +71,7 @@ export default function ControleAjuste({
     setErro((await salvarAjuste(alvo, chave, naTela, v)).erro ?? null);
   }
 
-  const voltarPara = seguiria.de ? `seguir o ${nomeDaTela(seguiria.de)}` : "voltar ao padrão";
+  const voltarPara = seguiria.de ? `seguir o ${nomeDaTela(seguiria.de)}` : (rotuloPadrao ?? "voltar ao padrão");
 
   return (
     <>
@@ -75,7 +82,7 @@ export default function ControleAjuste({
         valor={Number(valor)}
         faixa={def.faixa as Faixa}
         proprio={proprio}
-        nota={tela === "celular" ? undefined : seguiria.de ? `segue o ${nomeDaTela(seguiria.de)}` : "padrão"}
+        nota={seguiria.de ? (tela === "celular" ? undefined : `segue o ${nomeDaTela(seguiria.de)}`) : (rotuloPadrao ?? (tela === "celular" ? undefined : "padrão"))}
         aoMover={(v) => aplicar(v, tela)}
         aoGravar={(v) => gravar(v, tela)}
         voltar={{ rotulo: voltarPara, valor: Number(seguiria.valor), aoVoltar: () => (aplicar(null, tela), gravar(null, tela)) }}
