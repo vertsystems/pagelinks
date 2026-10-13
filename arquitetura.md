@@ -194,6 +194,14 @@ imagem que substitui título e frase, na imagem de bloco e no fundo. O endereço
 gravava todos os campos em todo envio. O do topo não mandava cores nem SEO, então salvar o
 título voltava as cores para o padrão e apagava o SEO. Agora só muda o campo que veio no envio.
 
+## Bloco em edição em foco — 13/10/2026
+
+Abrir um bloco no editor dá a ele uma borda em degradê verde-claro com halo (`.cardAberto`),
+leva a rolagem do editor até ele (o topo fica 88 px abaixo do alto da tela, logo depois da
+barra fixa) e rola a prévia até o mesmo bloco, no centro. Não trava a rolagem. A prévia
+rola só a página de dentro (`scrollTo` na janela do iframe; `scrollIntoView` ali puxaria o
+editor junto). Com "reduzir movimento" ligado no sistema, a rolagem é sem animação.
+
 ## Layout por tela: celular, tablet e computador — 14/10/2026
 
 Tamanhos, espaços e larguras são escolhidos **por tela**; conteúdo (texto, link, imagem,

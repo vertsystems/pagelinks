@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { alternarCard, criarCard, duplicarCard, excluirCard, moverCard, salvarCard } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
 import EscolhaLargura from "./EscolhaLargura";
 import ControleAjuste from "./ControleAjuste";
+import { naPrevia } from "./BarraAjuste";
 import { useTela } from "./Tela";
 import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
 import estilos from "../gestao.module.css";
@@ -88,6 +89,23 @@ export default function EditorCards({
   cards: Card[];
 }) {
   const [aberto, setAberto] = useState<string | null>(null);
+
+  // Bloco aberto: o editor rola até ele (o topo fica logo abaixo da barra fixa, ver
+  // scroll-margin em .cardAberto) e a prévia rola até o mesmo bloco, no centro. Só leva
+  // a rolagem até lá, não trava: dá para continuar rolando à vontade.
+  useEffect(() => {
+    if (!aberto) return;
+    const suave: ScrollBehavior = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    document.querySelector(`[data-editor-bloco="${aberto}"]`)?.scrollIntoView({ behavior: suave, block: "start" });
+
+    // na prévia, rola só a página de dentro: scrollIntoView ali puxaria o editor junto
+    const naPagina = naPrevia(`[data-pl-bloco="${aberto}"]`);
+    const janela = naPagina?.ownerDocument.defaultView;
+    if (naPagina && janela) {
+      const caixa = naPagina.getBoundingClientRect();
+      janela.scrollTo({ top: janela.scrollY + caixa.top - (janela.innerHeight - caixa.height) / 2, behavior: suave });
+    }
+  }, [aberto]);
   const { tela } = useTela();
 
   return (
@@ -112,7 +130,8 @@ export default function EditorCards({
           return (
             <div
               key={card.id}
-              className={`${estilos.card} ${card.ativo ? "" : estilos.cardInativo}`}
+              data-editor-bloco={card.id}
+              className={`${estilos.card} ${card.ativo ? "" : estilos.cardInativo} ${estaAberto ? estilos.cardAberto : ""}`}
             >
               <div className={estilos.cardTopo}>
                 <span className={estilos.cardTipo}>{nomeTipo}</span>
