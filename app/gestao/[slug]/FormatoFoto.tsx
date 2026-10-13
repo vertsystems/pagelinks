@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { salvarFormatoFoto } from "../acoes";
-import { naPrevia } from "./BarraAjuste";
+import { retocarPrevia } from "./BarraAjuste";
 import estilos from "../gestao.module.css";
 
 /**
@@ -16,11 +16,10 @@ export default function FormatoFoto({ paginaId, formato: inicial }: { paginaId: 
 
   async function escolher(valor: "redonda" | "livre") {
     setFormato(valor);
-    const foto = naPrevia("[data-pl-avatar]");
-    if (foto) {
+    retocarPrevia("formato da foto", "[data-pl-avatar]", (foto) => {
       if (valor === "livre") foto.dataset.formato = "livre";
       else delete foto.dataset.formato;
-    }
+    });
     setErro((await salvarFormatoFoto(paginaId, valor)).erro ?? null);
   }
 

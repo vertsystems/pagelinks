@@ -40,7 +40,7 @@
 .busca {
   width: 100%; background: var(--g-card); border: 1px solid var(--g-linha);
   color: var(--g-texto); padding: 11px 14px; border-radius: 10px; font-size: 15px;
-  font-family: inherit; margin-bottom: 18px;
+  font-family: inherit;
 }
 .busca::placeholder { color: var(--g-suave); }
 .busca:focus { outline: none; border-color: var(--g-foco); box-shadow: 0 0 0 3px var(--g-anel); }
@@ -82,6 +82,68 @@
 
 .vazio { text-align: center; padding: 60px 20px; color: var(--g-suave); }
 
+/* barra da lista: busca + modo de ver (lista, grade, compacto) */
+.barraLista { display: flex; align-items: stretch; gap: 12px; margin-bottom: 18px; }
+.buscaForm { flex: 1; min-width: 0; }
+.barraLista .alternador { border-radius: 10px; background: var(--g-card); flex: none; }
+.barraLista .alternador button { display: inline-flex; align-items: center; gap: 7px; padding: 0 14px; font-size: 13px; }
+.quando { color: var(--g-suave); font-size: 13px; white-space: nowrap; }
+
+/* cartões (grade e compacto): o link do nome se estica por cima do cartão inteiro;
+   a bolinha e o endereço sobem por cima dele e continuam clicáveis */
+.esticado::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.esticado:focus-visible { outline: none; }
+.porCima, .cartao .conferido, .compacto .conferido { position: relative; z-index: 1; }
+.cartao, .compacto {
+  position: relative; background: var(--g-card); border: 1px solid var(--g-linha);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.cartao:hover, .compacto:hover { border-color: var(--g-linha-forte); box-shadow: 0 6px 20px rgb(0 0 0 / .07); transform: translateY(-1px); }
+.cartao:has(.esticado:focus-visible), .compacto:has(.esticado:focus-visible) { outline: 2px solid var(--g-foco); outline-offset: 2px; }
+
+.grade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.cartao { border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+/* a capa é o topo da página do cliente em miniatura */
+.capa {
+  height: 132px; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; overflow: hidden; border-bottom: 1px solid var(--g-linha);
+}
+.capaAvatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex: none; }
+.capaAvatar[data-formato="livre"] { width: auto; height: auto; max-width: 70%; max-height: 52px; border-radius: 0; object-fit: contain; }
+.capaCabecalho { max-width: 80%; max-height: 44px; object-fit: contain; }
+.capaTitulo {
+  font-weight: 700; font-size: 15px; text-align: center; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.cartaoCorpo { padding: 12px 16px 16px; display: grid; gap: 7px; }
+.cartaoNome { display: flex; align-items: center; min-width: 0; font-size: 15px; }
+.cartaoNome .conferido { margin: -5px 4px -5px -6px; }
+.cartaoNome .nomeCliente { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cartao .endereco { justify-self: start; }
+.cartaoMeta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; font-size: 12.5px; color: var(--g-suave); }
+.cartao .quando { font-size: 12.5px; }
+
+.compactos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.compacto { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 11px; min-width: 0; }
+.compacto .conferido { margin: -4px -4px -4px -6px; }
+.miniatura {
+  width: 34px; height: 34px; border-radius: 50%; flex: none; overflow: hidden;
+  display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08);
+}
+.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+.miniatura img[data-formato="livre"] { object-fit: contain; padding: 4px; }
+.compactoTexto { min-width: 0; display: grid; gap: 2px; }
+.compactoTexto .nomeCliente { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compactoMeta {
+  display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--g-suave);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ponto { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.pontoNoAr { background: var(--g-ok); }
+.pontoRascunho { background: var(--g-suave); }
+.pontoInativo { background: var(--g-perigo); }
+
 /* editor */
 .editor { display: grid; grid-template-columns: minmax(0,1fr) 420px; gap: 28px; align-items: start; }
 .coluna { min-width: 0; }
@@ -91,7 +153,9 @@
   padding: 10px; box-shadow: var(--g-sombra);
 }
 .previaMoldura iframe { width: 100%; height: 660px; border: 0; border-radius: 14px; display: block; background: #fff; }
-.previaArea { overflow: hidden; border-radius: 14px; }
+.previaArea { overflow: hidden; border-radius: 14px; position: relative; }
+/* a versão nova da prévia carrega aqui, escondida atrás da que está à vista (Previa.tsx) */
+.previaProxima { position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; }
 
 /* modo computador: moldura de navegador e coluna da prévia mais larga */
 .molduraComputador { border-radius: 12px; padding: 0 0 8px; }
@@ -264,7 +328,18 @@
   .doisCampos { grid-template-columns: 1fr; }
   .iconeLinha { grid-template-columns: 34px 1fr auto; }
   .iconeLinha input[type="text"] { grid-column: 1 / -1; order: 5; }
+  .barraLista .alternador button { padding: 0 12px; }
+  .barraLista .alternador button span { display: none; }
+  .grade { grid-template-columns: 1fr; }
+  .compactos { grid-template-columns: 1fr; }
   .tabela thead { display: none; }
-  .tabela tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 12px 0; }
+  /* no celular, cada cliente em três linhas: nome; endereço; situação e quando mudou.
+     O Editar fica à direita das três; blocos e cliques ficam para a grade e o editor */
+  .tabela tbody tr { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px 10px; padding: 12px 0; }
   .tabela td { padding: 0 4px; }
+  .tabela td:nth-child(1), .tabela td:nth-child(2) { grid-column: 1 / 3; }
+  .tabela td:nth-child(3) { grid-column: 1; }
+  .tabela td:nth-child(4) { grid-column: 2; }
+  .tabela td:nth-child(5), .tabela td:nth-child(6) { display: none; }
+  .tabela td:nth-child(7) { grid-column: 3; grid-row: 1 / 4; }
 }

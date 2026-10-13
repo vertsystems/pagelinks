@@ -274,9 +274,12 @@ export async function excluirCard(cardId: string) {
   await exigirAdmin();
   const c = await prisma.card.findUnique({
     where: { id: cardId },
-    select: { imagemUrl: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+    select: { imagemUrl: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
   });
   await prisma.card.delete({ where: { id: cardId } });
+  // o bloco sumiu e não tem mais data para contar: a página guarda a mudança (a lista
+  // de clientes ordena pela última mudança da página e dos blocos)
+  if (c) await prisma.pagina.update({ where: { id: c.paginaId }, data: { atualizadoEm: new Date() } });
   await apagarImagensOrfas([c?.imagemUrl]);
   revalidar(c?.pagina.cliente.slug);
 }

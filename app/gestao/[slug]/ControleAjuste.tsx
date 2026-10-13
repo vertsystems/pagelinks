@@ -13,7 +13,7 @@ import {
   type ValoresTela,
 } from "@/lib/ajustes";
 import { salvarAjuste } from "../acoes";
-import BarraAjuste, { naPrevia } from "./BarraAjuste";
+import BarraAjuste, { retocarPrevia } from "./BarraAjuste";
 import { nomeDaTela, useTela } from "./Tela";
 import estilos from "../gestao.module.css";
 
@@ -60,9 +60,11 @@ export default function ControleAjuste({
 
   function aplicar(v: ValorAjuste | null, naTela: Tela) {
     const variavel = variavelCss(chave, naTela);
-    const elemento = naPrevia(seletorDoAlvo(alvo));
-    if (v === null) elemento?.style.removeProperty(variavel);
-    else elemento?.style.setProperty(variavel, valorCss(chave, v));
+    const seletor = seletorDoAlvo(alvo);
+    retocarPrevia(`${seletor} ${variavel}`, seletor, (elemento) => {
+      if (v === null) elemento.style.removeProperty(variavel);
+      else elemento.style.setProperty(variavel, valorCss(chave, v));
+    });
   }
 
   // a tela vai junto: a gravação sai meio segundo depois, e a tela pode já ter mudado

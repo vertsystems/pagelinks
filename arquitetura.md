@@ -112,6 +112,32 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Lista de clientes em três modos, e a prévia sem piscar — 13/10/2026
+
+**Modos da lista** (`app/gestao/ListaClientes.tsx`): Lista (a tabela), Grade (cartões com a
+capa da página, que é o fundo, a foto e a arte do nome do cliente em miniatura) e Compacto
+(cartões pequenos: bolinha, foto, nome, situação e quando mudou). A troca é na hora (os dados
+já vêm do servidor) e fica no cookie `pl_vista` (`lib/vista-painel.ts`), como o tema. Nos
+cartões, o link do nome se estica por cima do cartão inteiro; bolinha e endereço ficam por cima.
+
+**Ordem pela última mudança**: a mais recente entre a página e os blocos dela (`excluirCard`
+marca a página, porque bloco excluído não deixa data). A bolinha de conferido não conta, para o
+cliente não pular para o topo no clique. O "quando" (`app/gestao/quando.ts`) é calculado no
+servidor no horário de Brasília ("hoje às 14:32", "há 3 dias", "em 12 set").
+
+**Busca**: no Postgres o `contains` diferencia maiúscula de minúscula; "Ana" achava 1 cliente
+e "ANA" nenhum. Agora é `mode: "insensitive"`.
+
+**A prévia piscava** a cada gravação: o iframe recarregava inteiro, aparecia pela metade e no
+topo da página antes de voltar à rolagem. E a recarga de uma gravação chega 2 a 3 s depois:
+quem continuava arrastando a barra via o valor velho voltar (medido em produção: ícone em 40
+com a barra já em 50, no topo e incompleto, por 295 ms). Agora (`Previa.tsx`) a versão nova
+carrega num segundo iframe escondido atrás do visível e só troca de lugar pronta: documento,
+imagens e fontes carregados, a mesma rolagem, e os **retoques ao vivo** refeitos
+(`retocarPrevia` em `BarraAjuste.tsx`: tamanho, espaço, cor dos ícones, formato da foto; o
+último de cada um vence). A largura na linha fica de fora de propósito: ao vivo ela é uma
+aproximação, e a recarga traz a fração certa, calculada com os vizinhos.
+
 ## Arrastar blocos e tamanho do texto do topo — 13/10/2026
 
 **Arrastar no lugar das setas.** Cada bloco do editor tem uma alça (⠿) à esquerda: arrasta

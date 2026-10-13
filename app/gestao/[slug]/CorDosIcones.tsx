@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { corDosIconesValida } from "@/lib/redes";
 import { salvarCorIcones } from "../acoes";
-import { naPrevia } from "./BarraAjuste";
+import { retocarPrevia } from "./BarraAjuste";
 import estilos from "../gestao.module.css";
 
 /**
@@ -20,12 +20,12 @@ export default function CorDosIcones({ cardId, cor: inicial, corTexto }: { cardI
   const modo = cor === null ? "texto" : cor === "marcas" ? "marcas" : "uma";
 
   function aplicar(valor: string | null) {
-    const fileira = naPrevia(`[data-pl-bloco="${cardId}"] nav`);
-    if (!fileira) return;
-    if (valor === "marcas") fileira.dataset.cor = "marcas";
-    else delete fileira.dataset.cor;
-    if (valor?.startsWith("#")) fileira.style.color = valor;
-    else fileira.style.removeProperty("color");
+    retocarPrevia(`cor dos ícones ${cardId}`, `[data-pl-bloco="${cardId}"] nav`, (fileira) => {
+      if (valor === "marcas") fileira.dataset.cor = "marcas";
+      else delete fileira.dataset.cor;
+      if (valor?.startsWith("#")) fileira.style.color = valor;
+      else fileira.style.removeProperty("color");
+    });
   }
 
   function escolher(valor: string | null, esperar = false) {

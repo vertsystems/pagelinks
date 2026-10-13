@@ -107,3 +107,29 @@ export function naPrevia(seletor: string) {
   const quadro = document.querySelector<HTMLIFrameElement>("iframe[data-previa]");
   return quadro?.contentDocument?.querySelector<HTMLElement>(seletor) ?? null;
 }
+
+/**
+ * Retoques ao vivo: o que o editor mudou direto na prévia (tamanho, espaço, cor, formato
+ * da foto). Cada um fica guardado pela chave (o último vence) e é refeito na prévia nova
+ * antes de ela aparecer (ver Previa.tsx): a recarga de uma gravação chega segundos
+ * depois, e sem isso trazia de volta o valor de antes de quem continuou mexendo.
+ * A prévia esquece tudo quando sai da tela (outro cliente, outro editor).
+ */
+const retoques = new Map<string, { seletor: string; aplicar: (elemento: HTMLElement) => void }>();
+
+export function retocarPrevia(chave: string, seletor: string, aplicar: (elemento: HTMLElement) => void) {
+  retoques.set(chave, { seletor, aplicar });
+  const elemento = naPrevia(seletor);
+  if (elemento) aplicar(elemento);
+}
+
+export function refazerRetoques(documento: Document) {
+  for (const { seletor, aplicar } of retoques.values()) {
+    const elemento = documento.querySelector<HTMLElement>(seletor);
+    if (elemento) aplicar(elemento);
+  }
+}
+
+export function esquecerRetoques() {
+  retoques.clear();
+}
