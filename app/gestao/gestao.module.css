@@ -196,7 +196,22 @@
 .campos { display: grid; gap: 14px; }
 .doisCampos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .campo { display: flex; flex-direction: column; gap: 5px; }
-.campo label { font-size: 12.5px; color: var(--g-suave); font-weight: 500; }
+.campo label, .campo .rotulo { font-size: 12.5px; color: var(--g-suave); font-weight: 500; }
+/* estilo dos blocos de título e de texto: fonte, cor e formato lado a lado */
+.estiloTexto { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+.estiloTexto .tamanhoPadrao { align-self: flex-start; }
+.formatos { display: inline-flex; border: 1px solid var(--g-campo-borda); border-radius: 8px; overflow: hidden; }
+.formatos button {
+  width: 38px; height: 36px; padding: 0; border: 0; background: var(--g-fundo); color: var(--g-texto);
+  font-family: Georgia, "Times New Roman", serif; font-size: 16px; cursor: pointer;
+}
+.formatos button + button { border-left: 1px solid var(--g-campo-borda); }
+.formatos button[aria-pressed="true"] { background: var(--g-acento); color: var(--g-acento-texto); }
+.formatos button:focus-visible { outline: 2px solid var(--g-foco); outline-offset: -2px; }
+.formatos [data-formato="negrito"] { font-weight: 800; }
+.formatos [data-formato="italico"] { font-style: italic; }
+.formatos [data-formato="sublinhado"] { text-decoration: underline; }
+.formatos [data-formato="riscado"] { text-decoration: line-through; }
 .campo input[type="text"], .campo input[type="url"], .campo input[type="email"], .campo input[type="password"], .campo input[type="datetime-local"], .campo textarea, .campo select {
   background: var(--g-fundo); border: 1px solid var(--g-campo-borda); color: var(--g-texto);
   padding: 9px 12px; border-radius: 8px; font-size: 14px; font-family: inherit; width: 100%;
@@ -366,7 +381,7 @@
   .marca span { display: none; }
   .topoAcoes .btn:not(.btnIcone) { padding: 9px 12px; }
   .env { padding: 20px 16px 48px; }
-  .doisCampos { grid-template-columns: 1fr; }
+  .doisCampos, .estiloTexto { grid-template-columns: 1fr; }
   .iconeLinha { grid-template-columns: 34px 1fr auto; }
   .iconeLinha input[type="text"] { grid-column: 1 / -1; order: 5; }
   .barraLista .alternador button { padding: 0 12px; }

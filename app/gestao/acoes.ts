@@ -12,6 +12,7 @@ import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerMarcador } from "@/lib/lista";
+import { corValida, fonteDoTexto, formatoParaGravar } from "@/lib/fontes";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -205,17 +206,23 @@ export async function salvarCard(cardId: string, dados: FormData) {
     return v ? new Date(v) : null;
   };
 
+  const tipo = String(dados.get("tipo") ?? "link");
   await prisma.card.update({
     where: { id: cardId },
     data: {
-      tipo: String(dados.get("tipo") ?? "link"),
-      titulo: texto("titulo"),
+      tipo,
+      // título e texto vêm de caixa de várias linhas: o navegador manda a quebra como \r\n
+      titulo: texto("titulo")?.replace(/\r\n?/g, "\n") ?? null,
       subtitulo: texto("subtitulo"),
       url: texto("url"),
       telefone: texto("telefone"),
       mensagem: texto("mensagem"),
-      corFundo: texto("corFundo"),
-      corTexto: texto("corTexto"),
+      // cor, fonte e formato só quando o formulário traz o campo: antes, salvar qualquer
+      // bloco apagava a cor (nenhum formulário mandava corFundo nem corTexto)
+      ...(dados.has("corFundo") && { corFundo: corValida(texto("corFundo")) }),
+      ...(dados.has("corTexto") && { corTexto: corValida(texto("corTexto")) }),
+      ...(dados.has("fonte") && { fonte: fonteDoTexto(texto("fonte"))?.nome ?? null }),
+      ...(dados.has("formato") && { formato: formatoParaGravar(String(dados.get("formato") ?? ""), tipo) }),
       destaque: dados.get("destaque") === "on",
       ativo: dados.get("ativo") === "on",
       publicarEm: data("publicarEm"),

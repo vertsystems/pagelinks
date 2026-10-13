@@ -156,6 +156,7 @@
 }
 
 .tituloSecao {
+  white-space: pre-line; /* a quebra de linha do painel aparece na página */
   font-size: var(--letra, 13px);
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -165,7 +166,7 @@
   text-align: center;
 }
 
-.texto { font-size: var(--letra, 15px); line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
+.texto { white-space: pre-line; font-size: var(--letra, 15px); line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
 
 /* lista (serviços, horários…): numa caixa como o botão secundário, alinhada à esquerda,
    que é como lista se lê; o marcador vai na cor dos botões */

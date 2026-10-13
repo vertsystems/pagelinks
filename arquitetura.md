@@ -112,6 +112,26 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Título e texto: quebra de linha, fonte, cor e formato — 13/10/2026
+
+- **Quebra de linha:** o campo virou caixa de várias linhas, e a página mostra a quebra
+  (`white-space: pre-line`). O navegador manda a quebra como `\r\n`; o `salvarCard` grava `\n`
+- **Fonte:** 42 do Google Fonts em quatro grupos (`lib/fontes.ts`: básicas, modernas, clássicas,
+  destaque e manuscritas), além de "a fonte da página". `estilos` é o pedido exato de cada uma,
+  tirado do catálogo do Google (itálico e negrito só onde existem). A página carrega só as
+  fontes usadas, uma `<link>` por fonte. Coluna `fonte` no `Card`
+- **Cor:** a coluna `corTexto`, que existia sem campo no painel. Com cor própria, a opacidade
+  volta a 1 (título e texto são levemente apagados por padrão)
+- **Formato:** negrito, itálico, sublinhado, riscado (botões N, I, S, R). Coluna `formato`, as
+  marcas separadas por espaço; vazio (null) é o padrão do bloco (o título é negrito), e `""`
+  é "nenhuma", para dar para tirar o negrito do título
+- Fonte, cor e formato gravam no "Salvar bloco" e aparecem na prévia na hora (a fonte é
+  carregada dentro da prévia); o que não foi salvo some quando a prévia recarrega, de propósito
+- **Correção junto:** o `salvarCard` zerava `corFundo` e `corTexto` a cada gravação, porque
+  nenhum formulário mandava esses campos. Agora só grava o que o formulário traz
+- Medido antes e depois em 6 páginas: fonte, peso, cor, opacidade e altura de cada título e
+  texto iguais; nenhum texto guardado tinha quebra de linha
+
 ## Cor por tipo de bloco no editor — 13/10/2026
 
 Cada etiqueta de tipo (link, destaque, WhatsApp, título, texto, lista, imagem, vídeo, redes,

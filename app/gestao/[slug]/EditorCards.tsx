@@ -14,6 +14,7 @@ import { useTela } from "./Tela";
 import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
 import { MARCADORES, lerItens, lerMarcador } from "@/lib/lista";
 import { PADRAO_DA_LETRA } from "@/lib/tema";
+import EstiloDoTexto from "./EstiloDoTexto";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -41,6 +42,8 @@ type Card = {
   carrosselTempo: number | null;
   itens: string | null;
   marcador: string | null;
+  fonte: string | null;
+  formato: string | null;
   slideLargura: number | null;
   iconeTamanho: number | null;
   iconeEspaco: number | null;
@@ -413,12 +416,33 @@ export default function EditorCards({
                             <label htmlFor={`titulo-${card.id}`}>
                               {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
                             </label>
-                            <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
+                            {card.tipo === "titulo" || card.tipo === "texto" ? (
+                              // título e texto aceitam quebra de linha: Enter pula a linha (a página mostra igual)
+                              <textarea
+                                id={`titulo-${card.id}`}
+                                name="titulo"
+                                rows={Math.min(6, Math.max(2, (card.titulo ?? "").split("\n").length + 1))}
+                                defaultValue={card.titulo ?? ""}
+                              />
+                            ) : (
+                              <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
+                            )}
                           </div>
                         )}
                       </div>
 
                       {/* tamanho da letra do título e do texto, por tela; grava sozinho */}
+                      {(card.tipo === "titulo" || card.tipo === "texto") && (
+                        <EstiloDoTexto
+                          key={`${card.fonte}|${card.corTexto}|${card.formato}`}
+                          cardId={card.id}
+                          tipo={card.tipo}
+                          fonte={card.fonte}
+                          cor={card.corTexto}
+                          formato={card.formato}
+                          corDaPagina={corTexto}
+                        />
+                      )}
                       {(card.tipo === "titulo" || card.tipo === "texto") && (
                         <div className={estilos.campo}>
                           <ControleAjuste

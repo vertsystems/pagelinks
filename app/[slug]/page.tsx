@@ -6,6 +6,7 @@ import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import { TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerItens, lerMarcador } from "@/lib/lista";
+import { estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
@@ -115,11 +116,12 @@ export default async function PaginaPublica({ params }: Props) {
     const banner = imagem && <a key={card.id} href={destino} {...aba}>{imagem}</a>;
 
     switch (card.tipo) {
+      // fonte, cor e formato próprios (lib/fontes.ts); sem nada gravado, o estilo de sempre
       case "titulo":
-        return <p key={card.id} className={estilos.tituloSecao}>{card.titulo}</p>;
+        return <p key={card.id} className={estilos.tituloSecao} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{card.titulo}</p>;
 
       case "texto":
-        return <p key={card.id} className={estilos.texto}>{card.titulo}</p>;
+        return <p key={card.id} className={estilos.texto} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{card.titulo}</p>;
 
       case "lista": {
         // sem item, nada aparece (bloco recém-criado fica fora da página até ter o primeiro)
@@ -243,10 +245,23 @@ export default async function PaginaPublica({ params }: Props) {
     .map((card) => ({ card, conteudo: conteudoDoBloco(card) }))
     .filter((b) => b.conteudo !== null);
   const linhasDosBlocos = variaveisDeLinha(blocos.map((b) => b.card));
+  // as fontes próprias dos blocos de título e de texto, uma <link> por fonte (só as usadas)
+  const fontesDosBlocos = [
+    ...new Map(
+      blocos
+        .filter((b) => b.card.tipo === "titulo" || b.card.tipo === "texto")
+        .map((b) => fonteDoTexto(b.card.fonte))
+        .filter((f) => f !== null)
+        .map((f) => [f.nome, f]),
+    ).values(),
+  ];
 
   return (
     <>
       {fonte && <link rel="stylesheet" href={fonte} />}
+      {fontesDosBlocos.map((f) => (
+        <link key={f.nome} rel="stylesheet" href={urlDaFonteDoTexto(f)} />
+      ))}
       <main
         className={estilos.tela}
         style={{ ...variaveisDoTema(pagina), ...variaveisDeAjuste(pagina, "pagina") }}
