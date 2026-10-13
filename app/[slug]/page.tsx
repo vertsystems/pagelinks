@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
-import { REDE_POR_ID } from "@/lib/redes";
+import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import DesenhoRede from "./DesenhoRede";
 import estilos from "./pagina.module.css";
 
@@ -66,6 +66,15 @@ function linkDoWhatsApp(telefone: string, mensagem?: string | null) {
   return `https://wa.me/${numero}${texto}`;
 }
 
+/**
+ * Link de bloco e de ícone abre em nova aba. E-mail, telefone e SMS ficam na mesma: abrem
+ * o aplicativo, e a aba nova ficaria em branco. noopener por segurança; sem noreferrer, para
+ * o /ir continuar sabendo de onde veio o clique.
+ */
+function abrirEmNovaAba(destinoFinal: string | null | undefined) {
+  return destinoFinal && /^(mailto|tel|sms):/i.test(destinoFinal) ? {} : { target: "_blank", rel: "noopener" };
+}
+
 /** Converte link do YouTube/Vimeo em URL de player. Devolve null se não reconhecer. */
 function urlDeVideo(url: string): string | null {
   const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/);
@@ -89,6 +98,7 @@ export default async function PaginaPublica({ params }: Props) {
   /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
     const destino = `/ir/${card.id}`;
+    const aba = abrirEmNovaAba(card.tipo === "whatsapp" ? null : card.url); // WhatsApp é sempre https
     const imagem = card.imagemUrl ? (
       // eslint-disable-next-line @next/next/no-img-element
       <img
@@ -99,7 +109,7 @@ export default async function PaginaPublica({ params }: Props) {
     ) : null;
     // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
     // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
-    const banner = imagem && <a key={card.id} href={destino}>{imagem}</a>;
+    const banner = imagem && <a key={card.id} href={destino} {...aba}>{imagem}</a>;
 
     switch (card.tipo) {
       case "titulo":
@@ -126,7 +136,7 @@ export default async function PaginaPublica({ params }: Props) {
         if (!card.telefone) return null;
         if (banner) return banner;
         return (
-          <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino}>
+          <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino} {...aba}>
             {card.titulo ?? "Chamar no WhatsApp"}
             {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
           </a>
@@ -149,6 +159,7 @@ export default async function PaginaPublica({ params }: Props) {
                     key={icone.id}
                     className={estilos.icone}
                     href={`${destino}?icone=${icone.id}`}
+                    {...abrirEmNovaAba(destinoDoIcone(icone.rede, icone.url))}
                     aria-label={rede.nome}
                     title={rede.nome}
                     style={rede.cor ? ({ "--marca": rede.cor } as React.CSSProperties) : undefined}
@@ -164,7 +175,7 @@ export default async function PaginaPublica({ params }: Props) {
         // que vieram do WordPress sem link eram espaço reservado e levavam para lugar nenhum.
         if (!card.url) return null;
         return (
-          <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino}>
+          <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino} {...aba}>
             {card.titulo}
           </a>
         );
@@ -178,6 +189,7 @@ export default async function PaginaPublica({ params }: Props) {
             key={card.id}
             className={`${estilos.botao} ${card.destaque || card.tipo === "destaque" ? estilos.destaque : ""} ${card.tipo === "redes" ? estilos.secundario : ""}`}
             href={destino}
+            {...aba}
             style={card.corFundo ? { background: card.corFundo, color: card.corTexto ?? undefined } : undefined}
           >
             {card.titulo}
