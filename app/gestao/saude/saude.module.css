@@ -1,0 +1,81 @@
+/* Saúde do sistema. Cores só por token (gestao.css): os dois temas valem aqui. */
+
+.secao { margin-bottom: 30px; display: flex; flex-direction: column; gap: 14px; }
+.secao h2 { font-size: 17px; letter-spacing: -0.01em; margin: 0; font-weight: 650; }
+.secao h2 small { color: var(--g-suave); font-weight: 400; margin-left: 8px; font-size: 13px; }
+
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.numeros { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+.duasColunas { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 14px; }
+
+.cartao {
+  background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 14px; padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 0;
+}
+.rotulo { margin: 0; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--g-suave); font-weight: 600; }
+details.cartao > summary { cursor: pointer; }
+.valor { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.valor small { font-size: 14px; font-weight: 500; color: var(--g-suave); letter-spacing: 0; }
+.sub { margin: 0; font-size: 12.5px; color: var(--g-suave); line-height: 1.5; }
+.tecnico { font-family: var(--g-mono); font-size: 11.5px; color: var(--g-suave); word-break: break-word; }
+
+/* medidor: trilho e preenchimento na cor do nível */
+.medidor { height: 8px; border-radius: 99px; background: var(--g-card-2); overflow: hidden; }
+.medidor span { display: block; height: 100%; border-radius: inherit; }
+.ok { background: var(--g-ok); }
+.atencao { background: var(--g-pendente); }
+.critico { background: var(--g-perigo); }
+
+/* resumo: uma linha por verificação */
+.verificacoes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px; }
+.verificacoes li {
+  display: grid; grid-template-columns: 14px 1fr; gap: 12px; align-items: start;
+  background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 12px; padding: 13px 15px;
+}
+.verificacoes li[data-nivel="critico"] { border-color: var(--g-perigo-borda); background: var(--g-perigo-fundo); }
+.sinal { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; box-shadow: 0 0 0 3px var(--g-card-2); }
+.verificacaoTitulo { margin: 0; font-size: 13.5px; font-weight: 650; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
+.nivelNome { font-size: 11px; font-weight: 600; color: var(--g-suave); text-transform: uppercase; letter-spacing: .08em; }
+.verificacaoValor { margin: 2px 0 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
+
+/* pares nome · valor */
+.lista { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 13px; }
+.lista dt { color: var(--g-suave); }
+.lista dd { margin: 0; font-variant-numeric: tabular-nums; text-align: right; }
+
+.rolagem { overflow-x: auto; }
+.tabela { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tabela th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--g-suave); font-weight: 600; padding: 6px 10px; border-bottom: 1px solid var(--g-linha); white-space: nowrap; }
+.tabela td { padding: 8px 10px; border-bottom: 1px solid var(--g-linha); vertical-align: top; }
+.tabela tr:last-child td { border-bottom: 0; }
+.tabela td .tecnico { margin-left: 6px; }
+
+/* barras horizontais: quem ocupa mais */
+.barras { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.barras li { display: grid; grid-template-columns: minmax(0, 220px) 1fr auto; gap: 12px; align-items: center; font-size: 13px; }
+.barraNome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barraNome a, .quebradas a, .ranking a { color: var(--g-texto); text-decoration: none; }
+.barraNome a:hover, .quebradas a:hover, .ranking a:hover { color: var(--g-destaque); text-decoration: underline; }
+.barraTrilho { height: 8px; border-radius: 99px; background: var(--g-card-2); overflow: hidden; }
+.barraTrilho span { display: block; height: 100%; background: var(--g-marca); border-radius: inherit; }
+.barraValor { color: var(--g-suave); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.quebradas, .ranking { margin: 0; padding-left: 18px; font-size: 13px; display: grid; gap: 4px; }
+.ranking li b { float: right; font-variant-numeric: tabular-nums; }
+
+.tipos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tipos li { font-family: var(--g-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 6px; }
+.tipos li b { margin-left: 4px; }
+
+.grafico { width: 100%; height: auto; display: block; }
+.barraDia { fill: var(--g-marca); }
+.barraVazia { fill: var(--g-card-2); }
+.eixo { font-size: 11px; fill: var(--g-suave); font-family: inherit; }
+
+@media (max-width: 760px) {
+  .duasColunas { grid-template-columns: 1fr; }
+  .verificacoes { grid-template-columns: 1fr; }
+  .barras li { grid-template-columns: minmax(0, 1fr) auto; }
+  .barraTrilho { grid-column: 1 / -1; grid-row: 2; }
+  .tabela td .tecnico { display: none; }
+}

@@ -408,6 +408,7 @@
   .doisCampos, .estiloTexto { grid-template-columns: 1fr; }
   .iconeLinha { grid-template-columns: 34px 1fr auto; }
   .iconeLinha input[type="text"] { grid-column: 1 / -1; order: 5; }
+  .esconderNoCelular { display: none; }
   .barraLista .alternador button { padding: 0 12px; }
   .barraLista .alternador button span { display: none; }
   .grade { grid-template-columns: 1fr; }

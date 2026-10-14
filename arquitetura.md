@@ -112,6 +112,31 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Saúde do sistema — 14/10/2026
+
+Página `/gestao/saude` (botão "Saúde" no topo do painel): o que vale acompanhar, com um
+resumo em verde, amarelo e vermelho e o motivo de cada um. Cada visita mede de novo (e o
+botão "Medir de novo" refaz sem recarregar). As medições ficam em `lib/saude.ts`, cada parte
+isolada: se uma fonte falha, a página mostra o resto e diz o que não deu para medir.
+
+- **Servidor do banco**, pelo endpoint de métricas do Supabase
+  (`/customer/v1/privileged/metrics`, formato Prometheus, com a chave secreta): memória RAM,
+  swap, disco dos dados, carga de CPU, "pressão" (tempo esperando memória, disco ou CPU desde
+  que ligou), tempo no ar, reinícios, rede, região
+- **Banco**, pelo próprio Postgres: tamanho frente aos 500 MB, quanto é do PageLinks e quanto é
+  do Supabase, leituras vindas da memória (cache), memória configurada, conexões, tempo de
+  resposta (3 consultas, vale a do meio), transações e travamentos, limpeza automática, linhas
+  e tamanho de cada tabela, e as consultas que mais tomam tempo (pg_stat_statements)
+- **Arquivos**, pela tabela `storage.objects`: total frente a 1 GB, quem ocupa mais (pasta de
+  cada cliente), **arquivos sem uso** (no Storage e em nenhuma página) e **imagens quebradas**
+  (na página, mas sem arquivo), com o cliente e o lugar
+- **Uso**: clientes, páginas, blocos por tipo (com as cores das etiquetas), cliques por dia
+  nos últimos 30 dias, páginas mais clicadas
+- **Limites do plano Free** do Supabase, conferidos em supabase.com/pricing em 14/10/2026: 500 MB
+  de banco, 1 GB de arquivos, 5 GB de saída por mês, 500 MB de RAM, pausa depois de 1 semana
+  sem uso, **sem backup automático** (aparece como atenção no resumo). A saída de dados
+  (egress) não dá para medir daqui: só no painel do Supabase
+
 ## Título e texto com formatação por trecho — 14/10/2026
 
 Pedido do Bruno: negrito, itálico, sublinhado, riscado e cor numa palavra, não só no bloco

@@ -23,6 +23,12 @@ export default async function LayoutGestao({ children }: { children: React.React
         </Link>
         <div className={estilos.topoAcoes}>
           <BotaoTema inicial={tema} />
+          <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/saude" aria-label="Saúde do sistema" title="Saúde do sistema">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12h4l2-5 4 10 2-5h6" />
+            </svg>
+            <span className={estilos.esconderNoCelular}>Saúde</span>
+          </Link>
           <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/novo">
             Novo cliente
           </Link>
