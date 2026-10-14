@@ -79,7 +79,7 @@ export default function EstiloDoTexto({
   return (
     <div className={estilos.estiloTexto}>
       <div className={estilos.campo}>
-        <label htmlFor={`fonte-${cardId}`}>Fonte</label>
+        <label htmlFor={`fonte-${cardId}`}>Fonte do texto todo</label>
         <select id={`fonte-${cardId}`} name="fonte" value={fonte} onChange={(e) => setFonte(e.target.value)}>
           <option value="">A fonte da página</option>
           {GRUPOS_DE_FONTE.map((grupo) => (
@@ -93,7 +93,7 @@ export default function EstiloDoTexto({
       </div>
 
       <div className={estilos.campo}>
-        <label htmlFor={`cor-texto-${cardId}`}>Cor</label>
+        <label htmlFor={`cor-texto-${cardId}`}>Cor do texto todo</label>
         <div className={estilos.cor}>
           <input
             id={`cor-texto-${cardId}`}
@@ -127,7 +127,7 @@ export default function EstiloDoTexto({
       </div>
 
       <div className={estilos.campo}>
-        <span className={estilos.rotulo}>Formato</span>
+        <span className={estilos.rotulo}>Formato do texto todo</span>
         <div className={estilos.formatos} role="group" aria-label="Formato do texto">
           {FORMATOS.map((f) => (
             <button

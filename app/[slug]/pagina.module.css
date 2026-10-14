@@ -161,12 +161,14 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.62;
+  /* o tom apagado vai na cor, e não em opacity: opacity apagava junto a cor que o painel
+     põe numa palavra (TextoRico); assim o texto comum fica igual, e o trecho colorido, exato */
+  color: color-mix(in srgb, var(--texto) 62%, transparent);
   margin: 20px 0 -2px;
   text-align: center;
 }
 
-.texto { white-space: pre-line; font-size: var(--letra, 15px); line-height: 1.6; opacity: 0.86; text-align: center; margin: 2px 0; }
+.texto { white-space: pre-line; font-size: var(--letra, 15px); line-height: 1.6; color: color-mix(in srgb, var(--texto) 86%, transparent); text-align: center; margin: 2px 0; }
 
 /* lista (serviços, horários…): numa caixa como o botão secundário, alinhada à esquerda,
    que é como lista se lê; o marcador vai na cor dos botões */

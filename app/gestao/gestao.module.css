@@ -208,10 +208,34 @@
 .formatos button + button { border-left: 1px solid var(--g-campo-borda); }
 .formatos button[aria-pressed="true"] { background: var(--g-acento); color: var(--g-acento-texto); }
 .formatos button:focus-visible { outline: 2px solid var(--g-foco); outline-offset: -2px; }
-.formatos [data-formato="negrito"] { font-weight: 800; }
-.formatos [data-formato="italico"] { font-style: italic; }
-.formatos [data-formato="sublinhado"] { text-decoration: underline; }
-.formatos [data-formato="riscado"] { text-decoration: line-through; }
+/* editor de texto com formatação por trecho (TextoRico.tsx) */
+.textoRico { border: 1px solid var(--g-campo-borda); border-radius: 8px; overflow: hidden; background: var(--g-card); }
+.textoRico:focus-within { border-color: var(--g-foco); box-shadow: 0 0 0 3px var(--g-anel); }
+.barraTexto {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px 8px;
+  border-bottom: 1px solid var(--g-linha); background: var(--g-fundo);
+}
+.barraTexto > button[data-formato] {
+  width: 32px; height: 30px; padding: 0; border: 1px solid transparent; border-radius: 6px; background: transparent;
+  color: var(--g-texto); font-family: Georgia, "Times New Roman", serif; font-size: 15px; cursor: pointer;
+}
+.barraTexto > button[data-formato]:hover { background: var(--g-card-2); }
+.barraTexto > button[aria-pressed="true"] { background: var(--g-acento); color: var(--g-acento-texto); }
+.barraTexto button:focus-visible, .corLivre:focus-visible { outline: 2px solid var(--g-foco); outline-offset: 1px; }
+.barraSeparador { width: 1px; height: 20px; background: var(--g-linha-forte); margin: 0 4px; }
+.amostraCor { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 1px solid rgb(0 0 0 / .2); cursor: pointer; transition: transform .1s ease; }
+.amostraCor:hover { transform: scale(1.15); }
+.corLivre { width: 28px; height: 26px; padding: 1px; border: 1px solid var(--g-campo-borda); border-radius: 6px; background: var(--g-card); cursor: pointer; }
+.limparFormato { margin-left: auto; padding: 4px 6px; border: 0; background: none; color: var(--g-suave); font: inherit; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+.limparFormato:hover { color: var(--g-texto); }
+.editorTexto {
+  min-height: 88px; padding: 12px 14px; font-size: 15px; line-height: 1.6; outline: none;
+  white-space: pre-wrap; overflow-wrap: anywhere; cursor: text;
+}
+.barraTexto [data-formato="negrito"], .formatos [data-formato="negrito"] { font-weight: 800; }
+.barraTexto [data-formato="italico"], .formatos [data-formato="italico"] { font-style: italic; }
+.barraTexto [data-formato="sublinhado"], .formatos [data-formato="sublinhado"] { text-decoration: underline; }
+.barraTexto [data-formato="riscado"], .formatos [data-formato="riscado"] { text-decoration: line-through; }
 .campo input[type="text"], .campo input[type="url"], .campo input[type="email"], .campo input[type="password"], .campo input[type="datetime-local"], .campo textarea, .campo select {
   background: var(--g-fundo); border: 1px solid var(--g-campo-borda); color: var(--g-texto);
   padding: 9px 12px; border-radius: 8px; font-size: 14px; font-family: inherit; width: 100%;

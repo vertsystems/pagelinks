@@ -13,6 +13,7 @@ import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, t
 import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerMarcador } from "@/lib/lista";
 import { corValida, fonteDoTexto, formatoParaGravar } from "@/lib/fontes";
+import { normalizarTrechos, temFormatacao, textoSimples } from "@/lib/textoRico";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -207,12 +208,23 @@ export async function salvarCard(cardId: string, dados: FormData) {
   };
 
   const tipo = String(dados.get("tipo") ?? "link");
+  // título e texto com o editor de trechos: o texto puro sai dos trechos, e os trechos só
+  // ficam gravados quando têm alguma formatação (sem nenhuma, vale o texto puro)
+  let trechos: ReturnType<typeof normalizarTrechos> | null = null;
+  if (dados.has("rico")) {
+    try {
+      trechos = normalizarTrechos(JSON.parse(String(dados.get("rico"))));
+    } catch {
+      trechos = null;
+    }
+  }
   await prisma.card.update({
     where: { id: cardId },
     data: {
       tipo,
       // título e texto vêm de caixa de várias linhas: o navegador manda a quebra como \r\n
-      titulo: texto("titulo")?.replace(/\r\n?/g, "\n") ?? null,
+      titulo: trechos ? textoSimples(trechos) || null : (texto("titulo")?.replace(/\r\n?/g, "\n") ?? null),
+      ...(trechos && { rico: temFormatacao(trechos) ? JSON.stringify(trechos) : null }),
       subtitulo: texto("subtitulo"),
       url: texto("url"),
       telefone: texto("telefone"),

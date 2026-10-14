@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -7,6 +8,7 @@ import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import { TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerItens, lerMarcador } from "@/lib/lista";
 import { estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
+import { lerTrechos, type Trecho } from "@/lib/textoRico";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
@@ -64,6 +66,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * O texto de um bloco de título ou de texto: os trechos formatados, ou o texto puro.
+ * Elementos do React (o texto é escapado), as mesmas marcas do editor: a cor por fora,
+ * para o sublinhado e o riscado saírem na cor do trecho.
+ */
+function textoDoBloco(rico: string | null, titulo: string | null) {
+  const trechos = lerTrechos(rico);
+  if (!trechos) return titulo;
+  return trechos.map((t: Trecho, i) => {
+    let no: React.ReactNode = t.texto;
+    if (t.riscado) no = <s>{no}</s>;
+    if (t.sublinhado) no = <u>{no}</u>;
+    if (t.italico) no = <em>{no}</em>;
+    if (t.negrito) no = <strong>{no}</strong>;
+    if (t.cor) no = <span style={{ color: t.cor }}>{no}</span>;
+    return <Fragment key={i}>{no}</Fragment>;
+  });
+}
+
 function linkDoWhatsApp(telefone: string, mensagem?: string | null) {
   const numero = telefone.replace(/\D/g, "");
   const texto = mensagem ? `?text=${encodeURIComponent(mensagem)}` : "";
@@ -118,10 +139,10 @@ export default async function PaginaPublica({ params }: Props) {
     switch (card.tipo) {
       // fonte, cor e formato próprios (lib/fontes.ts); sem nada gravado, o estilo de sempre
       case "titulo":
-        return <p key={card.id} className={estilos.tituloSecao} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{card.titulo}</p>;
+        return <p key={card.id} className={estilos.tituloSecao} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{textoDoBloco(card.rico, card.titulo)}</p>;
 
       case "texto":
-        return <p key={card.id} className={estilos.texto} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{card.titulo}</p>;
+        return <p key={card.id} className={estilos.texto} style={estiloDoTexto(card.fonte, card.corTexto, lerFormato(card.formato, card.tipo))}>{textoDoBloco(card.rico, card.titulo)}</p>;
 
       case "lista": {
         // sem item, nada aparece (bloco recém-criado fica fora da página até ter o primeiro)

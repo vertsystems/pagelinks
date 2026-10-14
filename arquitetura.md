@@ -112,6 +112,28 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Título e texto com formatação por trecho — 14/10/2026
+
+Pedido do Bruno: negrito, itálico, sublinhado, riscado e cor numa palavra, não só no bloco
+inteiro. O campo virou um editor (`TextoRico.tsx`): barra em cima (N, I, S, R, as cores da
+página e dos botões, oito prontas, uma livre e "Limpar formatação") para o trecho
+selecionado; Ctrl/⌘ + B, I, U também; Enter quebra a linha; colar traz só o texto. O campo
+tem o fundo e a cor da página, para trecho amarelo não sumir no painel claro. A prévia muda
+na hora; grava no "Salvar bloco". Fonte, cor e formato do bloco continuam valendo para o texto
+todo (agora rotulados assim), e a formatação de trecho vai por cima.
+
+- **Como guarda:** coluna `rico`, JSON de trechos (`lib/textoRico.ts`), e não HTML: a página
+  monta os trechos com elementos do React, então não entra código pela formatação (testado:
+  um `<img onerror>` digitado aparece como texto). O `titulo` guarda o texto puro (nome do bloco
+  no painel); sem nenhuma formatação, `rico` fica vazio e vale o `titulo`
+- **O editor** é um contentEditable formatado pelo próprio navegador (`execCommand`), lido de
+  volta em trechos a cada mudança (`lerEditor`: b/strong, i/em, u, s, font color e estilos).
+  A seleção fica guardada, porque clicar numa cor tira o foco do texto
+- **Tom apagado na cor, não em opacity:** título e texto eram levemente transparentes
+  (opacity .62 e .86), e isso apagava junto a cor escolhida numa palavra. Agora é
+  `color-mix(var(--texto) 62%/86%, transparent)`. Comparado pixel a pixel em 4 páginas, antes e
+  depois: maior diferença de 1 nível em 255, nenhum pixel com mais de 2
+
 ## Título e texto: quebra de linha, fonte, cor e formato — 13/10/2026
 
 - **Quebra de linha:** o campo virou caixa de várias linhas, e a página mostra a quebra

@@ -15,6 +15,7 @@ import { valorNaTela, valoresPorTela, type ValoresTela } from "@/lib/ajustes";
 import { MARCADORES, lerItens, lerMarcador } from "@/lib/lista";
 import { PADRAO_DA_LETRA } from "@/lib/tema";
 import EstiloDoTexto from "./EstiloDoTexto";
+import TextoRico from "./TextoRico";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -44,6 +45,7 @@ type Card = {
   marcador: string | null;
   fonte: string | null;
   formato: string | null;
+  rico: string | null;
   slideLargura: number | null;
   iconeTamanho: number | null;
   iconeEspaco: number | null;
@@ -118,6 +120,7 @@ export default function EditorCards({
   paginaId,
   corFundo,
   corTexto,
+  corDestaque,
   blocos,
   lado,
   cards,
@@ -125,6 +128,7 @@ export default function EditorCards({
   paginaId: string;
   corFundo: string;
   corTexto: string;
+  corDestaque: string;
   /** espaço entre os blocos e entre blocos lado a lado, por tela */
   blocos: ValoresTela;
   lado: ValoresTela;
@@ -411,25 +415,29 @@ export default function EditorCards({
                           </span>
                         </div>
 
-                        {usa.titulo && (
+                        {usa.titulo && card.tipo !== "titulo" && card.tipo !== "texto" && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
                               {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
                             </label>
-                            {card.tipo === "titulo" || card.tipo === "texto" ? (
-                              // título e texto aceitam quebra de linha: Enter pula a linha (a página mostra igual)
-                              <textarea
-                                id={`titulo-${card.id}`}
-                                name="titulo"
-                                rows={Math.min(6, Math.max(2, (card.titulo ?? "").split("\n").length + 1))}
-                                defaultValue={card.titulo ?? ""}
-                              />
-                            ) : (
-                              <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
-                            )}
+                            <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
                           </div>
                         )}
                       </div>
+
+                      {/* título e texto: editor com formatação por trecho (negrito, cor… numa palavra) */}
+                      {(card.tipo === "titulo" || card.tipo === "texto") && (
+                        <TextoRico
+                          key={card.id}
+                          cardId={card.id}
+                          rotulo={card.tipo === "texto" ? "Texto" : "Título"}
+                          rico={card.rico}
+                          titulo={card.titulo}
+                          fundo={corFundo}
+                          corDaPagina={corTexto}
+                          corDosBotoes={corDestaque}
+                        />
+                      )}
 
                       {/* tamanho da letra do título e do texto, por tela; grava sozinho */}
                       {(card.tipo === "titulo" || card.tipo === "texto") && (

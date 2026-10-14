@@ -120,7 +120,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           </form>
 
           {/* blocos */}
-          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} corTexto={pagina.corTexto} blocos={valoresPorTela(pagina, "blocos")} lado={valoresPorTela(pagina, "lado")} cards={pagina.cards} />
+          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} corTexto={pagina.corTexto} corDestaque={pagina.corDestaque} blocos={valoresPorTela(pagina, "blocos")} lado={valoresPorTela(pagina, "lado")} cards={pagina.cards} />
 
           {/* aparência. As listas têm key no valor gravado: depois de salvar, o React 19 reseta
               o formulário, e um <select> volta à opção de quando foi montado. Recriado com o

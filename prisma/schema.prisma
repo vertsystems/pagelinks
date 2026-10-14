@@ -140,6 +140,7 @@ model Card {
   letraTamanho Int? // tipo = titulo ou texto: tamanho da letra em px; vazio = 13 no título, 15 no texto
   fonte        String? // tipo = titulo ou texto: fonte do bloco (lib/fontes.ts); vazio = a da página
   formato      String? // tipo = titulo ou texto: "negrito italico sublinhado riscado" (as marcadas); vazio = o padrão do bloco
+  rico         String? // tipo = titulo ou texto: formatação por trecho (JSON, lib/textoRico.ts); vazio = só o texto puro do titulo
   itens    String? // tipo = lista: os itens, um por linha
   marcador String? // tipo = lista: vazio = bolinha · "check" · "numero" (lib/lista.ts)
   carrosselTempo Int? // tipo = carrossel: velocidade, segundos para cada imagem passar; vazio = 4
