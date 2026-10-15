@@ -9,6 +9,7 @@ import { TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerItens, lerMarcador } from "@/lib/lista";
 import { corValida, estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
 import { lerTrechos, type Trecho } from "@/lib/textoRico";
+import { animacaoValida } from "@/lib/animacoes";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
@@ -124,13 +125,14 @@ export default async function PaginaPublica({ params }: Props) {
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
     const destino = `/ir/${card.id}`;
     const aba = abrirEmNovaAba(card.tipo === "whatsapp" ? null : card.url); // WhatsApp é sempre https
+    // A imagem vai numa moldura do tamanho dela: é por onde o reflexo passa (uma <img> não
+    // tem ::after) e o que pulsa ou treme; largura e encosto ficam na moldura. --arte é a
+    // própria imagem, para o reflexo só aparecer onde ela não é transparente.
     const imagem = card.imagemUrl ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        className={estilos.imagem}
-        src={card.imagemUrl}
-        alt={card.titulo ?? ""}
-      />
+      <span className={estilos.moldura} style={{ "--arte": `url(${JSON.stringify(card.imagemUrl)})` } as React.CSSProperties}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={card.imagemUrl} alt={card.titulo ?? ""} />
+      </span>
     ) : null;
     // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
     // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
@@ -196,7 +198,7 @@ export default async function PaginaPublica({ params }: Props) {
               data-cor={card.iconeCor === "marcas" ? "marcas" : undefined}
               style={card.iconeCor?.startsWith("#") ? { color: card.iconeCor } : undefined}
             >
-              {card.icones.map((icone) => {
+              {card.icones.map((icone, i) => {
                 const rede = REDE_POR_ID[icone.rede];
                 return rede ? (
                   <a
@@ -206,7 +208,8 @@ export default async function PaginaPublica({ params }: Props) {
                     {...abrirEmNovaAba(destinoDoIcone(icone.rede, icone.url))}
                     aria-label={rede.nome}
                     title={rede.nome}
-                    style={rede.cor ? ({ "--marca": rede.cor } as React.CSSProperties) : undefined}
+                    // --i: a vez do ícone na animação (o reflexo corre de um a um)
+                    style={{ ...(rede.cor && { "--marca": rede.cor }), "--i": i } as React.CSSProperties}
                   >
                     <DesenhoRede rede={rede} tamanho={28} />
                   </a>
@@ -373,6 +376,7 @@ export default async function PaginaPublica({ params }: Props) {
                 key={card.id}
                 className={estilos.celula}
                 data-pl-bloco={card.id}
+                data-animacao={animacaoValida(card.animacao) ?? undefined}
                 style={{ ...variaveisDeAjuste(card, "card"), ...linhasDosBlocos.get(card.id) }}
               >
                 {conteudo}

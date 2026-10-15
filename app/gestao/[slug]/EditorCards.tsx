@@ -8,6 +8,8 @@ import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
 import EditorCarrossel from "./EditorCarrossel";
 import EditorUnidades from "./EditorUnidades";
+import EscolhaAnimacao from "./EscolhaAnimacao";
+import { TIPOS_COM_ANIMACAO } from "@/lib/animacoes";
 import EscolhaLargura from "./EscolhaLargura";
 import ControleAjuste from "./ControleAjuste";
 import { naPrevia } from "./BarraAjuste";
@@ -48,6 +50,7 @@ type Card = {
   fonte: string | null;
   formato: string | null;
   rico: string | null;
+  animacao: string | null;
   slideLargura: number | null;
   iconeTamanho: number | null;
   iconeEspaco: number | null;
@@ -571,6 +574,9 @@ export default function EditorCards({
                           </div>
                         </div>
                       )}
+
+                      {/* imagem, botão ou ícones: reflexo, pulsar ou tremida (grava sozinho) */}
+                      {TIPOS_COM_ANIMACAO.includes(card.tipo) && <EscolhaAnimacao key={card.id} cardId={card.id} animacao={card.animacao} />}
 
                       <EscolhaLargura cardId={card.id} valores={valoresPorTela(card, "largura")} />
 

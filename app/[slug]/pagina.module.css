@@ -224,7 +224,8 @@
 /* --encosto: numa linha de dois blocos, a imagem encosta na vizinha (ver fracoesNaTela) */
 /* imagem enviada (bloco de imagem, banner e carrossel) aparece como o arquivo: sem canto
    arredondado. Ela não segue o formato dos botões; no "totalmente redondo", virava pílula */
-.imagem { width: var(--imagem); display: block; margin-inline: var(--encosto); }
+.moldura { width: var(--imagem); display: block; margin-inline: var(--encosto); }
+.moldura img { width: 100%; display: block; }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
 
@@ -319,4 +320,42 @@ a.unidadeFoto:hover img { transform: scale(1.03); }
 }
 @media (prefers-reduced-motion: reduce) {
   .unidadeFoto img, .unidadeSeta { transition: none; }
+}
+
+/* ===== Animações =====
+   Marcadas no bloco (data-animacao, lib/animacoes.ts). Animam a moldura da imagem, o botão
+   ou cada ícone das redes. Todas sutis e com pausa: o reflexo passa e espera, a tremida dura
+   menos de meio segundo a cada 4 s, o pulsar cresce 2,5%. Nos ícones, cada um entra na sua
+   vez (--i), e o reflexo vira um brilho rápido que corre de um a um (um reflexo de faixa
+   num desenho sem fundo apareceria como um retângulo passando).
+   Quem pede menos movimento no sistema vê tudo parado. */
+.celula[data-animacao] .icone { animation-delay: calc(var(--i, 0) * 0.15s); }
+.celula[data-animacao="pulsar"] :is(.moldura, .botao, .icone) { animation-name: pulsar; animation-duration: 2.6s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.celula[data-animacao="tremer"] :is(.moldura, .botao, .icone) { animation-name: tremer; animation-duration: 4s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.celula[data-animacao="reflexo"] .icone { animation-name: brilho; animation-duration: 3.6s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.celula[data-animacao="reflexo"] :is(.moldura, .botao) { position: relative; overflow: hidden; }
+.celula[data-animacao="reflexo"] :is(.moldura, .botao)::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.38) 50%, transparent 65%);
+  transform: translateX(-130%); animation: reflexo 3.6s ease-in-out infinite;
+}
+/* na imagem, o brilho é recortado pela própria arte: em arte com parte transparente (pessoa
+   saindo do quadro), a faixa aparecia por cima do fundo da página */
+.celula[data-animacao="reflexo"] .moldura::after { -webkit-mask: var(--arte) center / 100% 100% no-repeat; mask: var(--arte) center / 100% 100% no-repeat; }
+@keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@keyframes tremer {
+  0%, 84%, 94%, 100% { transform: translateX(0) rotate(0); }
+  86% { transform: translateX(-2px) rotate(-0.8deg); }
+  88% { transform: translateX(2px) rotate(0.8deg); }
+  90% { transform: translateX(-2px) rotate(-0.6deg); }
+  92% { transform: translateX(1px) rotate(0.4deg); }
+}
+@keyframes reflexo { 0% { transform: translateX(-130%); } 30%, 100% { transform: translateX(130%); } }
+@keyframes brilho {
+  0%, 12%, 100% { filter: none; }
+  6% { filter: brightness(1.7) drop-shadow(0 0 6px rgb(255 255 255 / 0.55)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .celula[data-animacao] :is(.moldura, .botao, .icone),
+  .celula[data-animacao] :is(.moldura, .botao)::after { animation: none; }
 }

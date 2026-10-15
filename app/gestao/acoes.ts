@@ -14,6 +14,7 @@ import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerMarcador } from "@/lib/lista";
 import { corValida, fonteDoTexto, formatoParaGravar } from "@/lib/fontes";
 import { normalizarTrechos, temFormatacao, textoSimples } from "@/lib/textoRico";
+import { TIPOS_COM_ANIMACAO, animacaoValida } from "@/lib/animacoes";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -825,6 +826,20 @@ export async function ordenarUnidades(cardId: string, ids: string[]): Promise<Es
     await prisma.$transaction(mudaram.map((u) => prisma.unidade.update({ where: { id: u.id }, data: { ordem: u.ordem } })));
     await marcarBloco(card.id);
   }
+  revalidar(card.pagina.cliente.slug);
+  return {};
+}
+
+// ---------- animação ----------
+
+/** Animação do bloco (reflexo, pulsar, tremida ou parado). Grava na hora, como a cor dos ícones. */
+export async function salvarAnimacao(cardId: string, valor: string | null): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const animacao = valor === null ? null : animacaoValida(valor);
+  if (valor !== null && !animacao) return { erro: "Essa animação não existe." };
+  const card = await prisma.card.findUnique({ where: { id: String(cardId) }, select: { tipo: true, pagina: { select: { cliente: { select: { slug: true } } } } } });
+  if (!card || !TIPOS_COM_ANIMACAO.includes(card.tipo)) return { erro: "Esse bloco não tem o que animar." };
+  await prisma.card.update({ where: { id: String(cardId) }, data: { animacao } });
   revalidar(card.pagina.cliente.slug);
   return {};
 }

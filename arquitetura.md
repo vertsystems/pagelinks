@@ -112,6 +112,23 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Animações nos blocos — 15/10/2026
+
+Link, destaque, WhatsApp, imagem e redes têm "Animação": nenhuma, **reflexo**, **pulsar** ou
+**tremida** (`Card.animacao`, `lib/animacoes.ts`). Grava na hora e muda a prévia ao vivo (o
+atributo `data-animacao` da célula, que o CSS lê). Todas sutis e com pausa: o reflexo passa e
+espera, o pulsar cresce 2,5%, a tremida dura menos de meio segundo a cada 4 s (2 px e menos de
+1 grau). Nos ícones das redes, cada um entra na sua vez (`--i`, 0,15 s de diferença), e o reflexo
+vira um brilho rápido que corre de um a um. Quem pede menos movimento no sistema vê tudo parado.
+
+- **Moldura:** a imagem do bloco foi para dentro de uma `<span class="moldura">` com a largura e o
+  encosto (uma `<img>` não tem `::after` para o reflexo). Comparado pixel a pixel em 4 páginas com
+  banners: zero pixels diferentes
+- **Reflexo recortado pela arte:** o brilho usa a própria imagem como máscara (`--arte`). Em arte
+  com parte transparente (pessoa saindo do quadro), a faixa aparecia por cima do fundo da página
+- Nos testes por JavaScript, os nomes das animações vêm com o prefixo do CSS Modules
+  (`pagina-module__…__reflexo`)
+
 ## Página só com a logo, e cantos de lista e vídeo — 14/10/2026
 
 **Sem título e sem frase** (`Pagina.semTitulo`): caixinha no topo do editor para clientes que

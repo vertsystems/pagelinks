@@ -145,6 +145,7 @@ model Card {
   rico         String? // tipo = titulo ou texto: formatação por trecho (JSON, lib/textoRico.ts); vazio = só o texto puro do titulo
   itens    String? // tipo = lista: os itens, um por linha
   marcador String? // tipo = lista: vazio = bolinha · "check" · "numero" (lib/lista.ts)
+  animacao       String? // link, destaque, whatsapp, imagem e redes: "reflexo" · "pulsar" · "tremer" (lib/animacoes.ts); vazio = parado
   colunas        Int? // tipo = unidades: unidades por linha (por tela, lib/ajustes.ts); vazio = 1 no celular, 2 no tablet e no computador
   carrosselTempo Int? // tipo = carrossel: velocidade, segundos para cada imagem passar; vazio = 4
   slideLargura   Int? // tipo = carrossel: largura de cada imagem em % da coluna; vazio = 80 no celular, 60 no tablet e no computador
