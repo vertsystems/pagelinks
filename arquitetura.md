@@ -664,6 +664,36 @@ que a Vercel envia no agendamento. O intervalo maior entre duas chamadas é de 5
 
 `SESSAO_SEGREDO` e `CRON_SECRET` estão no `.env` local e na Vercel (produção e preview).
 
+## dnms.fun na Vercel — 15/10/2026
+
+O domínio saiu do WordPress da Hostinger e passou a abrir este sistema. O registro e o
+e-mail continuam na Hostinger; só os dois registros do site mudaram:
+
+| Registro | Antes (WordPress) | Agora (Vercel) |
+|---|---|---|
+| `@` | ALIAS → `dnms.fun.cdn.hstgr.net` | A → `216.198.79.1` |
+| `www` | CNAME → `www.dnms.fun.cdn.hstgr.net` | CNAME → `285201fd67f61997.vercel-dns-017.com` |
+
+Na Vercel, `www.dnms.fun` redireciona (308) para `dnms.fun`. As 18 páginas que existiam no
+WordPress e não vieram para cá foram removidas de propósito (decisão do Bruno).
+
+**Endereço com barra no fim.** O WordPress mandava `/cliente` para `/cliente/` com
+redirecionamento permanente, que o navegador guarda. O Next fazia o contrário, e quem já
+tinha visitado o site antigo caía num loop de redirecionamento. Por isso
+`trailingSlash: true` no `next.config.ts`: o endereço canônico é `dnms.fun/cliente/`, igual ao
+de antes. Os links internos já saem com a barra (`/ir/<id>/`, a agenda do `vercel.json`).
+
+**A raiz leva à página de vendas.** `dnms.fun` redireciona (307, temporário) para
+`/paginadelinks/`, como o WordPress fazia.
+
+**Conexões com o banco.** No mesmo dia, 59 acessos ao mesmo tempo esgotaram as 200 conexões
+do pooler do Supabase (`EMAXCONN`) e todas as páginas deram 500 por vários minutos. O pool do
+`pg` abria até 10 conexões por instância da Vercel e as deixava paradas enquanto a instância
+dormia. Agora `lib/prisma.ts` limita a 5 por instância, fecha a conexão parada em 5 s e usa o
+`attachDatabasePool` do `@vercel/functions`, que faz a Vercel esperar essas conexões fecharem
+antes de suspender a instância. A página também consulta o banco uma vez por visita, não
+duas (`cache()` no `buscarPagina`, usado pelo `generateMetadata` e pela página).
+
 ## O banco no Supabase — 06/09/2026
 
 Projeto **`vertsys-db`** (organização Vert Systems, plano Free, `us-west-2`, instância

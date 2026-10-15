@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -24,8 +24,12 @@ type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previ
  */
 const SCRIPT_DE_METRICAS = "https://dspace.verts.me/dm.js";
 
-/** Busca a página publicada de um cliente ativo, com os cards visíveis agora. */
-async function buscarPagina(slug: string) {
+/**
+ * Busca a página publicada de um cliente ativo, com os cards visíveis agora.
+ * No cache() do React: o generateMetadata e a página pedem a mesma coisa na mesma
+ * visita, e assim o banco é consultado uma vez só, não duas.
+ */
+const buscarPagina = cache(async (slug: string) => {
   const agora = new Date();
   const cliente = await prisma.cliente.findFirst({
     where: { slug, ativo: true },
@@ -50,7 +54,7 @@ async function buscarPagina(slug: string) {
     },
   });
   return cliente?.paginas[0] ?? null;
-}
+});
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -135,7 +139,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
 
   /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
-    const destino = `/ir/${card.id}`;
+    const destino = `/ir/${card.id}/`; // com a barra: vai direto, sem redirecionar antes
     const aba = abrirEmNovaAba(card.tipo === "whatsapp" ? null : card.url); // WhatsApp é sempre https
     // A imagem vai numa moldura do tamanho dela: é por onde o reflexo passa (uma <img> não
     // tem ::after) e o que pulsa ou treme; largura e encosto ficam na moldura. --arte é a
