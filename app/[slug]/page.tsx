@@ -7,7 +7,7 @@ import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import { TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerItens, lerMarcador } from "@/lib/lista";
-import { estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
+import { corValida, estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
 import { lerTrechos, type Trecho } from "@/lib/textoRico";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
@@ -34,7 +34,7 @@ async function buscarPagina(slug: string) {
               ],
             },
             orderBy: { ordem: "asc" },
-            include: { icones: { orderBy: { ordem: "asc" } }, imagens: { orderBy: { ordem: "asc" } } },
+            include: { icones: { orderBy: { ordem: "asc" } }, imagens: { orderBy: { ordem: "asc" } }, unidades: { orderBy: { ordem: "asc" } } },
           },
         },
       },
@@ -223,6 +223,49 @@ export default async function PaginaPublica({ params }: Props) {
             {card.titulo}
           </a>
         );
+
+      // unidades: foto horizontal em cima, nome e endereço embaixo, e a seta com o mesmo link
+      // da foto. A foto é um atalho para quem toca nela: fora do Tab e do leitor de tela, que
+      // já têm a seta (com o nome da unidade). Cores do cartão: corFundo e corTexto do bloco.
+      case "unidades": {
+        if (!card.unidades.length) return null;
+        const cores = { "--cor-cartao": corValida(card.corFundo) ?? undefined, "--cor-cartao-texto": corValida(card.corTexto) ?? undefined } as React.CSSProperties;
+        return (
+          <div key={card.id} className={estilos.unidades} style={cores}>
+            {card.unidades.map((u) => {
+              const link = u.url ? `${destino}?unidade=${u.id}` : null;
+              const abaDaUnidade = abrirEmNovaAba(u.url);
+              // eslint-disable-next-line @next/next/no-img-element
+              const foto = u.imagemUrl ? <img src={u.imagemUrl} alt="" /> : null;
+              return (
+                <article key={u.id} className={estilos.unidade}>
+                  {foto &&
+                    (link ? (
+                      <a href={link} {...abaDaUnidade} className={estilos.unidadeFoto} tabIndex={-1} aria-hidden="true">
+                        {foto}
+                      </a>
+                    ) : (
+                      <div className={estilos.unidadeFoto}>{foto}</div>
+                    ))}
+                  <div className={estilos.unidadeTexto}>
+                    <div>
+                      <p className={estilos.unidadeNome}>{u.nome}</p>
+                      {u.endereco && <p className={estilos.unidadeEndereco}>{u.endereco}</p>}
+                    </div>
+                    {link && (
+                      <a href={link} {...abaDaUnidade} className={estilos.unidadeSeta} aria-label={`${u.nome}: abrir`}>
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        );
+      }
 
       case "carrossel":
         if (!card.imagens.length) return null;

@@ -6,7 +6,7 @@
    resolvida por tela (--fr-m, --fr-t, --fr-d), porque depende dos vizinhos (blocos que
    não cabem dividem a linha, ver fracoesNaTela). O resto do arquivo só lê --topo,
    --blocos, --lado, --avatar, --cabecalho, --titulo, --bio, --fracao, --encosto,
-   --imagem, --icone, --vao, --slide e --letra (esta sem padrão aqui: cada bloco usa
+   --imagem, --icone, --vao, --slide, --colunas e --letra (esta sem padrão aqui: cada bloco usa
    var(--letra, <o seu>), porque título e texto têm tamanhos diferentes).
    --lado (vão entre blocos lado a lado) sem valor segue o --blocos da tela. */
 .tela {
@@ -25,6 +25,7 @@
   --icone: var(--icone-m, 28px);
   --vao: var(--vao-m, 24px);
   --slide: var(--slide-m, 80%);
+  --colunas: var(--colunas-m, 1);
   --letra: var(--letra-m);
 }
 @media (min-width: 768px) {
@@ -44,6 +45,7 @@
     --icone: var(--icone-t, var(--icone-m, 28px));
     --vao: var(--vao-t, var(--vao-m, 24px));
     --slide: var(--slide-t, var(--slide-m, 60%));
+    --colunas: var(--colunas-t, var(--colunas-m, 2));
     --letra: var(--letra-t, var(--letra-m));
   }
 }
@@ -64,6 +66,7 @@
     --icone: var(--icone-d, var(--icone-t, var(--icone-m, 28px)));
     --vao: var(--vao-d, var(--vao-t, var(--vao-m, 24px)));
     --slide: var(--slide-d, var(--slide-t, var(--slide-m, 60%)));
+    --colunas: var(--colunas-d, var(--colunas-t, var(--colunas-m, 2)));
     --letra: var(--letra-d, var(--letra-t, var(--letra-m)));
   }
 }
@@ -264,4 +267,35 @@
   .janela::-webkit-scrollbar { display: none; }
   .slide { scroll-snap-align: start; }
   .slide[data-copia], .controles { display: none; }
+}
+
+/* ===== Unidades =====
+   Cartões com foto horizontal (16:9, cortada no centro para todos ficarem iguais), nome e
+   endereço, e a seta do link na cor dos botões. Quantos por linha vem de --colunas (por
+   tela); o vão é o dos blocos. Cor do cartão e do texto: --cor-cartao e --cor-cartao-texto,
+   do bloco; sem elas, o cartão é como o botão secundário. O canto segue o dos botões, mas
+   no "totalmente redondo" para em 18 px (cartão em pílula não dá). */
+.unidades { width: 100%; display: grid; grid-template-columns: repeat(var(--colunas), minmax(0, 1fr)); gap: var(--blocos) var(--lado); }
+.unidade {
+  display: flex; flex-direction: column; overflow: hidden; text-align: left;
+  border-radius: min(var(--raio), 18px);
+  background: var(--cor-cartao, color-mix(in srgb, var(--texto) 9%, transparent));
+  color: var(--cor-cartao-texto, var(--texto));
+  border: 1px solid color-mix(in srgb, var(--cor-cartao-texto, var(--texto)) 14%, transparent);
+}
+.unidadeFoto { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: color-mix(in srgb, var(--cor-cartao-texto, var(--texto)) 8%, transparent); }
+.unidadeFoto img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+a.unidadeFoto:hover img { transform: scale(1.03); }
+.unidadeTexto { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.unidadeTexto > div { flex: 1; min-width: 0; }
+.unidadeNome { margin: 0; font-weight: 700; font-size: 16px; line-height: 1.3; }
+.unidadeEndereco { margin: 4px 0 0; font-size: 13.5px; line-height: 1.45; opacity: 0.8; white-space: pre-line; }
+.unidadeSeta {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--destaque); color: var(--texto-botao); transition: transform 0.15s ease;
+}
+.unidadeSeta:hover { transform: translateX(2px); }
+.unidadeSeta:focus-visible { outline: 3px solid var(--cor-cartao-texto, var(--texto)); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .unidadeFoto img, .unidadeSeta { transition: none; }
 }

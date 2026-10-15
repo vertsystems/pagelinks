@@ -134,6 +134,7 @@ model Card {
   cliques Clique[]
   icones  Icone[] // tipo = redes
   imagens ImagemCarrossel[] // tipo = carrossel
+  unidades Unidade[] // tipo = unidades
   iconeTamanho Int? // tipo = redes: tamanho do ícone em px; vazio = 28
   iconeEspaco  Int? // tipo = redes: espaço entre os ícones em px; vazio = 24
   iconeCor     String? // tipo = redes: vazio = cor do texto · "marcas" · "#RRGGBB" (lib/redes.ts)
@@ -143,6 +144,7 @@ model Card {
   rico         String? // tipo = titulo ou texto: formatação por trecho (JSON, lib/textoRico.ts); vazio = só o texto puro do titulo
   itens    String? // tipo = lista: os itens, um por linha
   marcador String? // tipo = lista: vazio = bolinha · "check" · "numero" (lib/lista.ts)
+  colunas        Int? // tipo = unidades: unidades por linha (por tela, lib/ajustes.ts); vazio = 1 no celular, 2 no tablet e no computador
   carrosselTempo Int? // tipo = carrossel: velocidade, segundos para cada imagem passar; vazio = 4
   slideLargura   Int? // tipo = carrossel: largura de cada imagem em % da coluna; vazio = 80 no celular, 60 no tablet e no computador
 
@@ -173,6 +175,23 @@ model ImagemCarrossel {
   card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
   imagemUrl String
   url       String?
+  ordem     Int      @default(0)
+  criadoEm  DateTime @default(now())
+
+  @@index([cardId, ordem])
+}
+
+/// Unidade de um bloco "unidades": foto horizontal em cima, nome e endereço embaixo, e o
+/// link (na foto e na seta). Para quem tem vários endereços. Cores do cartão: corFundo e
+/// corTexto do bloco.
+model Unidade {
+  id        String   @id @default(cuid())
+  cardId    String
+  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  nome      String
+  endereco  String?
+  url       String?
+  imagemUrl String?
   ordem     Int      @default(0)
   criadoEm  DateTime @default(now())
 

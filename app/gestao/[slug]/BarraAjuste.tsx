@@ -90,7 +90,7 @@ export default function BarraAjuste({
         onChange={(e) => mudar(Number(e.target.value))}
         aria-label={nomeAcessivel ?? rotulo}
       />
-      <output>{valor}{faixa.unidade === "%" ? "%" : " px"}</output>
+      <output>{valor}{faixa.unidade === "%" ? "%" : faixa.unidade === "px" ? " px" : ""}</output>
       {proprio ? (
         <button type="button" className={estilos.tamanhoPadrao} onClick={voltarAgora}>
           {voltar.rotulo}

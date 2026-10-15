@@ -70,7 +70,8 @@ export default function CampoImagem({
   const [erro, setErro] = useState<string | null>(null);
   const [ocupado, iniciar] = useTransition();
 
-  const uso: UsoImagem = alvo.tipo === "card" ? "card" : USO_DO_CAMPO[alvo.campo];
+  // foto de unidade tem o mesmo tamanho de imagem de bloco
+  const uso: UsoImagem = alvo.tipo === "pagina" ? USO_DO_CAMPO[alvo.campo] : "card";
 
   function concluir(resposta: { url?: string | null; erro?: string }) {
     if (resposta.erro) {
@@ -151,7 +152,7 @@ export default function CampoImagem({
       </div>
       {url && ajuste && (
         <ControleAjuste
-          alvo={{ tipo: alvo.tipo, id: alvo.id }}
+          alvo={{ tipo: alvo.tipo === "pagina" ? "pagina" : "card", id: alvo.id }}
           chave={ajuste.chave}
           valores={ajuste.valores}
           rotulo="Tamanho"

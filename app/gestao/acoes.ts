@@ -91,7 +91,7 @@ export async function excluirCliente(id: string) {
           fundoImagemUrl: true,
           seoImagemUrl: true,
           faviconUrl: true,
-          cards: { select: { imagemUrl: true, imagens: { select: { imagemUrl: true } } } },
+          cards: { select: { imagemUrl: true, imagens: { select: { imagemUrl: true } }, unidades: { select: { imagemUrl: true } } } },
         },
       },
     },
@@ -106,7 +106,7 @@ export async function excluirCliente(id: string) {
       p.fundoImagemUrl,
       p.seoImagemUrl,
       p.faviconUrl,
-      ...p.cards.flatMap((card) => [card.imagemUrl, ...card.imagens.map((i) => i.imagemUrl)]),
+      ...p.cards.flatMap((card) => [card.imagemUrl, ...card.imagens.map((i) => i.imagemUrl), ...card.unidades.map((u) => u.imagemUrl)]),
     ]),
   );
   revalidar(c?.slug);
@@ -178,6 +178,7 @@ export async function criarCard(paginaId: string, tipo: string) {
     separador: "",
     carrossel: "Carrossel",
     lista: "",
+    unidades: "Nossas unidades",
   };
 
   const card = await prisma.card.create({
@@ -303,6 +304,7 @@ export async function excluirCard(cardId: string) {
     select: {
       imagemUrl: true,
       imagens: { select: { imagemUrl: true } },
+      unidades: { select: { imagemUrl: true } },
       paginaId: true,
       pagina: { select: { cliente: { select: { slug: true } } } },
     },
@@ -311,7 +313,7 @@ export async function excluirCard(cardId: string) {
   // o bloco sumiu e não tem mais data para contar: a página guarda a mudança (a lista
   // de clientes ordena pela última mudança da página e dos blocos)
   if (c) await prisma.pagina.update({ where: { id: c.paginaId }, data: { atualizadoEm: new Date() } });
-  await apagarImagensOrfas([c?.imagemUrl, ...(c?.imagens.map((i) => i.imagemUrl) ?? [])]);
+  await apagarImagensOrfas([c?.imagemUrl, ...(c?.imagens.map((i) => i.imagemUrl) ?? []), ...(c?.unidades.map((u) => u.imagemUrl) ?? [])]);
   revalidar(c?.pagina.cliente.slug);
 }
 
@@ -360,6 +362,8 @@ export async function duplicarCard(cardId: string) {
   // o carrossel copia os endereços das imagens: os arquivos ficam compartilhados (apagarImagensOrfas confere)
   const imagens = await prisma.imagemCarrossel.findMany({ where: { cardId }, select: { imagemUrl: true, url: true, ordem: true } });
   if (imagens.length) await prisma.imagemCarrossel.createMany({ data: imagens.map((i) => ({ ...i, cardId: copia.id })) });
+  const unidades = await prisma.unidade.findMany({ where: { cardId }, select: { nome: true, endereco: true, url: true, imagemUrl: true, ordem: true } });
+  if (unidades.length) await prisma.unidade.createMany({ data: unidades.map((u) => ({ ...u, cardId: copia.id })) });
 
   const c = await prisma.pagina.findUnique({
     where: { id: card.paginaId },
@@ -370,7 +374,7 @@ export async function duplicarCard(cardId: string) {
 
 // ---------- imagens ----------
 
-export type AlvoImagem = { tipo: "pagina"; id: string; campo: CampoImagemPagina } | { tipo: "card"; id: string };
+export type AlvoImagem = { tipo: "pagina"; id: string; campo: CampoImagemPagina } | { tipo: "card"; id: string } | { tipo: "unidade"; id: string };
 export type EstadoImagem = { url?: string | null; erro?: string };
 
 /**
@@ -385,6 +389,26 @@ function semAjuste(texto: string | null, chave: ChaveAjuste) {
 }
 
 async function localizarAlvo(alvo: AlvoImagem) {
+  if (alvo?.tipo === "unidade") {
+    const id = String(alvo.id);
+    const unidade = await prisma.unidade.findUnique({
+      where: { id },
+      select: { imagemUrl: true, cardId: true, card: { select: { pagina: { select: { clienteId: true, cliente: { select: { slug: true } } } } } } },
+    });
+    if (!unidade) return null;
+    return {
+      uso: "card" as UsoImagem,
+      atual: unidade.imagemUrl,
+      clienteId: unidade.card.pagina.clienteId,
+      slug: unidade.card.pagina.cliente.slug,
+      // a foto é da unidade; o bloco é marcado para a prévia recarregar e a lista ordenar
+      gravar: async (url: string | null) => {
+        await prisma.unidade.update({ where: { id }, data: { imagemUrl: url } });
+        await prisma.card.update({ where: { id: unidade.cardId }, data: { atualizadoEm: new Date() } });
+      },
+    };
+  }
+
   if (alvo?.tipo === "card") {
     const id = String(alvo.id);
     const card = await prisma.card.findUnique({
@@ -712,6 +736,92 @@ export async function salvarTempoCarrossel(cardId: string, segundos: number): Pr
   const card = await carrossel(cardId);
   if (!card) return { erro: "Não encontrei esse carrossel. Recarregue a página." };
   await prisma.card.update({ where: { id: card.id }, data: { carrosselTempo: segundos === TEMPO_PADRAO ? null : segundos } });
+  revalidar(card.pagina.cliente.slug);
+  return {};
+}
+
+// ---------- unidades ----------
+
+export type UnidadeDoBloco = { id: string; nome: string; endereco: string | null; url: string | null; imagemUrl: string | null };
+const CAMPOS_DA_UNIDADE = { nome: 120, endereco: 400, url: 2000 } as const;
+const MAXIMO_DE_UNIDADES = 30;
+
+async function blocoDeUnidades(cardId: string) {
+  return prisma.card.findFirst({
+    where: { id: String(cardId), tipo: "unidades" },
+    select: { id: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+  });
+}
+
+/** Uma unidade nova no fim do bloco, com nome provisório (a foto e o resto vêm depois). */
+export async function criarUnidade(cardId: string): Promise<{ unidade?: UnidadeDoBloco; erro?: string }> {
+  await exigirAdmin();
+  const card = await blocoDeUnidades(cardId);
+  if (!card) return { erro: "Não encontrei esse bloco. Recarregue a página." };
+  if ((await prisma.unidade.count({ where: { cardId: card.id } })) >= MAXIMO_DE_UNIDADES) {
+    return { erro: `O bloco já tem ${MAXIMO_DE_UNIDADES} unidades, o máximo.` };
+  }
+  const ultima = await prisma.unidade.findFirst({ where: { cardId: card.id }, orderBy: { ordem: "desc" }, select: { ordem: true } });
+  const unidade = await prisma.unidade.create({
+    data: { cardId: card.id, nome: "Nova unidade", ordem: (ultima?.ordem ?? 0) + 1 },
+    select: { id: true, nome: true, endereco: true, url: true, imagemUrl: true },
+  });
+  await marcarBloco(card.id);
+  revalidar(card.pagina.cliente.slug);
+  return { unidade };
+}
+
+/** Grava um campo da unidade (nome, endereço ou link), ao sair do campo no painel. */
+export async function salvarUnidade(unidadeId: string, campo: string, valor: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  if (!Object.hasOwn(CAMPOS_DA_UNIDADE, campo)) return { erro: "Esse campo não existe." };
+  const limite = CAMPOS_DA_UNIDADE[campo as keyof typeof CAMPOS_DA_UNIDADE];
+  const texto = String(valor ?? "").replace(/\r\n?/g, "\n").trim().slice(0, limite);
+  if (campo === "nome" && !texto) return { erro: "A unidade precisa de um nome." };
+  try {
+    const unidade = await prisma.unidade.update({
+      where: { id: String(unidadeId) },
+      data: { [campo]: texto || null },
+      select: { cardId: true, card: { select: { pagina: { select: { cliente: { select: { slug: true } } } } } } },
+    });
+    await marcarBloco(unidade.cardId);
+    revalidar(unidade.card.pagina.cliente.slug);
+    return {};
+  } catch {
+    return { erro: "Não consegui gravar. Recarregue a página." };
+  }
+}
+
+/** Tira a unidade do bloco (e a foto dela, se nada mais usa). */
+export async function removerUnidade(unidadeId: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const unidade = await prisma.unidade.findUnique({
+    where: { id: String(unidadeId) },
+    select: { imagemUrl: true, cardId: true, card: { select: { pagina: { select: { cliente: { select: { slug: true } } } } } } },
+  });
+  if (!unidade) return { erro: "Essa unidade já não está no bloco. Recarregue a página." };
+  await prisma.unidade.delete({ where: { id: String(unidadeId) } });
+  await marcarBloco(unidade.cardId);
+  await apagarImagensOrfas([unidade.imagemUrl]);
+  revalidar(unidade.card.pagina.cliente.slug);
+  return {};
+}
+
+/** A ordem das unidades como ficou no painel: a lista inteira, como a dos blocos. */
+export async function ordenarUnidades(cardId: string, ids: string[]): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const card = await blocoDeUnidades(cardId);
+  if (!card) return { erro: "Não encontrei esse bloco. Recarregue a página." };
+  const atuais = new Map((await prisma.unidade.findMany({ where: { cardId: card.id }, select: { id: true, ordem: true } })).map((u) => [u.id, u.ordem]));
+  const lista = Array.isArray(ids) ? ids.map(String) : [];
+  if (lista.length !== atuais.size || new Set(lista).size !== lista.length || lista.some((id) => !atuais.has(id))) {
+    return { erro: "As unidades mudaram enquanto você mexia. Recarregue a página e tente de novo." };
+  }
+  const mudaram = lista.map((id, i) => ({ id, ordem: i + 1 })).filter((u) => atuais.get(u.id) !== u.ordem);
+  if (mudaram.length) {
+    await prisma.$transaction(mudaram.map((u) => prisma.unidade.update({ where: { id: u.id }, data: { ordem: u.ordem } })));
+    await marcarBloco(card.id);
+  }
   revalidar(card.pagina.cliente.slug);
   return {};
 }

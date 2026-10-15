@@ -27,7 +27,7 @@ export const TELAS: { id: Tela; nome: string; sufixo: "m" | "t" | "d" }[] = [
   { id: "computador", nome: "Computador", sufixo: "d" },
 ];
 
-export type Faixa = { min: number; max: number; passo: number; padrao: number; unidade: "px" | "%" };
+export type Faixa = { min: number; max: number; passo: number; padrao: number; unidade: "px" | "%" | "" };
 
 type Numerico = {
   alvo: "pagina" | "card";
@@ -63,6 +63,8 @@ export const AJUSTES = {
   // título e texto: tamanho da letra. Sem valor, cada bloco fica no seu (13 no título, 15 no
   // texto, PADRAO_DA_LETRA): o CSS usa var(--letra, <padrão do bloco>), e o painel passa o padrão
   letra: { alvo: "card", coluna: "letraTamanho", variavel: "letra", tipo: "numero", faixa: TAMANHO_DA_LETRA, padrao: igual(15), padraoPorBloco: true },
+  // unidades: quantos cartões por linha (número puro no CSS, vai no repeat() da grade)
+  colunas: { alvo: "card", coluna: "colunas", variavel: "colunas", tipo: "numero", faixa: { min: 1, max: 3, passo: 1, padrao: 1, unidade: "" }, padrao: { celular: 1, tablet: 2, computador: 2 } },
   // carrossel: largura de cada imagem; na coluna de 620 px do tablet e do computador, 60% já mostra as vizinhas
   slide: { alvo: "card", coluna: "slideLargura", variavel: "slide", tipo: "numero", faixa: LARGURA_DO_SLIDE, padrao: { celular: 80, tablet: 60, computador: 60 } },
 } satisfies Record<string, Numerico | Largura>;

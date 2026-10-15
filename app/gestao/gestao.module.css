@@ -246,6 +246,13 @@
 .campo input:disabled, .campo textarea:disabled { opacity: .55; cursor: not-allowed; }
 .erroCampo { font-size: 12.5px; color: var(--g-perigo); }
 
+/* editor das unidades: uma por linha, foto ao lado dos campos */
+.unidadesEditor { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.unidadeEditor { background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 10px; padding: 10px 12px 12px; }
+.unidadeEditorTopo { display: flex; align-items: center; gap: 2px; margin-bottom: 6px; }
+.unidadeEditorTopo .carrosselNumero { position: static; }
+.unidadeEditorCorpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 14px; align-items: start; }
+
 /* editor do carrossel: as imagens em grade, cada uma com link, ordem e tirar */
 .carrosselGrade { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 .carrosselItem { background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
@@ -405,7 +412,7 @@
   .marca span { display: none; }
   .topoAcoes .btn:not(.btnIcone) { padding: 9px 12px; }
   .env { padding: 20px 16px 48px; }
-  .doisCampos, .estiloTexto { grid-template-columns: 1fr; }
+  .doisCampos, .estiloTexto, .unidadeEditorCorpo { grid-template-columns: 1fr; }
   .iconeLinha { grid-template-columns: 34px 1fr auto; }
   .iconeLinha input[type="text"] { grid-column: 1 / -1; order: 5; }
   .esconderNoCelular { display: none; }

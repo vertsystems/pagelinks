@@ -10,7 +10,7 @@ import { destinoDoIcone } from "@/lib/redes";
  *
  * Bloco de redes: cada ícone vem como /ir/<cardId>?icone=<iconeId>, e o clique
  * guarda também qual ícone foi. Carrossel: cada imagem com link vem como
- * /ir/<cardId>?imagem=<id> (o clique conta para o bloco).
+ * /ir/<cardId>?imagem=<id>, e cada unidade, /ir/<cardId>?unidade=<id> (o clique conta para o bloco).
  */
 export async function GET(
   request: Request,
@@ -20,6 +20,7 @@ export async function GET(
   const busca = new URL(request.url).searchParams;
   const iconeId = busca.get("icone");
   const imagemId = busca.get("imagem");
+  const unidadeId = busca.get("unidade");
 
   const card = await prisma.card.findUnique({
     where: { id: cardId },
@@ -31,6 +32,7 @@ export async function GET(
       mensagem: true,
       icones: iconeId ? { where: { id: iconeId }, select: { id: true, rede: true, url: true } } : false,
       imagens: imagemId ? { where: { id: imagemId }, select: { url: true } } : false,
+      unidades: unidadeId ? { where: { id: unidadeId }, select: { url: true } } : false,
     },
   });
 
@@ -38,11 +40,14 @@ export async function GET(
 
   const icone = card.icones?.[0];
   const imagem = card.imagens?.[0];
+  const unidade = card.unidades?.[0];
   let destino = card.url ?? "/";
   if (icone) {
     destino = destinoDoIcone(icone.rede, icone.url);
   } else if (imagem) {
     destino = imagem.url ?? "/";
+  } else if (unidade) {
+    destino = unidade.url ?? "/";
   } else if (card.tipo === "whatsapp" && card.telefone) {
     const numero = card.telefone.replace(/\D/g, "");
     const texto = card.mensagem ? `?text=${encodeURIComponent(card.mensagem)}` : "";

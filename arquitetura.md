@@ -112,6 +112,26 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Bloco Unidades — 14/10/2026
+
+Para quem tem vários endereços. Cada unidade é um cartão: foto horizontal em cima (16:9,
+cortada pelo centro, para todas ficarem iguais), nome e endereço embaixo, e uma seta redonda
+na cor dos botões com o mesmo link da foto (ex.: o mapa da unidade), em nova aba e contando o
+clique (`/ir/<bloco>?unidade=<id>`). A foto é atalho para o toque: fica fora do Tab e do leitor
+de tela, que já têm a seta com o nome da unidade.
+
+- **Dados:** tabela `Unidade` (nome, endereço, link, foto, ordem), com RLS como as outras.
+  Cores do cartão nas colunas que o bloco já tinha (`corFundo`, `corTexto`); sem elas, o cartão
+  é como o botão secundário. **Unidades por linha** por tela (`AJUSTES.colunas`, coluna
+  `colunas`; padrão 1 no celular e 2 no tablet e no computador), primeiro ajuste sem unidade
+  (número puro no `repeat()` da grade)
+- **Painel** (`EditorUnidades.tsx`): adicionar, foto (o mesmo envio das outras imagens, alvo
+  `unidade`), nome, endereço e link (gravam ao sair do campo), ordem e tirar, tudo na hora, como
+  no carrossel. As cores (`CorOpcional.tsx`, com "usar o padrão") gravam no "Salvar bloco" e
+  mudam a prévia na hora
+- **Arquivos:** `apagarImagensOrfas` e a Saúde do sistema contam as fotos das unidades; tirar a
+  unidade, excluir o bloco ou o cliente leva a foto junto (testado: o Storage responde 400)
+
 ## Saúde do sistema — 14/10/2026
 
 Página `/gestao/saude` (botão "Saúde" no topo do painel): o que vale acompanhar, com um
@@ -637,7 +657,7 @@ sólido/degradê/imagem), SEO e Open Graph, e cadastro com endereço e anotaçã
 
 **Tipos de card que a página já sabe renderizar:** `link`, `destaque`, `whatsapp`
 (com mensagem pronta), `titulo`, `texto`, `imagem` (clicável ou não), `video`
-(YouTube e Vimeo), `redes`, `separador`, `carrossel` e `lista` (desde 13/10/2026).
+(YouTube e Vimeo), `redes`, `separador`, `carrossel` e `lista` (desde 13/10/2026), `unidades` (desde 14/10/2026).
 
 **Por que o clique passa pelo servidor:** o link vai para `/ir/<cardId>`, que registra e
 redireciona. Assim a contagem não depende de JavaScript, de bloqueador de anúncio nem

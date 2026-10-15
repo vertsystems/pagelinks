@@ -7,6 +7,7 @@ import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
 import EditorCarrossel from "./EditorCarrossel";
+import EditorUnidades from "./EditorUnidades";
 import EscolhaLargura from "./EscolhaLargura";
 import ControleAjuste from "./ControleAjuste";
 import { naPrevia } from "./BarraAjuste";
@@ -40,6 +41,7 @@ type Card = {
   despublicarEm: Date | null;
   icones: { id: string; rede: string; url: string }[];
   imagens: { id: string; imagemUrl: string; url: string | null }[];
+  unidades: { id: string; nome: string; endereco: string | null; url: string | null; imagemUrl: string | null }[];
   carrosselTempo: number | null;
   itens: string | null;
   marcador: string | null;
@@ -62,6 +64,7 @@ const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
   { valor: "video", nome: "Vídeo", ajuda: "YouTube ou Vimeo, tocando na página" },
   { valor: "redes", nome: "Redes", ajuda: "Ícones lado a lado (WhatsApp, Instagram…), cada um com o seu link" },
   { valor: "carrossel", nome: "Carrossel", ajuda: "Várias imagens passando sozinhas, cada uma com link se quiser" },
+  { valor: "unidades", nome: "Unidades", ajuda: "Cartões com foto, nome e endereço, cada um com o seu link (para quem tem vários endereços)" },
   { valor: "separador", nome: "Separador", ajuda: "Uma linha para dar respiro" },
 ];
 
@@ -70,24 +73,26 @@ function camposDoTipo(tipo: string) {
   switch (tipo) {
     case "titulo":
     case "texto":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
     case "separador":
-      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
+      return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
     case "imagem":
-      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
     case "video":
-      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
+    case "unidades":
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: true };
     case "lista":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: true };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: true, unidades: false };
     case "carrossel":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: true, lista: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: true, lista: false, unidades: false };
     case "redes":
-      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: true, carrossel: false, lista: false, unidades: false };
     // nos blocos clicáveis, a imagem é opcional e, quando existe, vira o próprio card (banner)
     case "whatsapp":
-      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: true, url: false, imagem: true, whatsapp: true, icones: false, carrossel: false, lista: false, unidades: false };
     default:
-      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
   }
 }
 
@@ -418,7 +423,7 @@ export default function EditorCards({
                         {usa.titulo && card.tipo !== "titulo" && card.tipo !== "texto" && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
-                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
+                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" || card.tipo === "unidades" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
                             </label>
                             <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
                           </div>
@@ -528,6 +533,19 @@ export default function EditorCards({
                             </select>
                           </div>
                         </div>
+                      )}
+
+                      {usa.unidades && (
+                        <EditorUnidades
+                          key={card.id}
+                          cardId={card.id}
+                          unidades={card.unidades}
+                          corCartao={card.corFundo}
+                          corTextoCartao={card.corTexto}
+                          corDaPagina={corTexto}
+                          fundoDaPagina={corFundo}
+                          valoresColunas={valoresPorTela(card, "colunas")}
+                        />
                       )}
 
                       {usa.carrossel && (
