@@ -118,10 +118,14 @@ Toda página de cliente carrega `<script defer src="https://dspace.verts.me/dm.j
 da Dunamis Space (visitas sem cookie, velocidade no aparelho, erros). Fica no `app/[slug]/page.tsx`,
 então vale para os clientes de hoje e para os novos, sem cadastro por cliente.
 
-- **Um site só no DMetric:** o dm.js reconhece o site pelo domínio (e, sem código de site, o
-  servidor acha ou cria o site por ele). Todos os clientes ficam no mesmo site
-  (`pagelinks-ivory.vercel.app`, e depois o domínio próprio, que vira outro site), separados pelo
-  caminho (/anajulia, /lojasmari…)
+- **Um site por cliente no DMetric:** o dm.js manda domínio e caminho, e sem código de site o
+  servidor (`dmetric_site`, migração 0078 da Dunamis Space) acha ou cria um site para cada primeiro
+  trecho do caminho: `dnms.fun/crochedadri`, `dnms.fun/lojasmari`…, marcados como automáticos. A
+  barra no fim não conta (o servidor tira). Pausar o site raiz `dnms.fun` pausa todos os clientes;
+  pausar ou desativar o de um cliente para só aquele
+- **Para conferir se uma visita entrou:** na aba Rede do navegador, o pedido `/api/dm` sempre
+  responde 204, e o cabeçalho `x-dmetric` diz o que houve (`ok`, `robo`, `recusado`…). Navegador
+  em automação (`navigator.webdriver`) nem chega a enviar
 - **Fora da conta:** a prévia do painel (recarrega a cada ajuste: cada um contaria como visita) e
   quem está logado no painel. A prévia abre sempre com `?previa`, e a página não põe o script com
   `?previa` nem com a sessão do painel. Sem o cookie do painel, a checagem não vai ao banco
