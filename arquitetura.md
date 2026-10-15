@@ -131,6 +131,12 @@ de tela, que já têm a seta com o nome da unidade.
   mudam a prévia na hora
 - **Arquivos:** `apagarImagensOrfas` e a Saúde do sistema contam as fotos das unidades; tirar a
   unidade, excluir o bloco ou o cliente leva a foto junto (testado: o Storage responde 400)
+- **Cartão estreito** (duas ou três por linha no celular): a seta fica só ao lado do nome e o
+  endereço usa a largura toda, com seta e espaços menores. Quem decide é a largura do próprio
+  cartão (container query, até 260 px), não a tela. Antes, a seta comia a coluna do texto e o
+  endereço quebrava palavra por palavra (medido a 390 px: 86 px de largura e 7 linhas; agora
+  146 px e 4 linhas). **Tamanho do texto** por tela no bloco (o ajuste `letra`, padrão 14 px no
+  endereço; o nome é 15% maior)
 
 ## Saúde do sistema — 14/10/2026
 

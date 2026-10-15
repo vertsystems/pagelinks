@@ -60,8 +60,9 @@ export const AJUSTES = {
   icone: { alvo: "card", coluna: "iconeTamanho", variavel: "icone", tipo: "numero", faixa: AJUSTE_ICONES.tamanho, padrao: igual(28) },
   vao: { alvo: "card", coluna: "iconeEspaco", variavel: "vao", tipo: "numero", faixa: AJUSTE_ICONES.espaco, padrao: igual(24) },
   largura: { alvo: "card", coluna: "largura", variavel: "largura", tipo: "largura", padrao: { celular: "inteira", tablet: "inteira", computador: "inteira" } },
-  // título e texto: tamanho da letra. Sem valor, cada bloco fica no seu (13 no título, 15 no
-  // texto, PADRAO_DA_LETRA): o CSS usa var(--letra, <padrão do bloco>), e o painel passa o padrão
+  // título, texto e unidades: tamanho da letra. Sem valor, cada bloco fica no seu (13 no título,
+  // 15 no texto, 14 no endereço das unidades, PADRAO_DA_LETRA): o CSS usa var(--letra, <padrão
+  // do bloco>), e o painel passa o padrão
   letra: { alvo: "card", coluna: "letraTamanho", variavel: "letra", tipo: "numero", faixa: TAMANHO_DA_LETRA, padrao: igual(15), padraoPorBloco: true },
   // unidades: quantos cartões por linha (número puro no CSS, vai no repeat() da grade)
   colunas: { alvo: "card", coluna: "colunas", variavel: "colunas", tipo: "numero", faixa: { min: 1, max: 3, passo: 1, padrao: 1, unidade: "" }, padrao: { celular: 1, tablet: 2, computador: 2 } },

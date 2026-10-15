@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ValoresTela } from "@/lib/ajustes";
+import { PADRAO_DA_LETRA } from "@/lib/tema";
 import { criarUnidade, ordenarUnidades, removerUnidade, salvarUnidade, type UnidadeDoBloco } from "../acoes";
 import { naPrevia } from "./BarraAjuste";
 import CampoImagem from "./CampoImagem";
@@ -23,6 +24,7 @@ export default function EditorUnidades({
   corDaPagina,
   fundoDaPagina,
   valoresColunas,
+  valoresLetra,
 }: {
   cardId: string;
   unidades: UnidadeDoBloco[];
@@ -31,6 +33,8 @@ export default function EditorUnidades({
   corDaPagina: string;
   fundoDaPagina: string;
   valoresColunas: ValoresTela;
+  /** tamanho do texto do cartão (o do endereço; o nome acompanha), por tela */
+  valoresLetra: ValoresTela;
 }) {
   const [unidades, setUnidades] = useState(iniciais);
   const [erro, setErro] = useState<string | null>(null);
@@ -148,8 +152,11 @@ export default function EditorUnidades({
         <CorOpcional key={`texto-${corTextoCartao}`} nome="corTexto" rotulo="Cor do texto do cartão" valor={corTextoCartao} padrao={corDaPagina} rotuloPadrao={`padrão: ${corDaPagina}, a da página`} aoMudar={corNaPrevia("--cor-cartao-texto")} />
       </div>
       <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="colunas" valores={valoresColunas} rotulo="Unidades por linha" />
+      <ControleAjuste alvo={{ tipo: "card", id: cardId }} chave="letra" valores={valoresLetra} rotulo="Tamanho do texto" padrao={PADRAO_DA_LETRA.unidades} />
       <span className={estilos.dica}>
-        Foto, nome, endereço e link gravam na hora; as cores, no “Salvar bloco”. A seta usa a cor dos botões da página.
+        Foto, nome, endereço e link gravam na hora; as cores, no “Salvar bloco”. Tamanho do texto e unidades por linha valem
+        para a tela escolhida na prévia (o nome acompanha o endereço). Em cartão estreito, a seta fica ao lado do nome e o
+        endereço usa a largura toda. A seta usa a cor dos botões da página.
       </span>
     </div>
   );

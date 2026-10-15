@@ -248,10 +248,8 @@ export default async function PaginaPublica({ params }: Props) {
                       <div className={estilos.unidadeFoto}>{foto}</div>
                     ))}
                   <div className={estilos.unidadeTexto}>
-                    <div>
-                      <p className={estilos.unidadeNome}>{u.nome}</p>
-                      {u.endereco && <p className={estilos.unidadeEndereco}>{u.endereco}</p>}
-                    </div>
+                    <p className={estilos.unidadeNome}>{u.nome}</p>
+                    {u.endereco && <p className={estilos.unidadeEndereco}>{u.endereco}</p>}
                     {link && (
                       <a href={link} {...abaDaUnidade} className={estilos.unidadeSeta} aria-label={`${u.nome}: abrir`}>
                         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

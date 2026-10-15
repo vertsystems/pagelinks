@@ -545,6 +545,7 @@ export default function EditorCards({
                           corDaPagina={corTexto}
                           fundoDaPagina={corFundo}
                           valoresColunas={valoresPorTela(card, "colunas")}
+                          valoresLetra={valoresPorTela(card, "letra")}
                         />
                       )}
 
