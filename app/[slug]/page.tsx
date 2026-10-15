@@ -10,11 +10,19 @@ import { lerItens, lerMarcador } from "@/lib/lista";
 import { corValida, estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto } from "@/lib/fontes";
 import { lerTrechos, type Trecho } from "@/lib/textoRico";
 import { animacaoValida } from "@/lib/animacoes";
+import { usuarioLogado } from "@/lib/acesso";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string }> };
+
+/**
+ * DMetric (dspace.verts.me): conta as visitas e mede a página no aparelho de quem visita.
+ * O mesmo script para todos os clientes; o DMetric reconhece o site pelo domínio e separa
+ * cada cliente pelo caminho (/anajulia, /lojasmari…).
+ */
+const SCRIPT_DE_METRICAS = "https://dspace.verts.me/dm.js";
 
 /** Busca a página publicada de um cliente ativo, com os cards visíveis agora. */
 async function buscarPagina(slug: string) {
@@ -110,8 +118,12 @@ function urlDeVideo(url: string): string | null {
   return null;
 }
 
-export default async function PaginaPublica({ params }: Props) {
+export default async function PaginaPublica({ params, searchParams }: Props) {
   const { slug } = await params;
+  // Fora da conta: a prévia do painel (recarrega a cada ajuste, cada um contaria como visita)
+  // e quem está logado no painel olhando a página. Sem o cookie do painel, isto não vai ao banco.
+  const [busca, usuario] = await Promise.all([searchParams, usuarioLogado()]);
+  const medirVisita = busca?.previa === undefined && !usuario;
   const pagina = await buscarPagina(slug);
   if (!pagina) notFound();
 
@@ -324,6 +336,7 @@ export default async function PaginaPublica({ params }: Props) {
   return (
     <>
       {fonte && <link rel="stylesheet" href={fonte} />}
+      {medirVisita && <script defer src={SCRIPT_DE_METRICAS} />}
       {fontesDosBlocos.map((f) => (
         <link key={f.nome} rel="stylesheet" href={urlDaFonteDoTexto(f)} />
       ))}

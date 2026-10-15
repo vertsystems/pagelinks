@@ -112,6 +112,20 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Script de métricas (DMetric) em todas as páginas — 15/10/2026
+
+Toda página de cliente carrega `<script defer src="https://dspace.verts.me/dm.js">`, o DMetric
+da Dunamis Space (visitas sem cookie, velocidade no aparelho, erros). Fica no `app/[slug]/page.tsx`,
+então vale para os clientes de hoje e para os novos, sem cadastro por cliente.
+
+- **Um site só no DMetric:** o dm.js reconhece o site pelo domínio (e, sem código de site, o
+  servidor acha ou cria o site por ele). Todos os clientes ficam no mesmo site
+  (`pagelinks-ivory.vercel.app`, e depois o domínio próprio, que vira outro site), separados pelo
+  caminho (/anajulia, /lojasmari…)
+- **Fora da conta:** a prévia do painel (recarrega a cada ajuste: cada um contaria como visita) e
+  quem está logado no painel. A prévia abre sempre com `?previa`, e a página não põe o script com
+  `?previa` nem com a sessão do painel. Sem o cookie do painel, a checagem não vai ao banco
+
 ## Animações nos blocos — 15/10/2026
 
 Link, destaque, WhatsApp, imagem e redes têm "Animação": nenhuma, **reflexo**, **pulsar** ou

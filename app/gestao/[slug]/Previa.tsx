@@ -36,7 +36,9 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
 
   // o endereço de cada versão é fixo (a versão vai no endereço), e serve de key do iframe:
   // quando a de trás vira a da frente, o React mantém o mesmo nó, sem carregar de novo
-  const [atual, setAtual] = useState(`/${slug}`);
+  // ?previa em todo endereço da prévia, inclusive o primeiro: a página não põe o script de
+  // métricas na prévia (cada recarga contaria como visita)
+  const [atual, setAtual] = useState(`/${slug}?previa=inicio`);
   const [proxima, setProxima] = useState<string | null>(null);
   const [versaoVista, setVersaoVista] = useState(versao);
   if (versaoVista !== versao) {
