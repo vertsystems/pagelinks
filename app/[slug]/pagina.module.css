@@ -99,6 +99,13 @@
 }
 /* formato "livre": o logo inteiro, sem cortar nem borda; o tamanho escolhido é a largura */
 .avatar[data-formato="livre"] { height: auto; border-radius: 0; border: none; object-fit: contain; }
+/* sem título e frase: a foto ou logo ganha um respiro antes dos blocos (o da frase não existe) */
+.conteudo[data-sem-titulo] .avatar { margin-bottom: 28px; }
+/* para o leitor de tela e o Google, fora da vista */
+.somenteLeitor {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
 
 .titulo {
   font-size: var(--titulo);
@@ -176,7 +183,8 @@
 /* lista (serviços, horários…): numa caixa como o botão secundário, alinhada à esquerda,
    que é como lista se lê; o marcador vai na cor dos botões */
 .lista {
-  width: 100%; text-align: left; border-radius: var(--raio); padding: 16px 20px;
+  /* o canto segue o dos botões, mas no "totalmente redondo" para em 18 px (lista em pílula não dá) */
+  width: 100%; text-align: left; border-radius: min(var(--raio), 18px); padding: 16px 20px;
   background: color-mix(in srgb, var(--texto) 9%, transparent);
   border: 1px solid color-mix(in srgb, var(--texto) 16%, transparent);
 }
@@ -218,7 +226,7 @@
    arredondado. Ela não segue o formato dos botões; no "totalmente redondo", virava pílula */
 .imagem { width: var(--imagem); display: block; margin-inline: var(--encosto); }
 
-.video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: var(--raio); }
+.video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
 
 .separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
 

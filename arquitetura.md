@@ -112,6 +112,19 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Página só com a logo, e cantos de lista e vídeo — 14/10/2026
+
+**Sem título e sem frase** (`Pagina.semTitulo`): caixinha no topo do editor para clientes que
+só têm a logo. Título e frase saem da página, mas o título continua guardado: vale para a aba
+do navegador e o Google (o "Título no Google", se houver, tem preferência) e fica num `<h1>` só
+para leitor de tela. A logo ganha 28 px antes dos blocos, o respiro que a frase dava. Marcar já
+esconde os dois na prévia; grava no "Salvar". Escondida, a frase segue no envio, para salvar o
+topo não a apagar. Título apagado agora vira o nome do cliente, e não mais "Sem título" (que ia
+para a aba). Havia página com o título "." para fingir que não tinha título.
+
+**Cantos:** a caixa da lista e o vídeo usavam o canto dos botões, e no "totalmente redondo"
+(999 px) viravam pílula. Agora param em 18 px, como os cartões de unidade.
+
 ## Bloco Unidades — 14/10/2026
 
 Para quem tem vários endereços. Cada unidade é um cartão: foto horizontal em cima (16:9,

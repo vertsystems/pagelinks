@@ -99,6 +99,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                 avatarUrl={pagina.avatarUrl}
                 avatarFormato={pagina.avatarFormato}
                 cabecalhoImagemUrl={pagina.cabecalhoImagemUrl}
+                semTitulo={pagina.semTitulo}
                 corFundo={pagina.corFundo}
                 ajustes={{
                   avatar: valoresPorTela(pagina, "avatar"),

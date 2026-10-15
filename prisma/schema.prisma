@@ -42,6 +42,7 @@ model Pagina {
 
   titulo    String
   bio       String?
+  semTitulo Boolean @default(false) // título e frase fora da página (fica só a foto ou logo); o título segue valendo para o Google e a aba
   avatarUrl String?
   avatarTamanho Int? // diâmetro em px; vazio = 104 (no formato "livre", é a largura)
   avatarFormato String? // vazio = redonda · "livre" = o logo inteiro, sem cortar nem borda

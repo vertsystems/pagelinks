@@ -128,7 +128,7 @@ export async function salvarPagina(paginaId: string, dados: FormData) {
   await exigirAdmin();
   const pagina = await prisma.pagina.findUnique({
     where: { id: paginaId },
-    select: { cabecalhoImagemUrl: true, cliente: { select: { slug: true } } },
+    select: { cabecalhoImagemUrl: true, cliente: { select: { slug: true, nome: true } } },
   });
   if (!pagina) return;
 
@@ -140,12 +140,15 @@ export async function salvarPagina(paginaId: string, dados: FormData) {
 
   // Com imagem no cabeçalho, título e frase ficam travados até a imagem sair.
   if (!pagina.cabecalhoImagemUrl) {
-    if (dados.has("titulo")) data.titulo = texto("titulo") ?? "Sem título";
+    // título vazio vira o nome do cliente: ele é o nome da página na aba e no Google
+    // (antes virava "Sem título"), mesmo quando não aparece na página (semTitulo)
+    if (dados.has("titulo")) data.titulo = texto("titulo") ?? pagina.cliente.nome;
     if (dados.has("bio")) data.bio = texto("bio");
   }
   // O formulário que tem a chave manda também um "publicada" vazio: checkbox
   // desmarcado não vai no envio, e sem isso não daria para distinguir de "não é deste formulário".
   if (dados.has("publicada")) data.publicada = dados.getAll("publicada").includes("on");
+  if (dados.has("semTitulo")) data.semTitulo = dados.getAll("semTitulo").includes("on");
   for (const campo of CAMPOS_OBRIGATORIOS) {
     const valor = texto(campo);
     if (valor) data[campo] = valor;

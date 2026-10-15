@@ -329,7 +329,7 @@ export default async function PaginaPublica({ params }: Props) {
         style={{ ...variaveisDoTema(pagina), ...variaveisDeAjuste(pagina, "pagina") }}
         data-pl-tela
       >
-        <div className={estilos.conteudo}>
+        <div className={estilos.conteudo} data-sem-titulo={pagina.semTitulo && !pagina.cabecalhoImagemUrl ? "" : undefined}>
           {pagina.avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -351,10 +351,19 @@ export default async function PaginaPublica({ params }: Props) {
                 alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")}
               />
             </h1>
+          ) : pagina.semTitulo ? (
+            // sem título à vista (só a foto ou logo): o título fica para o leitor de tela
+            <h1 className={estilos.somenteLeitor}>{pagina.titulo}</h1>
           ) : (
             <>
-              <h1 className={estilos.titulo}>{pagina.titulo}</h1>
-              {pagina.bio && <p className={estilos.bio}>{pagina.bio}</p>}
+              <h1 className={estilos.titulo} data-pl-texto-topo>
+                {pagina.titulo}
+              </h1>
+              {pagina.bio && (
+                <p className={estilos.bio} data-pl-texto-topo>
+                  {pagina.bio}
+                </p>
+              )}
             </>
           )}
 
