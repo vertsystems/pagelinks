@@ -5,7 +5,7 @@
 import { useState } from "react";
 import estilos from "./pagina.module.css";
 
-export type ItemDoCarrossel = { id: string; imagemUrl: string; destino: string | null; novaAba: boolean };
+export type ItemDoCarrossel = { id: string; imagemUrl: string; largura: number | null; altura: number | null; destino: string | null; novaAba: boolean };
 
 /**
  * Com poucas imagens, a volta repete o conjunto até ter pelo menos 3: uma volta precisa
@@ -39,7 +39,14 @@ export default function Carrossel({ titulo, itens, tempo }: { titulo: string; it
           {esteira.map((item, i) => {
             const copia = i >= itens.length;
             const imagem = (
-              <img src={item.imagemUrl} alt={copia ? "" : `${titulo}: imagem ${i + 1} de ${itens.length}`} draggable={false} />
+              <img
+                src={item.imagemUrl}
+                alt={copia ? "" : `${titulo}: imagem ${i + 1} de ${itens.length}`}
+                // tamanho do arquivo: a esteira já nasce na altura certa, sem pular quando a imagem chega
+                width={item.largura ?? undefined}
+                height={item.altura ?? undefined}
+                draggable={false}
+              />
             );
             return (
               <div key={i} className={estilos.slide} aria-hidden={copia || undefined} data-copia={copia || undefined}>

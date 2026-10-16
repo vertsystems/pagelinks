@@ -8,7 +8,7 @@ import { exigirAdmin } from "@/lib/acesso";
 import { SLUGS_RESERVADOS, gerarSlug } from "@/lib/slug";
 import { REDE_POR_ID, corDosIconesValida } from "@/lib/redes";
 import { AJUSTES, TELAS, lerJson, normalizarAjuste, type ChaveAjuste, type Tela, type ValorAjuste } from "@/lib/ajustes";
-import { apagarImagensOrfas, guardarImagem, otimizarImagem } from "@/lib/imagens";
+import { apagarImagensOrfas, guardarImagem, medirImagem, otimizarImagem, type TamanhoDaImagem } from "@/lib/imagens";
 import { FORMATOS_ACEITOS, LIMITE_ENVIO, USO_DO_CAMPO, type CampoImagemPagina, type UsoImagem } from "@/lib/imagens-limites";
 import { MAXIMO_DE_IMAGENS, TEMPOS, TEMPO_PADRAO } from "@/lib/carrossel";
 import { lerMarcador } from "@/lib/lista";
@@ -365,7 +365,7 @@ export async function duplicarCard(cardId: string) {
   const icones = await prisma.icone.findMany({ where: { cardId }, select: { rede: true, url: true, ordem: true } });
   if (icones.length) await prisma.icone.createMany({ data: icones.map((i) => ({ ...i, cardId: copia.id })) });
   // o carrossel copia os endereços das imagens: os arquivos ficam compartilhados (apagarImagensOrfas confere)
-  const imagens = await prisma.imagemCarrossel.findMany({ where: { cardId }, select: { imagemUrl: true, url: true, ordem: true } });
+  const imagens = await prisma.imagemCarrossel.findMany({ where: { cardId }, select: { imagemUrl: true, largura: true, altura: true, url: true, ordem: true } });
   if (imagens.length) await prisma.imagemCarrossel.createMany({ data: imagens.map((i) => ({ ...i, cardId: copia.id })) });
   const unidades = await prisma.unidade.findMany({ where: { cardId }, select: { nome: true, endereco: true, url: true, imagemUrl: true, ordem: true } });
   if (unidades.length) await prisma.unidade.createMany({ data: unidades.map((u) => ({ ...u, cardId: copia.id })) });
@@ -409,7 +409,8 @@ async function localizarAlvo(alvo: AlvoImagem) {
       clienteId: unidade.card.pagina.clienteId,
       slug: unidade.card.pagina.cliente.slug,
       // a foto é da unidade; o bloco é marcado para a prévia recarregar e a lista ordenar
-      gravar: async (url: string | null) => {
+      // a foto da unidade tem formato fixo (16:9, cortada): o tamanho do arquivo não importa
+      gravar: async (url: string | null, _tamanho?: TamanhoDaImagem | null) => {
         await prisma.unidade.update({ where: { id }, data: { imagemUrl: url } });
         await prisma.card.update({ where: { id: unidade.cardId }, data: { atualizadoEm: new Date() } });
       },
@@ -434,13 +435,15 @@ async function localizarAlvo(alvo: AlvoImagem) {
       clienteId: card.pagina.clienteId,
       slug: card.pagina.cliente.slug,
       // sem imagem, o tamanho volta ao padrão nas três telas: a próxima imagem não herda o ajuste
-      gravar: (url: string | null) =>
+      gravar: (url: string | null, tamanho?: TamanhoDaImagem | null) =>
         prisma.card.update({
           where: { id },
           data: url
-            ? { imagemUrl: url }
+            ? { imagemUrl: url, imagemLargura: tamanho?.largura ?? null, imagemAltura: tamanho?.altura ?? null }
             : {
                 imagemUrl: null,
+                imagemLargura: null,
+                imagemAltura: null,
                 imagemTamanho: null,
                 ajustesTablet: semAjuste(card.ajustesTablet, "imagem"),
                 ajustesComputador: semAjuste(card.ajustesComputador, "imagem"),
@@ -471,9 +474,12 @@ async function localizarAlvo(alvo: AlvoImagem) {
       atual: pagina[campo],
       clienteId: pagina.clienteId,
       slug: pagina.cliente.slug,
-      gravar: (url: string | null) => {
+      gravar: (url: string | null, tamanho?: TamanhoDaImagem | null) => {
         const data: Prisma.PaginaUpdateInput = {};
         data[campo] = url;
+        // tamanho real do arquivo, para a página guardar o lugar dele (o fundo não precisa)
+        if (campo === "avatarUrl") Object.assign(data, { avatarLargura: tamanho?.largura ?? null, avatarAltura: tamanho?.altura ?? null });
+        if (campo === "cabecalhoImagemUrl") Object.assign(data, { cabecalhoLargura: tamanho?.largura ?? null, cabecalhoAltura: tamanho?.altura ?? null });
         if (!url && chaveDoTamanho) {
           if (chaveDoTamanho === "avatar") data.avatarTamanho = null;
           else data.cabecalhoTamanho = null;
@@ -489,13 +495,14 @@ async function localizarAlvo(alvo: AlvoImagem) {
 }
 
 /** Confere o arquivo enviado (WebP ou PNG, até 4 MB) e devolve em WebP q90 no tamanho do uso. */
-async function arquivoOtimizado(dados: FormData, uso: UsoImagem): Promise<{ otimizada: Buffer } | { erro: string }> {
+async function arquivoOtimizado(dados: FormData, uso: UsoImagem): Promise<{ otimizada: Buffer; tamanho: TamanhoDaImagem | null } | { erro: string }> {
   const arquivo = dados.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) return { erro: "Escolha uma imagem." };
   if (arquivo.type && !FORMATOS_ACEITOS.includes(arquivo.type)) return { erro: "A imagem precisa estar em WebP ou PNG." };
   if (arquivo.size > LIMITE_ENVIO) return { erro: "A imagem passa de 4 MB. Exporte de novo num tamanho menor." };
   try {
-    return { otimizada: await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), uso) };
+    const otimizada = await otimizarImagem(Buffer.from(await arquivo.arrayBuffer()), uso);
+    return { otimizada, tamanho: await medirImagem(otimizada) };
   } catch {
     return { erro: "Esse arquivo não é um WebP nem um PNG válido." };
   }
@@ -523,7 +530,7 @@ export async function enviarImagem(alvo: AlvoImagem, dados: FormData): Promise<E
   const guardada = await guardarNoStorage(local.clienteId, local.uso, arquivo.otimizada);
   if ("erro" in guardada) return guardada;
 
-  await local.gravar(guardada.url);
+  await local.gravar(guardada.url, arquivo.tamanho);
   await apagarImagensOrfas([local.atual]);
   revalidar(local.slug);
   return { url: guardada.url };
@@ -676,7 +683,7 @@ export async function adicionarImagemCarrossel(cardId: string, dados: FormData):
   if ("erro" in guardada) return guardada;
 
   const imagem = await prisma.imagemCarrossel.create({
-    data: { cardId: card.id, imagemUrl: guardada.url, ordem: (ultima?.ordem ?? 0) + 1 },
+    data: { cardId: card.id, imagemUrl: guardada.url, largura: arquivo.tamanho?.largura, altura: arquivo.tamanho?.altura, ordem: (ultima?.ordem ?? 0) + 1 },
     select: { id: true, imagemUrl: true, url: true },
   });
   await marcarBloco(card.id);

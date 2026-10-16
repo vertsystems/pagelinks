@@ -41,6 +41,23 @@ export async function otimizarImagem(entrada: Buffer, uso: UsoImagem) {
   return manterOriginal ? entrada : saida;
 }
 
+export type TamanhoDaImagem = { largura: number; altura: number };
+
+/**
+ * Largura e altura do arquivo, em px (num WebP animado, a de um quadro). Vai para o banco ao
+ * lado do endereço, e a página põe no <img>: o navegador guarda o lugar da imagem antes de ela
+ * chegar, e a página não pula (CLS). null se não der para medir.
+ */
+export async function medirImagem(conteudo: Buffer): Promise<TamanhoDaImagem | null> {
+  try {
+    const { width, height, pageHeight } = await sharp(conteudo, { animated: true }).metadata();
+    const altura = pageHeight ?? height;
+    return width && altura ? { largura: width, altura } : null;
+  } catch {
+    return null;
+  }
+}
+
 function storage() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const chave = process.env.SUPABASE_SECRET_KEY;

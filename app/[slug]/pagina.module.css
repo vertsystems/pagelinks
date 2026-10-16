@@ -225,7 +225,9 @@
 /* imagem enviada (bloco de imagem, banner e carrossel) aparece como o arquivo: sem canto
    arredondado. Ela não segue o formato dos botões; no "totalmente redondo", virava pílula */
 .moldura { width: var(--imagem); display: block; margin-inline: var(--encosto); }
-.moldura img { width: 100%; display: block; }
+/* height: auto com o width/height do <img>: a altura sai da proporção do arquivo, e o lugar
+   fica guardado antes de a imagem chegar (sem isso a página pulava, o CLS) */
+.moldura img { width: 100%; height: auto; display: block; }
 
 .video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
 

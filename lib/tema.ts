@@ -62,17 +62,11 @@ export function variaveisDoTema(p: TemaPagina): React.CSSProperties {
   } as React.CSSProperties;
 }
 
-/** Só as fontes que o painel oferece — evita montar URL com valor inválido. */
+/** Só as fontes que o painel oferece. A página as serve do próprio domínio (app/[slug]/fontes.ts). */
 const FONTES_PERMITIDAS = new Set([
   "Inter", "Poppins", "Montserrat", "Roboto", "Open Sans", "Lato", "Playfair Display",
   "Source Serif 4", "Oswald", "Raleway", "Nunito", "Work Sans", "DM Sans", "Manrope",
 ]);
-
-export function urlDaFonte(fonte: string): string | null {
-  if (!FONTES_PERMITIDAS.has(fonte)) return null;
-  const familia = fonte.replace(/ /g, "+");
-  return `https://fonts.googleapis.com/css2?family=${familia}:wght@400;500;600;700;800&display=swap`;
-}
 
 export const FONTES = [...FONTES_PERMITIDAS];
 

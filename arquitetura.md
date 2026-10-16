@@ -112,6 +112,34 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Velocidade e estabilidade das páginas — 16/10/2026
+
+O DMetric mostrava notas de 75 a 89 (Ana Julia, Relojoaria Litoral, Duda), com a página pulando
+enquanto carregava (CLS de 0,30 e 0,31) e o carregamento em "a melhorar". O Lighthouse no celular
+(4G simulado) achou três causas, as mesmas em todas as páginas:
+
+- **Imagem sem tamanho** (o pulo). Banner, cabeçalho, logo "livre" e carrossel entravam sem
+  `width`/`height`: a página desenhava sem o espaço deles e empurrava tudo para baixo quando cada
+  um chegava. Agora o tamanho real do arquivo fica no banco (`Pagina.avatarLargura/Altura`,
+  `cabecalhoLargura/Altura`, `Card.imagemLargura/Altura`, `ImagemCarrossel.largura/altura`), gravado
+  no envio (`medirImagem`, lib/imagens.ts), e vai no `<img>`; o CSS usa `height: auto`, então a altura
+  sai da proporção e o lugar fica guardado. As 434 imagens que já existiam foram medidas por
+  `npm run db:medir-imagens`, que fica para quando entrar imagem por importação (só mede o que
+  falta). A foto das unidades tem formato fixo (16:9) e não precisa
+- **Google Fonts travando a pintura** (~0,9 s). O CSS de fonts.googleapis.com bloqueava a página até
+  chegar, e depois ainda ia a fonts.gstatic.com. As 14 fontes da página passaram para o `next/font`
+  (`app/[slug]/fontes.ts`): servidas pelo dnms.fun, com uma fonte de reserva ajustada às medidas da
+  original. Sem preload (pré-carregar as 14 disputaria banda com o banner). As fontes próprias dos
+  blocos de título e texto (lib/fontes.ts, 42) continuam pelo Google: só pesam em quem usa
+- **O banner do topo na fila** (o LCP). As imagens iam todas com a mesma prioridade. Agora a primeira
+  imagem de bloco vai com `fetchPriority="high"` e, da quarta em diante, `loading="lazy"`; as fotos
+  das unidades também carregam sob demanda
+
+Medido localmente com o build de produção: CLS de 0,42 e 0,52 para 0 e FCP de 1,7 s para 0,9 s;
+a espera do banner para começar a baixar caiu de ~1,5 s para ~0,5 s. Os prints antes e depois
+saíram idênticos (a fonte é o mesmo arquivo do Google). O número de verdade é o do DMetric, que
+leva alguns dias de visitas para mudar.
+
 ## Links programados — 16/10/2026
 
 Nos blocos com **Endereço de destino** (link, destaque, imagem e vídeo; o de redes, com um link

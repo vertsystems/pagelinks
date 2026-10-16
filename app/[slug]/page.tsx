@@ -2,7 +2,7 @@ import { Fragment, cache } from "react";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
+import { variaveisDoTema } from "@/lib/tema";
 import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
 import { REDE_POR_ID, destinoDoIcone } from "@/lib/redes";
 import { TEMPO_PADRAO } from "@/lib/carrossel";
@@ -16,6 +16,7 @@ import { emVigor } from "@/lib/linksProgramados";
 import { urlDeVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
+import { familiaDaFonte } from "./fontes";
 import estilos from "./pagina.module.css";
 
 type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string; [chave: string]: string | string[] | undefined }> };
@@ -140,11 +141,24 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
     notFound();
   }
 
-  const fonte = urlDaFonte(pagina.fonte);
+  // a fonte vem do próprio dnms.fun (./fontes.ts), não mais do Google Fonts
+  const familia = familiaDaFonte(pagina.fonte);
   // Tamanhos, espaços e larguras por tela (lib/ajustes.ts) vão como variáveis de CSS na
   // página e em cada bloco; o pagina.module.css escolhe a da tela. data-pl-tela e
   // data-pl-bloco são por onde as barras do painel mexem na prévia ao vivo.
   const avatar = pagina.avatarTamanho ?? 104;
+
+  // Prioridade das imagens dos blocos, na ordem da página. A primeira costuma ser o maior
+  // elemento à vista, o que o Google mede como carregamento (LCP): vai na frente das outras.
+  // Da quarta em diante, só quando a pessoa rola até perto: não disputam banda com as do topo.
+  const comArte = pagina.cards.filter(
+    (c) => c.imagemUrl && !["titulo", "texto", "lista", "separador", "video", "redes", "carrossel", "unidades"].includes(c.tipo) && (c.tipo !== "whatsapp" || c.telefone),
+  );
+  const posicaoDaArte = new Map(comArte.map((c, i) => [c.id, i]));
+  const prioridade = (cardId: string) => {
+    const i = posicaoDaArte.get(cardId) ?? 0;
+    return i === 0 ? { fetchPriority: "high" as const } : i >= 3 ? { loading: "lazy" as const } : {};
+  };
 
   /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
@@ -156,7 +170,8 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
     const imagem = card.imagemUrl ? (
       <span className={estilos.moldura} style={{ "--arte": `url(${JSON.stringify(card.imagemUrl)})` } as React.CSSProperties}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={card.imagemUrl} alt={card.titulo ?? ""} />
+        {/* largura e altura do arquivo: o navegador guarda o lugar antes de a imagem chegar */}
+        <img src={card.imagemUrl} alt={card.titulo ?? ""} width={card.imagemLargura ?? undefined} height={card.imagemAltura ?? undefined} {...prioridade(card.id)} />
       </span>
     ) : null;
     // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
@@ -264,7 +279,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
               const link = u.url ? `${destino}?unidade=${u.id}` : null;
               const abaDaUnidade = abrirEmNovaAba(u.url);
               // eslint-disable-next-line @next/next/no-img-element
-              const foto = u.imagemUrl ? <img src={u.imagemUrl} alt="" /> : null;
+              const foto = u.imagemUrl ? <img src={u.imagemUrl} alt="" loading="lazy" /> : null;
               return (
                 <article key={u.id} className={estilos.unidade}>
                   {foto &&
@@ -303,6 +318,8 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
             itens={card.imagens.map((i) => ({
               id: i.id,
               imagemUrl: i.imagemUrl,
+              largura: i.largura,
+              altura: i.altura,
               destino: i.url ? `${destino}?imagem=${i.id}` : null,
               novaAba: !!i.url && "target" in abrirEmNovaAba(i.url),
             }))}
@@ -348,14 +365,17 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
 
   return (
     <>
-      {fonte && <link rel="stylesheet" href={fonte} />}
       {medirVisita && <script defer src={SCRIPT_DE_METRICAS} />}
       {fontesDosBlocos.map((f) => (
         <link key={f.nome} rel="stylesheet" href={urlDaFonteDoTexto(f)} />
       ))}
       <main
         className={estilos.tela}
-        style={{ ...variaveisDoTema(pagina), ...variaveisDeAjuste(pagina, "pagina") }}
+        style={{
+          ...variaveisDoTema(pagina),
+          ...variaveisDeAjuste(pagina, "pagina"),
+          ...(familia && { fontFamily: `${familia}, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` }),
+        }}
         data-pl-tela
       >
         <div className={estilos.conteudo} data-sem-titulo={pagina.semTitulo && !pagina.cabecalhoImagemUrl ? "" : undefined}>
@@ -366,7 +386,8 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
               src={pagina.avatarUrl}
               alt={pagina.titulo}
               width={avatar}
-              height={pagina.avatarFormato === "livre" ? undefined : avatar}
+              // no formato livre, a altura sai da proporção do arquivo: o lugar fica guardado
+              height={pagina.avatarFormato !== "livre" ? avatar : pagina.avatarLargura && pagina.avatarAltura ? Math.round((avatar * pagina.avatarAltura) / pagina.avatarLargura) : undefined}
               data-pl-avatar
               data-formato={pagina.avatarFormato ?? undefined}
             />
@@ -378,6 +399,8 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
               <img
                 src={pagina.cabecalhoImagemUrl}
                 alt={[pagina.titulo, pagina.bio].filter(Boolean).join(" — ")}
+                width={pagina.cabecalhoLargura ?? undefined}
+                height={pagina.cabecalhoAltura ?? undefined}
               />
             </h1>
           ) : pagina.semTitulo ? (

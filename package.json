@@ -13,6 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:importar": "tsx prisma/importar.ts",
     "db:usuario": "tsx prisma/usuario.ts",
+    "db:medir-imagens": "tsx prisma/medir-imagens.ts",
     "storage:preparar": "tsx prisma/preparar-storage.ts"
   },
   "dependencies": {

@@ -46,9 +46,15 @@ model Pagina {
   avatarUrl String?
   avatarTamanho Int? // diâmetro em px; vazio = 104 (no formato "livre", é a largura)
   avatarFormato String? // vazio = redonda · "livre" = o logo inteiro, sem cortar nem borda
+  // tamanho real dos arquivos, em px: vira width/height no <img>, e o navegador guarda o
+  // lugar da imagem antes de ela chegar (sem isso a página pulava, o CLS). Vazio = sem medida
+  avatarLargura    Int?
+  avatarAltura     Int?
   // arte da marca que já traz o nome e a frase: quando existe, substitui título e bio na página
   cabecalhoImagemUrl String?
   cabecalhoTamanho   Int? // largura em % da coluna; vazio = 100
+  cabecalhoLargura   Int? // tamanho real do arquivo, como avatarLargura
+  cabecalhoAltura    Int?
   tituloTamanho Int? // tamanho da letra do título em px; vazio = 24 no celular, 28 no tablet e no computador
   bioTamanho    Int? // tamanho da letra da frase em px; vazio = 16
   publicada Boolean @default(false)
@@ -105,6 +111,8 @@ model Card {
   url       String?
   imagemUrl String?
   imagemTamanho Int? // largura em % da coluna; vazio = 100
+  imagemLargura Int? // tamanho real do arquivo, como Pagina.avatarLargura
+  imagemAltura  Int?
   icone     String? // nome do ícone, quando o tipo usa
 
   // tipo = whatsapp
@@ -192,6 +200,8 @@ model ImagemCarrossel {
   cardId    String
   card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
   imagemUrl String
+  largura   Int? // tamanho real do arquivo, como Pagina.avatarLargura
+  altura    Int?
   url       String?
   ordem     Int      @default(0)
   criadoEm  DateTime @default(now())
