@@ -1,0 +1,55 @@
+/* Redirecionamentos (/gestao/redirecionamentos). Cores só por token: gestao.css */
+
+/* a barra fixa do topo não cobre o formulário quando o Editar rola até ele */
+.formulario { scroll-margin-top: 84px; }
+
+/* os dois endereços lado a lado, com a seta no meio; no celular, um embaixo do outro */
+.campos { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: start; }
+.setaCampos { padding-top: 30px; color: var(--g-suave); font-size: 18px; }
+
+/* campo com o domínio na frente, para ficar claro que é só o final do endereço */
+.prefixo {
+  display: flex; align-items: center; min-width: 0;
+  background: var(--g-fundo); border: 1px solid var(--g-campo-borda); border-radius: 8px;
+}
+.prefixo:focus-within { border-color: var(--g-foco); box-shadow: 0 0 0 3px var(--g-anel); }
+.prefixo > span { padding-left: 12px; font-family: var(--g-mono); font-size: 13px; color: var(--g-suave); white-space: nowrap; }
+/* passa por cima do estilo de campo do painel (.campo input[type="text"]) */
+.prefixo input.entrada[type="text"],
+.prefixo input.entrada[type="text"]:focus {
+  border: 0; box-shadow: none; background: transparent; min-width: 0;
+  padding-left: 1px; font-family: var(--g-mono); font-size: 13px;
+}
+
+.pronto {
+  background: var(--g-acento-fundo); border: 1px solid var(--g-linha-forte); color: var(--g-texto);
+  padding: 11px 14px; border-radius: 9px; font-size: 14px; margin: 0 0 14px;
+}
+
+/* a lista: um redirecionamento por linha, com o sinal da situação na frente */
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.item {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start;
+  background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 12px; padding: 14px 16px;
+}
+.item[data-editando] { border-color: var(--g-foco); box-shadow: 0 0 0 3px var(--g-anel); }
+
+.sinal { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; border: 2px solid; }
+.ok { background: var(--g-ok); border-color: var(--g-ok-borda); }
+.atencao { background: var(--g-pendente); border-color: var(--g-pendente-borda); }
+
+.corpo { min-width: 0; display: grid; gap: 4px; }
+.enderecos { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-family: var(--g-mono); font-size: 13.5px; }
+.enderecos a { color: var(--g-texto); text-decoration: none; overflow-wrap: anywhere; }
+.enderecos a:hover { color: var(--g-destaque); text-decoration: underline; }
+.seta { color: var(--g-suave); }
+.situacao { margin: 0; font-size: 13.5px; line-height: 1.45; }
+.meta { margin: 0; font-size: 12.5px; color: var(--g-suave); }
+.acoes { display: flex; gap: 6px; }
+
+@media (max-width: 640px) {
+  .campos { grid-template-columns: 1fr; gap: 10px; }
+  .setaCampos { display: none; }
+  .item { grid-template-columns: auto minmax(0, 1fr); }
+  .acoes { grid-column: 2; }
+}

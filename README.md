@@ -28,8 +28,9 @@ npm run dev           # http://localhost:3000
 
 ```
 app/            rotas (App Router)
-  [slug]/       a página pública do cliente
+  [slug]/       a página pública do cliente (e os redirecionamentos de endereço antigo)
   ir/[cardId]/  redirecionador que conta o clique
+  gestao/       o painel; redirecionamentos/ cria os de endereço antigo
 lib/            prisma.ts (banco) e tema.ts (cores e fontes)
 prisma/         schema, migrações e seed
 ```

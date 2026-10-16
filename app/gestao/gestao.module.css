@@ -431,3 +431,7 @@
   .tabela td:nth-child(5), .tabela td:nth-child(6) { display: none; }
   .tabela td:nth-child(7) { grid-column: 3; grid-row: 1 / 4; }
 }
+/* celular de 360 px: os botões do topo mais juntos, para caberem sem rolar de lado */
+@media (max-width: 380px) {
+  .topoAcoes { gap: 4px; }
+}

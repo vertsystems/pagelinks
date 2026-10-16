@@ -112,6 +112,35 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Redirecionamentos — 16/10/2026
+
+Botão **Redirecionamentos** no topo do painel (`/gestao/redirecionamentos`): um endereço antigo
+do dnms.fun que não existe mais (`dnms.fun/fulano`) passa a levar para outro do mesmo domínio.
+Tabela `Redirecionamento` (`de`, `para`, `acessos`, `ultimoAcessoEm`); a regra fica em
+`lib/redirecionamentos.ts`.
+
+- **Só vale onde não há página no ar.** A página pública (`app/[slug]/page.tsx`) só consulta o
+  redirecionamento quando não acha página publicada de cliente ativo; um cliente publicado no mesmo
+  endereço sempre ganha, e as páginas que existem não fazem consulta a mais. Endereço de mais de um
+  trecho (`dnms.fun/fulano/links`) cai em `app/[slug]/[...resto]/page.tsx`, que só existe para isso
+- **Temporário (307), não permanente.** O navegador guarda redirecionamento permanente, e foi isso
+  que deu o loop na troca do WordPress: com 307, mudar o destino ou excluir vale na hora para todo mundo
+- **Só dentro do dnms.fun.** O campo aceita o link inteiro, sem o https ou só o final; outro site é
+  recusado, e o destino é gravado como caminho (`/novo/`), então não há como mandar para fora.
+  Também são recusados: a página inicial como endereço antigo, as rotas do sistema (`gestao`,
+  `entrar`, `ir`, `api`), endereço repetido e **laço** (a → b → a, quem chegasse ficaria rodando)
+- **A busca de quem chega vai junto** (`?utm_source=…`), a não ser que o destino tenha a sua
+- **Endereço com ponto nem vai ao banco** (`/wp-login.php`, `/.env`): é o que os robôs mais
+  tentam, e nenhum redirecionamento pode ter ponto
+- **Acessos** contados depois da resposta (`after()`), fora quem está logado no painel, como no
+  DMetric. Trocar o endereço antigo de um redirecionamento zera a contagem
+- **Situação de cada um**, calculada na tela com as páginas de hoje: verde quando leva a uma página
+  no ar (ou à inicial, ou a outro redirecionamento); amarelo quando o endereço antigo ainda tem
+  página no ar (sem efeito por enquanto) ou quando o destino não abre nada
+
+No celular, o topo do painel ganhou um botão a mais: "Novo cliente" vira "Novo" abaixo de 640 px,
+e abaixo de 380 px os botões ficam mais juntos, para caber em 360 px sem rolar de lado.
+
 ## Script de métricas (DMetric) em todas as páginas — 15/10/2026
 
 Toda página de cliente carrega `<script defer src="https://dspace.verts.me/dm.js">`, o DMetric

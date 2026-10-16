@@ -214,6 +214,19 @@ model Clique {
   @@index([iconeId])
 }
 
+/// Endereço antigo do domínio que leva para outro do mesmo domínio (menu Redirecionamentos
+/// do painel, lib/redirecionamentos.ts). Só vale onde não há página no ar: um cliente
+/// publicado no mesmo endereço sempre ganha.
+model Redirecionamento {
+  id   String @id @default(cuid())
+  de   String @unique // o endereço antigo, sem barras nas pontas e em minúsculas: "fulano" ou "fulano/links"
+  para String // para onde leva, no mesmo domínio, como vai no Location: "/novo/" ou "/novo/?utm_source=bio"
+
+  acessos        Int       @default(0) // quantas vezes alguém passou por ele (fora quem está logado no painel)
+  ultimoAcessoEm DateTime?
+  criadoEm       DateTime  @default(now())
+}
+
 /// Quem entra no painel.
 /// papel = admin (equipe Dunamis, vê tudo) | cliente (vê só a própria conta)
 /// O papel cliente já existe no modelo, mas o login dele só é liberado quando o

@@ -29,8 +29,18 @@ export default async function LayoutGestao({ children }: { children: React.React
             </svg>
             <span className={estilos.esconderNoCelular}>Saúde</span>
           </Link>
-          <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/novo">
-            Novo cliente
+          <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/redirecionamentos" aria-label="Redirecionamentos" title="Redirecionamentos de endereços antigos">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19v-6a4 4 0 0 1 4-4h12" />
+              <path d="m15 4 5 5-5 5" />
+            </svg>
+            <span className={estilos.esconderNoCelular}>Redirecionamentos</span>
+          </Link>
+          {/* no celular, só "Novo": com o botão de redirecionamentos, o topo não cabia em 390 px */}
+          <Link className={`${estilos.btn} ${estilos.btnFantasma}`} href="/gestao/novo" aria-label="Novo cliente">
+            <span>
+              Novo<span className={estilos.esconderNoCelular}> cliente</span>
+            </span>
           </Link>
           <form action={sair}>
             <button className={`${estilos.btn} ${estilos.btnFantasma}`} type="submit">

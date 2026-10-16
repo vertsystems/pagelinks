@@ -1,6 +1,6 @@
 import { Fragment, cache } from "react";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { variaveisDoTema, urlDaFonte } from "@/lib/tema";
 import { variaveisDeAjuste, variaveisDeLinha } from "@/lib/ajustes";
@@ -11,11 +11,12 @@ import { corValida, estiloDoTexto, fonteDoTexto, lerFormato, urlDaFonteDoTexto }
 import { lerTrechos, type Trecho } from "@/lib/textoRico";
 import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
+import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
 
-type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string; [chave: string]: string | string[] | undefined }> };
 
 /**
  * DMetric (dspace.verts.me): conta as visitas e mede a página no aparelho de quem visita.
@@ -129,7 +130,12 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
   const [busca, usuario] = await Promise.all([searchParams, usuarioLogado()]);
   const medirVisita = busca?.previa === undefined && !usuario;
   const pagina = await buscarPagina(slug);
-  if (!pagina) notFound();
+  if (!pagina) {
+    // Sem página no ar: pode ser um endereço antigo com redirecionamento (lib/redirecionamentos.ts).
+    const destino = await destinoDoRedirecionamento([slug], busca, !usuario);
+    if (destino) redirect(destino);
+    notFound();
+  }
 
   const fonte = urlDaFonte(pagina.fonte);
   // Tamanhos, espaços e larguras por tela (lib/ajustes.ts) vão como variáveis de CSS na
