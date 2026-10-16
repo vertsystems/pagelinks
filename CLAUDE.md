@@ -43,8 +43,10 @@ Conteúdo de cliente vive no banco, nunca em arquivo.
 
 ## Contexto herdado
 
-Herda as skills e as regras do Contex OS instalado na raiz da Vert Systems
-(`vertsystems/`, dois níveis acima), e o contexto da marca de lá (pasta irmã de `dunamiscompany/` em `VERT SYS/`). **Não usa a identidade da Dunamis** — nem no painel, nem nas páginas.
+A pasta mora em `dunamiscompany/pagelinks/` desde 16/10/2026 (veio de `vertsystems/produtos/`),
+com repositório próprio (`vertsystems/pagelinks`), fora do git da dunamiscompany. Herda as skills
+e as regras do Contex OS da pasta de cima (`dunamiscompany/`), e o contexto da marca continua o da
+Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — nem no painel, nem nas páginas.
 
 ## Específico deste projeto
 
