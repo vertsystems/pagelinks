@@ -112,6 +112,35 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Links programados — 16/10/2026
+
+Nos blocos com **Endereço de destino** (link, destaque, imagem e vídeo; o de redes, com um link
+por ícone, fica de fora), o botão **+ Programar outro link**, logo abaixo do campo, abre uma linha
+com o link e o período (de/até). No período, o bloco leva para esse link no lugar do principal;
+fora de qualquer período, vale o principal. Tabela `LinkProgramado`; a regra fica em
+`lib/linksProgramados.ts`, e o editor em `app/gestao/[slug]/LinksProgramados.tsx`.
+
+- **Até 10 por bloco**, contando só os que ainda não acabaram. Os que acabaram somem do editor (a
+  página do editor só busca `fim > agora`) e são apagados na próxima gravação daquele bloco
+- **Amarela** a linha que ainda vai entrar, **verde** a que está no ar (tokens `--g-pendente-fundo` e
+  `--g-ok-fundo` nos dois temas)
+- **Um link por vez:** períodos do mesmo bloco não podem se sobrepor (encostar pode: um acaba no
+  minuto em que o outro começa). Também recusa período que já acabou, fim antes do começo, link
+  incompleto e, no bloco de vídeo, link que não é de vídeo do YouTube ou do Vimeo
+- **Onde vale:** a página pública troca o `url` do bloco pelo programado no ar logo no `buscarPagina`
+  (vale para o vídeo, a imagem que vira link e a nova aba), e o `/ir/<cardId>` faz a mesma conta na
+  hora do clique. As duas consultas pedem só o que está no ar (`emVigor`)
+- **Grava na própria linha** ("Programar", "Gravar mudança", "Tirar"), fora do Salvar bloco; Enter
+  numa linha grava a linha. A linha nova fica em "Gravando…" até a gravada chegar do servidor (fechar
+  na hora deixava uns segundos em que a programação parecia ter sumido)
+- **Duplicar o bloco** copia as programações que ainda não acabaram
+
+**Horário de Brasília (`lib/horario.ts`).** O campo datetime-local manda a hora sem fuso, e o
+agendamento de bloco ("Aparecer a partir de" / "Sumir em") fazia `new Date()` disso no servidor: na
+Vercel, em UTC, um bloco marcado para as 14h entrava às 11h. Os links programados e o agendamento
+passaram a ler e mostrar no horário de Brasília. Nenhum bloco tinha agendamento quando isso mudou,
+então nada gravado antes precisou ser convertido.
+
 ## Redirecionamentos — 16/10/2026
 
 Botão **Redirecionamentos** no topo do painel (`/gestao/redirecionamentos`): um endereço antigo

@@ -40,6 +40,9 @@
   --g-pendente-borda: #B88A00;
   --g-ok: #16A34A;
   --g-ok-borda: #11843B;
+  /* fundo das linhas de link programado: amarela = ainda vai entrar, verde = no ar */
+  --g-pendente-fundo: #FFF6D9;
+  --g-ok-fundo: #E5F6EB;
   --g-sombra: 0 20px 50px rgb(57 88 134 / .22);
   /* etiqueta de cada tipo de bloco no editor: tons suaves, texto da mesma cor mais escuro (contraste de 5,8:1 a 6,7:1) */
   --g-tipo-link: #DCEBFF; --g-tipo-link-texto: #1D4F91;
@@ -83,6 +86,8 @@
   --g-pendente-borda: #CA9A04;
   --g-ok: #22C55E;
   --g-ok-borda: #16A34A;
+  --g-pendente-fundo: rgb(250 204 21 / .09);
+  --g-ok-fundo: rgb(34 197 94 / .09);
   --g-sombra: 0 20px 50px rgb(0 0 0 / .4);
   /* etiqueta de cada tipo de bloco: a cor translúcida sobre o cartão escuro (contraste de 8:1 a 10,6:1) */
   --g-tipo-link: rgb(96 165 250 / .16); --g-tipo-link-texto: #93C5FD;

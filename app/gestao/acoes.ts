@@ -15,6 +15,9 @@ import { lerMarcador } from "@/lib/lista";
 import { corValida, fonteDoTexto, formatoParaGravar } from "@/lib/fontes";
 import { normalizarTrechos, temFormatacao, textoSimples } from "@/lib/textoRico";
 import { TIPOS_COM_ANIMACAO, animacaoValida } from "@/lib/animacoes";
+import { dataHoraCurta, deHorarioDeBrasilia } from "@/lib/horario";
+import { MAXIMO_DE_LINKS_PROGRAMADOS, TIPOS_COM_LINK_PROGRAMADO, lerLink } from "@/lib/linksProgramados";
+import { urlDeVideo } from "@/lib/video";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -207,10 +210,8 @@ export async function salvarCard(cardId: string, dados: FormData) {
     const v = String(dados.get(campo) ?? "").trim();
     return v || null;
   };
-  const data = (campo: string) => {
-    const v = String(dados.get(campo) ?? "").trim();
-    return v ? new Date(v) : null;
-  };
+  // o campo datetime-local vem sem fuso: é o horário de Brasília (lib/horario.ts)
+  const data = (campo: string) => deHorarioDeBrasilia(String(dados.get(campo) ?? ""));
 
   const tipo = String(dados.get("tipo") ?? "link");
   // título e texto com o editor de trechos: o texto puro sai dos trechos, e os trechos só
@@ -368,6 +369,8 @@ export async function duplicarCard(cardId: string) {
   if (imagens.length) await prisma.imagemCarrossel.createMany({ data: imagens.map((i) => ({ ...i, cardId: copia.id })) });
   const unidades = await prisma.unidade.findMany({ where: { cardId }, select: { nome: true, endereco: true, url: true, imagemUrl: true, ordem: true } });
   if (unidades.length) await prisma.unidade.createMany({ data: unidades.map((u) => ({ ...u, cardId: copia.id })) });
+  const programados = await prisma.linkProgramado.findMany({ where: { cardId, fim: { gt: new Date() } }, select: { url: true, inicio: true, fim: true } });
+  if (programados.length) await prisma.linkProgramado.createMany({ data: programados.map((p) => ({ ...p, cardId: copia.id })) });
 
   const c = await prisma.pagina.findUnique({
     where: { id: card.paginaId },
@@ -841,5 +844,74 @@ export async function salvarAnimacao(cardId: string, valor: string | null): Prom
   if (!card || !TIPOS_COM_ANIMACAO.includes(card.tipo)) return { erro: "Esse bloco não tem o que animar." };
   await prisma.card.update({ where: { id: String(cardId) }, data: { animacao } });
   revalidar(card.pagina.cliente.slug);
+  return {};
+}
+
+// ---------- links programados ----------
+
+export type LinkProgramadoDoBloco = { id: string; url: string; inicio: Date; fim: Date };
+
+/**
+ * Cria (id null) ou muda um link programado do bloco: no período, ele vale no lugar do
+ * endereço de destino (lib/linksProgramados.ts). Início e fim chegam como o campo
+ * datetime-local manda, no horário de Brasília. Recusa período que já acabou, que bate com
+ * outro do mesmo bloco (um link por vez) e o 11º. Os que já acabaram são apagados aqui:
+ * somem do editor e abrem espaço no limite.
+ */
+export async function salvarLinkProgramado(cardId: string, id: string | null, link: string, inicioTexto: string, fimTexto: string): Promise<{ erro?: string; id?: string }> {
+  await exigirAdmin();
+  const card = await prisma.card.findUnique({
+    where: { id: String(cardId) },
+    select: { id: true, tipo: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+  });
+  if (!card) return { erro: "Não encontrei esse bloco. Recarregue a página." };
+  if (!TIPOS_COM_LINK_PROGRAMADO.includes(card.tipo)) return { erro: "Esse tipo de bloco não tem endereço de destino para programar." };
+
+  const lido = lerLink(link);
+  if ("erro" in lido) return lido;
+  if (card.tipo === "video" && !urlDeVideo(lido.url)) return { erro: "No bloco de vídeo, o link precisa ser de um vídeo do YouTube ou do Vimeo." };
+
+  const inicio = deHorarioDeBrasilia(inicioTexto);
+  const fim = deHorarioDeBrasilia(fimTexto);
+  if (!inicio || !fim) return { erro: "Preencha quando começa e quando acaba." };
+  if (fim <= inicio) return { erro: "O fim precisa vir depois do começo." };
+  const agora = new Date();
+  if (fim <= agora) return { erro: "Esse período já acabou. Escolha um fim daqui para a frente." };
+
+  await prisma.linkProgramado.deleteMany({ where: { cardId: card.id, fim: { lte: agora } } });
+  const outros = await prisma.linkProgramado.findMany({
+    where: { cardId: card.id, ...(id ? { NOT: { id: String(id) } } : {}) },
+    select: { inicio: true, fim: true },
+  });
+  const bate = outros.find((o) => o.inicio < fim && o.fim > inicio);
+  if (bate) {
+    return { erro: `Bate com a programação de ${dataHoraCurta(bate.inicio, agora)} a ${dataHoraCurta(bate.fim, agora)}. Um link por vez: ajuste as datas para uma acabar antes da outra começar (pode ser no mesmo minuto).` };
+  }
+
+  let gravado = id ? String(id) : null;
+  if (gravado) {
+    const mudou = await prisma.linkProgramado.updateMany({ where: { id: gravado, cardId: card.id }, data: { url: lido.url, inicio, fim } });
+    if (!mudou.count) return { erro: "Essa programação não existe mais (já tinha acabado?). Recarregue a página." };
+  } else {
+    if (outros.length >= MAXIMO_DE_LINKS_PROGRAMADOS) {
+      return { erro: `O bloco já tem ${MAXIMO_DE_LINKS_PROGRAMADOS} programações. Quando uma acabar (ou se tirar uma), abre espaço.` };
+    }
+    gravado = (await prisma.linkProgramado.create({ data: { cardId: card.id, url: lido.url, inicio, fim }, select: { id: true } })).id;
+  }
+  await marcarBloco(card.id);
+  revalidar(card.pagina.cliente.slug);
+  return { id: gravado };
+}
+
+export async function removerLinkProgramado(id: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const programado = await prisma.linkProgramado.findUnique({
+    where: { id: String(id) },
+    select: { cardId: true, card: { select: { pagina: { select: { cliente: { select: { slug: true } } } } } } },
+  });
+  if (!programado) return {};
+  await prisma.linkProgramado.delete({ where: { id: String(id) } });
+  await marcarBloco(programado.cardId);
+  revalidar(programado.card.pagina.cliente.slug);
   return {};
 }

@@ -44,6 +44,9 @@ const NOMES_DAS_TABELAS: Record<string, string> = {
   Card: "Blocos",
   Icone: "Ícones das redes",
   ImagemCarrossel: "Imagens de carrossel",
+  Unidade: "Unidades",
+  LinkProgramado: "Links programados",
+  Redirecionamento: "Redirecionamentos",
   Clique: "Cliques",
   Usuario: "Usuários do painel",
   _prisma_migrations: "Histórico de mudanças no banco",
@@ -84,7 +87,7 @@ export function medirBanco() {
       consulta<{ ultimo: Date | null }>(`select max(greatest(last_autovacuum, last_vacuum)) as ultimo from pg_stat_user_tables where schemaname = 'public'`),
       consulta<{ consulta: string; chamadas: bigint; total: number; media: number }>(
         `select regexp_replace(query, '\\s+', ' ', 'g') as consulta, calls as chamadas, total_exec_time as total, mean_exec_time as media
-           from pg_stat_statements where query ~* '"(Cliente|Pagina|Card|Icone|Clique|ImagemCarrossel|Usuario)"'
+           from pg_stat_statements where query ~* '"(Cliente|Pagina|Card|Icone|Clique|ImagemCarrossel|Unidade|LinkProgramado|Redirecionamento|Usuario)"'
           order by total_exec_time desc limit 6`,
       ).catch(() => []),
       consulta<{ nome: string; quando: Date }>(`select migration_name as nome, finished_at as quando from _prisma_migrations where finished_at is not null order by finished_at desc`),

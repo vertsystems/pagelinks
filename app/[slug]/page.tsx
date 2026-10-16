@@ -12,6 +12,8 @@ import { lerTrechos, type Trecho } from "@/lib/textoRico";
 import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
+import { emVigor } from "@/lib/linksProgramados";
+import { urlDeVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import estilos from "./pagina.module.css";
@@ -48,13 +50,23 @@ const buscarPagina = cache(async (slug: string) => {
               ],
             },
             orderBy: { ordem: "asc" },
-            include: { icones: { orderBy: { ordem: "asc" } }, imagens: { orderBy: { ordem: "asc" } }, unidades: { orderBy: { ordem: "asc" } } },
+            include: {
+              icones: { orderBy: { ordem: "asc" } },
+              imagens: { orderBy: { ordem: "asc" } },
+              unidades: { orderBy: { ordem: "asc" } },
+              programados: { where: emVigor(agora), orderBy: { inicio: "desc" }, take: 1, select: { url: true } },
+            },
           },
         },
       },
     },
   });
-  return cliente?.paginas[0] ?? null;
+  const pagina = cliente?.paginas[0];
+  if (!pagina) return null;
+  // No período de um link programado, o bloco leva para ele no lugar do endereço de destino
+  // (lib/linksProgramados.ts). Trocado aqui, vale para tudo abaixo: o vídeo, a imagem que vira
+  // link, a nova aba. O clique em si passa pelo /ir, que faz a mesma conta.
+  return { ...pagina, cards: pagina.cards.map(({ programados, ...card }) => ({ ...card, url: programados[0]?.url ?? card.url })) };
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -112,15 +124,6 @@ function linkDoWhatsApp(telefone: string, mensagem?: string | null) {
  */
 function abrirEmNovaAba(destinoFinal: string | null | undefined) {
   return destinoFinal && /^(mailto|tel|sms):/i.test(destinoFinal) ? {} : { target: "_blank", rel: "noopener" };
-}
-
-/** Converte link do YouTube/Vimeo em URL de player. Devolve null se não reconhecer. */
-function urlDeVideo(url: string): string | null {
-  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
-  const vm = url.match(/vimeo\.com\/(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return null;
 }
 
 export default async function PaginaPublica({ params, searchParams }: Props) {

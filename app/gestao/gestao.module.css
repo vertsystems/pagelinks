@@ -246,6 +246,27 @@
 .campo input:disabled, .campo textarea:disabled { opacity: .55; cursor: not-allowed; }
 .erroCampo { font-size: 12.5px; color: var(--g-perigo); }
 
+/* links programados, embaixo do endereço de destino (LinksProgramados.tsx): uma linha por
+   período, amarela antes de entrar, verde no ar; a borda da esquerda é o sinal */
+.programados { display: grid; gap: 8px; margin-top: 6px; }
+.programado {
+  display: grid; gap: 10px; padding: 12px 14px; border-radius: 10px;
+  background: var(--g-card); border: 1px solid var(--g-linha); border-left: 4px solid var(--g-linha-forte);
+}
+.programado[data-situacao="futura"] { background: var(--g-pendente-fundo); border-color: var(--g-pendente-borda); border-left-color: var(--g-pendente); }
+.programado[data-situacao="ativa"] { background: var(--g-ok-fundo); border-color: var(--g-ok-borda); border-left-color: var(--g-ok); }
+.programadoTitulo { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--g-texto); }
+.programadoSinal { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--g-suave); }
+.programado[data-situacao="futura"] .programadoSinal { background: var(--g-pendente); }
+.programado[data-situacao="ativa"] .programadoSinal { background: var(--g-ok); }
+/* o link e as duas datas lado a lado; quebram de linha quando não cabem */
+.programadoCampos { display: flex; flex-wrap: wrap; gap: 10px; }
+.programadoCampos > .campo { flex: 1 1 170px; min-width: 0; }
+.programadoCampos > .programadoLink { flex: 2 1 240px; }
+.programado .campo input { background: var(--g-card); }
+.programadoAcoes, .programadosRodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.programadoAcoes .btn:disabled { opacity: .5; cursor: default; filter: none; }
+
 /* editor das unidades: uma por linha, foto ao lado dos campos */
 .unidadesEditor { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .unidadeEditor { background: var(--g-card); border: 1px solid var(--g-linha); border-radius: 10px; padding: 10px 12px 12px; }

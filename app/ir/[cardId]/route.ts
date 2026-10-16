@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { destinoDoIcone } from "@/lib/redes";
+import { emVigor } from "@/lib/linksProgramados";
 
 /**
  * Redirecionador que conta o clique.
@@ -33,6 +34,8 @@ export async function GET(
       icones: iconeId ? { where: { id: iconeId }, select: { id: true, rede: true, url: true } } : false,
       imagens: imagemId ? { where: { id: imagemId }, select: { url: true } } : false,
       unidades: unidadeId ? { where: { id: unidadeId }, select: { url: true } } : false,
+      // link programado no ar agora, no lugar do endereço de destino (lib/linksProgramados.ts)
+      programados: { where: emVigor(new Date()), orderBy: { inicio: "desc" }, take: 1, select: { url: true } },
     },
   });
 
@@ -41,7 +44,7 @@ export async function GET(
   const icone = card.icones?.[0];
   const imagem = card.imagens?.[0];
   const unidade = card.unidades?.[0];
-  let destino = card.url ?? "/";
+  let destino = card.programados[0]?.url ?? card.url ?? "/";
   if (icone) {
     destino = destinoDoIcone(icone.rede, icone.url);
   } else if (imagem) {

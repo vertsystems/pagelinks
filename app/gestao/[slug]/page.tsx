@@ -29,6 +29,7 @@ const ESTILOS_BOTAO = [
 export default async function EditorCliente({ params }: { params: Promise<{ slug: string }> }) {
   await exigirAdmin();
   const { slug } = await params;
+  const agora = new Date();
 
   const cliente = await prisma.cliente.findUnique({
     where: { slug },
@@ -42,6 +43,8 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               icones: { orderBy: { ordem: "asc" } },
               imagens: { orderBy: { ordem: "asc" }, select: { id: true, imagemUrl: true, url: true } },
               unidades: { orderBy: { ordem: "asc" }, select: { id: true, nome: true, endereco: true, url: true, imagemUrl: true } },
+              // links programados que ainda não acabaram; os que acabaram somem do editor
+              programados: { where: { fim: { gt: agora } }, orderBy: { inicio: "asc" }, select: { id: true, url: true, inicio: true, fim: true } },
             },
           },
         },
@@ -122,7 +125,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
           </form>
 
           {/* blocos */}
-          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} corTexto={pagina.corTexto} corDestaque={pagina.corDestaque} blocos={valoresPorTela(pagina, "blocos")} lado={valoresPorTela(pagina, "lado")} cards={pagina.cards} />
+          <EditorCards paginaId={pagina.id} corFundo={pagina.corFundo} corTexto={pagina.corTexto} corDestaque={pagina.corDestaque} blocos={valoresPorTela(pagina, "blocos")} lado={valoresPorTela(pagina, "lado")} cards={pagina.cards} agora={agora.getTime()} />
 
           {/* aparência. As listas têm key no valor gravado: depois de salvar, o React 19 reseta
               o formulário, e um <select> volta à opção de quando foi montado. Recriado com o

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { alternarCard, criarCard, duplicarCard, excluirCard, reordenarCards, salvarCard } from "../acoes";
+import { alternarCard, criarCard, duplicarCard, excluirCard, reordenarCards, salvarCard, type LinkProgramadoDoBloco } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
 import EditorIcones from "./EditorIcones";
@@ -19,6 +19,8 @@ import { MARCADORES, lerItens, lerMarcador } from "@/lib/lista";
 import { PADRAO_DA_LETRA } from "@/lib/tema";
 import EstiloDoTexto from "./EstiloDoTexto";
 import TextoRico from "./TextoRico";
+import LinksProgramados from "./LinksProgramados";
+import { paraCampoDeHorario } from "@/lib/horario";
 import estilos from "../gestao.module.css";
 
 type Card = {
@@ -41,6 +43,8 @@ type Card = {
   ativo: boolean;
   publicarEm: Date | null;
   despublicarEm: Date | null;
+  /** os que ainda não acabaram, do primeiro ao último */
+  programados: LinkProgramadoDoBloco[];
   icones: { id: string; rede: string; url: string }[];
   imagens: { id: string; imagemUrl: string; url: string | null }[];
   unidades: { id: string; nome: string; endereco: string | null; url: string | null; imagemUrl: string | null }[];
@@ -99,12 +103,6 @@ function camposDoTipo(tipo: string) {
   }
 }
 
-function paraInput(d: Date | null) {
-  if (!d) return "";
-  const iso = new Date(d).toISOString();
-  return iso.slice(0, 16);
-}
-
 /** Um arraste em andamento. Fica num ref: muda a cada movimento do ponteiro e não precisa redesenhar. */
 type Arraste = {
   id: string;
@@ -132,6 +130,7 @@ export default function EditorCards({
   blocos,
   lado,
   cards,
+  agora,
 }: {
   paginaId: string;
   corFundo: string;
@@ -141,6 +140,8 @@ export default function EditorCards({
   blocos: ValoresTela;
   lado: ValoresTela;
   cards: Card[];
+  /** a hora em que o servidor montou a página: diz se um link programado já está no ar */
+  agora: number;
 }) {
   const [aberto, setAberto] = useState<string | null>(null);
 
@@ -482,6 +483,8 @@ export default function EditorCards({
                         <div className={estilos.campo}>
                           <label htmlFor={`url-${card.id}`}>Endereço de destino</label>
                           <input id={`url-${card.id}`} type="url" name="url" defaultValue={card.url ?? ""} placeholder="https://" />
+                          {/* outro link num período, no lugar deste (grava sozinho, fora do Salvar bloco) */}
+                          <LinksProgramados cardId={card.id} programados={card.programados} agora={agora} />
                         </div>
                       )}
 
@@ -583,11 +586,11 @@ export default function EditorCards({
                       <div className={estilos.doisCampos}>
                         <div className={estilos.campo}>
                           <label htmlFor={`pub-${card.id}`}>Aparecer a partir de (opcional)</label>
-                          <input id={`pub-${card.id}`} type="datetime-local" name="publicarEm" defaultValue={paraInput(card.publicarEm)} />
+                          <input id={`pub-${card.id}`} type="datetime-local" name="publicarEm" defaultValue={paraCampoDeHorario(card.publicarEm)} />
                         </div>
                         <div className={estilos.campo}>
                           <label htmlFor={`desp-${card.id}`}>Sumir em (opcional)</label>
-                          <input id={`desp-${card.id}`} type="datetime-local" name="despublicarEm" defaultValue={paraInput(card.despublicarEm)} />
+                          <input id={`desp-${card.id}`} type="datetime-local" name="despublicarEm" defaultValue={paraCampoDeHorario(card.despublicarEm)} />
                         </div>
                       </div>
 

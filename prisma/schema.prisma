@@ -133,6 +133,7 @@ model Card {
   atualizadoEm DateTime @updatedAt
 
   cliques Clique[]
+  programados LinkProgramado[] // link, destaque, imagem e vídeo: outro endereço no lugar do url, num período
   icones  Icone[] // tipo = redes
   imagens ImagemCarrossel[] // tipo = carrossel
   unidades Unidade[] // tipo = unidades
@@ -152,6 +153,21 @@ model Card {
 
   @@index([paginaId, ordem])
   @@index([ativo])
+}
+
+/// Link programado de um bloco (lib/linksProgramados.ts): de `inicio` até `fim`, o bloco leva
+/// para `url` no lugar do endereço de destino (Card.url). Os períodos de um bloco não se
+/// sobrepõem, então há no máximo um no ar. Até 10 por bloco; os que acabaram somem do editor.
+model LinkProgramado {
+  id       String   @id @default(cuid())
+  cardId   String
+  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  url      String
+  inicio   DateTime
+  fim      DateTime
+  criadoEm DateTime @default(now())
+
+  @@index([cardId, inicio])
 }
 
 /// Ícone de um bloco "redes": a rede (whatsapp, instagram…, ver lib/redes.ts) e o
