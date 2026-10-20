@@ -58,3 +58,15 @@ document.addEventListener("alpine:init", function () {
     };
   });
 });
+
+/* A faixa de clientes anda por CSS, e o navegador não carrega as imagens lazy que entram na tela
+   andando (só as que já estavam à vista). Quando a faixa chega perto da tela, todas passam a carregar. */
+(function () {
+  var faixa = document.querySelector(".clientes-faixa");
+  if (!faixa || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(function (vistas, observador) {
+    if (!vistas[0].isIntersecting) return;
+    faixa.querySelectorAll('img[loading="lazy"]').forEach(function (img) { img.loading = "eager"; });
+    observador.disconnect();
+  }, { rootMargin: "600px 0px" }).observe(faixa);
+})();

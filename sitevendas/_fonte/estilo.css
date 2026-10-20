@@ -176,6 +176,45 @@
     border: 1.5px solid var(--color-laranja); color: var(--color-laranja); font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums;
   }
 
+  /* quem faz: a foto do Bruno e o card branco por cima dela (modelo do Bruno, 20/10/2026). No
+     computador, o card entra pela direita sobre a foto; no celular e no tablet, sobe sobre a parte
+     de baixo dela */
+  .bio { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1060px; margin-inline: auto; }
+  /* a foto é 2:3; no celular e no tablet aparece em 4:5, com o rosto no alto */
+  .bio-foto { width: min(440px, 100%); height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 20%; justify-self: center; border-radius: 24px; background: var(--color-off); }
+  .bio-card {
+    --lado: clamp(26px, 4vw, 48px);
+    position: relative; z-index: 1; margin: -64px auto 0; width: calc(100% - 2 * clamp(0px, 3vw, 24px)); max-width: 640px; min-width: 0;
+    background: #fff; border-radius: 24px; padding: var(--lado);
+    box-shadow: 0 34px 70px -28px rgb(16 16 16 / .28), 0 2px 8px rgb(16 16 16 / .05);
+  }
+  .bio-card .olho { color: var(--color-apoio-escuro); margin-bottom: 14px; }
+  .bio-rede {
+    display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%;
+    background: var(--color-preto); color: #fff; transition: background-color .2s ease, transform .2s ease;
+  }
+  .bio-rede svg { width: 20px; height: 20px; }
+  .bio-rede:hover { background: var(--color-verde); transform: translateY(-2px); }
+  .bio-rede:focus-visible { outline: 2px solid var(--color-preto); outline-offset: 3px; }
+  /* faixa de clientes: vai de uma borda à outra do card, some suave nas pontas e para com o mouse em cima */
+  .clientes-titulo { font-size: 13px; color: var(--color-apoio-escuro); margin-bottom: 14px; }
+  .clientes-faixa {
+    margin-inline: calc(-1 * var(--lado)); overflow: hidden; padding-block: 18px;
+    border-block: 1px solid var(--color-linha-escura);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .clientes-rolo { display: flex; width: max-content; animation: rolar-clientes 48s linear infinite; }
+  .clientes-faixa:hover .clientes-rolo { animation-play-state: paused; }
+  .clientes-trilho { display: flex; align-items: center; gap: 44px; padding-right: 44px; }
+  .clientes-trilho img { display: block; max-width: none; }
+  @keyframes rolar-clientes { to { transform: translateX(-50%); } }
+  @media (width >= 53.75rem) {
+    .bio { grid-template-columns: minmax(0, 6.4fr) minmax(0, 1.6fr) minmax(0, 8fr); align-items: center; }
+    /* no computador a foto aparece inteira (2:3), mais alta que o card, que fica no meio dela */
+    .bio-foto { grid-area: 1 / 1 / 2 / 3; width: 100%; aspect-ratio: 2 / 3; object-position: 50% 50%; }
+    .bio-card { --lado: 44px; grid-area: 1 / 2 / 2 / 4; margin: 0; width: auto; max-width: none; padding: 40px var(--lado); }
+  }
+
   /* perguntas: abre e fecha sem JavaScript */
   .perguntas details { border-top: 1px solid var(--color-linha-escura); }
   .perguntas details:last-of-type { border-bottom: 1px solid var(--color-linha-escura); }
@@ -190,8 +229,13 @@
   .perguntas details p { max-width: 62ch; padding: 0 40px 24px 0; color: var(--color-apoio-escuro); }
 
   @media (prefers-reduced-motion: reduce) {
-    .botao, .perguntas summary::after { transition: none; }
+    .botao, .perguntas summary::after, .bio-rede { transition: none; }
+    .bio-rede:hover { transform: none; }
     .vitrines > li:nth-of-type(2) .iphone { animation: none; }
     .vitrines > li:nth-of-type(2) .tela::before { display: none; }
+    /* sem movimento, a faixa de clientes fica parada e rola com o dedo */
+    .clientes-faixa { overflow-x: auto; mask-image: none; }
+    .clientes-rolo { animation: none; padding-inline: var(--lado); }
+    .clientes-trilho[aria-hidden] { display: none; }
   }
 }

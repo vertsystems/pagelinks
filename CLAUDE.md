@@ -90,6 +90,15 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   ícones e a barrinha de baixo pretos. A do meio da vitrine é 15% maior, com reflexo e pulso a cada
   2,5 s; no celular só ela aparece na frente, com as outras duas por trás, desfocadas (`blur(5px)`)
   e cortadas na borda da tela. No celular e no tablet, o topo põe os prints em cima e centraliza tudo
+- **A dobra "Quem está à frente"** (20/10/2026), entre o preço e as perguntas: a bio do Bruno em
+  terceira pessoa, como empresário que desenvolve soluções e sistemas (pedido dele: tom profissional,
+  "atende clientes como"), num card branco por cima da foto, no modelo que ele mandou. Ambev, Tetra
+  Pak, Frutap e Frigonossa ficam só no texto, como projetos de que ele participou, e não entram na
+  faixa de logos. A faixa corre dentro do card com os logos coloridos das empresas clientes, tirados
+  das páginas delas no PageLinks (`img/clientes/`, 2x da altura que aparece). Os que só existiam em branco
+  (Adventure & Love, Retífica Cerri, Ferreira Motors, Chalés Urubici) viraram preto; a Gesqual saiu
+  porque o logo some no branco. As imagens da faixa são lazy, e o `site.js` manda carregar todas quando
+  a faixa chega perto da tela, porque o navegador não carrega as que entram andando pela animação
 
 <!-- BEGIN:nextjs-agent-rules -->
 
