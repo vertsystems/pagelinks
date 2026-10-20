@@ -183,19 +183,21 @@
   /* a foto é 2:3; no celular e no tablet aparece em 4:5, com o rosto no alto */
   .bio-foto { width: min(440px, 100%); height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 20%; justify-self: center; border-radius: 24px; background: var(--color-off); }
   .bio-card {
+    order: 1;
     --lado: clamp(26px, 4vw, 48px);
     position: relative; z-index: 1; margin: -64px auto 0; width: calc(100% - 2 * clamp(0px, 3vw, 24px)); max-width: 640px; min-width: 0;
     background: #fff; border-radius: 24px; padding: var(--lado);
     box-shadow: 0 34px 70px -28px rgb(16 16 16 / .28), 0 2px 8px rgb(16 16 16 / .05);
   }
   .bio-card .olho { color: var(--color-apoio-escuro); margin-bottom: 14px; }
-  .bio-rede {
-    display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%;
-    background: var(--color-preto); color: #fff; transition: background-color .2s ease, transform .2s ease;
-  }
-  .bio-rede svg { width: 20px; height: 20px; }
-  .bio-rede:hover { background: var(--color-verde); transform: translateY(-2px); }
-  .bio-rede:focus-visible { outline: 2px solid var(--color-preto); outline-offset: 3px; }
+  /* redes do Bruno: só o ícone, pequeno, embaixo da foto à esquerda. O link tem 32 px para o dedo
+     acertar; o recuo de -6 px alinha o desenho do primeiro ícone com a borda da foto */
+  .bio-midia { display: contents; }
+  .bio-redes { order: 2; display: flex; gap: 6px; width: min(440px, 100%); justify-self: center; margin: 18px 0 0 -12px; }
+  .bio-redes a { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; color: var(--color-preto); transition: color .2s ease; }
+  .bio-redes svg { width: 19px; height: 19px; }
+  .bio-redes a:hover { color: var(--color-verde); }
+  .bio-redes a:focus-visible { outline: 2px solid var(--color-preto); outline-offset: 1px; }
   /* faixa de clientes: vai de uma borda à outra do card, some suave nas pontas e para com o mouse em cima */
   .clientes-titulo { font-size: 13px; color: var(--color-apoio-escuro); margin-bottom: 14px; }
   .clientes-faixa {
@@ -211,7 +213,10 @@
   @media (width >= 53.75rem) {
     .bio { grid-template-columns: minmax(0, 6.4fr) minmax(0, 1.6fr) minmax(0, 8fr); align-items: center; }
     /* no computador a foto aparece inteira (2:3), mais alta que o card, que fica no meio dela */
-    .bio-foto { grid-area: 1 / 1 / 2 / 3; width: 100%; aspect-ratio: 2 / 3; object-position: 50% 50%; }
+    .bio-midia { display: block; grid-area: 1 / 1 / 2 / 3; }
+    .bio-foto { display: block; width: 100%; aspect-ratio: 2 / 3; object-position: 50% 50%; }
+    /* o justify-self do celular também vale fora do grid no Chrome novo: aqui, à esquerda */
+    .bio-redes { width: auto; justify-self: start; margin: 16px 0 0 -6px; }
     .bio-card { --lado: 44px; grid-area: 1 / 2 / 2 / 4; margin: 0; width: auto; max-width: none; padding: 40px var(--lado); }
   }
 
@@ -229,8 +234,7 @@
   .perguntas details p { max-width: 62ch; padding: 0 40px 24px 0; color: var(--color-apoio-escuro); }
 
   @media (prefers-reduced-motion: reduce) {
-    .botao, .perguntas summary::after, .bio-rede { transition: none; }
-    .bio-rede:hover { transform: none; }
+    .botao, .perguntas summary::after, .bio-redes a { transition: none; }
     .vitrines > li:nth-of-type(2) .iphone { animation: none; }
     .vitrines > li:nth-of-type(2) .tela::before { display: none; }
     /* sem movimento, a faixa de clientes fica parada e rola com o dedo */
