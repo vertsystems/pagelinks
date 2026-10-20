@@ -67,7 +67,9 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
 - Página de links é peça de conversão: velocidade de carregamento e legibilidade no
   celular vêm antes de qualquer efeito visual
 - **A página de vendas** (`sitevendas/`, 19/10/2026; no ar em dunamiscompany.com.br/pagelinks/) vende o serviço com a marca da Dunamis,
-  não a do PageLinks: laranja `#FF6F00` só no botão, Inter, uma ação só (WhatsApp). Preço, parcelas
+  não a do PageLinks: Inter, uma ação só (WhatsApp), "Desenvolvido por" com o logo no topo, e o
+  botão no degradê verde → verde-água do botão principal do site da Dunamis (pedido do Bruno em
+  19/10/2026), com o brilho da ponta mais suave para o texto branco passar no contraste. Preço, parcelas
   e garantia seguem `../oferta/servicos/pagina-de-links.md` e aparecem em quatro lugares (topo,
   card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. As
   fotos em `img/` são prints reais da Lojas Mari, da Duda e do Nali Cuscuz Bar, escolhidos pelo
