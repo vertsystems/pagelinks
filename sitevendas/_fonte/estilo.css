@@ -216,7 +216,8 @@
   .bio-redes svg { width: 19px; height: 19px; }
   .bio-redes a:hover { color: var(--color-verde); }
   .bio-redes a:focus-visible { outline: 2px solid var(--color-preto); outline-offset: 1px; }
-  /* faixa de clientes: vai de uma borda à outra do card, some suave nas pontas e para com o mouse em cima */
+  /* faixa de clientes: vai de uma borda à outra do card, some suave nas pontas e não para nem com o
+     mouse em cima (pedido do Bruno, 20/10/2026) */
   .clientes-titulo { font-size: 13px; color: var(--color-apoio-escuro); margin-bottom: 14px; }
   .clientes-faixa {
     margin-inline: calc(-1 * var(--lado)); overflow: hidden; padding-block: 18px;
@@ -224,7 +225,6 @@
     mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
   }
   .clientes-rolo { display: flex; width: max-content; animation: rolar-clientes 48s linear infinite; }
-  .clientes-faixa:hover .clientes-rolo { animation-play-state: paused; }
   .clientes-trilho { display: flex; align-items: center; gap: 44px; padding-right: 44px; }
   .clientes-trilho img { display: block; max-width: none; }
   @keyframes rolar-clientes { to { transform: translateX(-50%); } }
