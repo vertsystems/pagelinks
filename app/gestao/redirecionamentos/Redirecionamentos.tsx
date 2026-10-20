@@ -10,8 +10,13 @@ export type ItemRedirecionamento = {
   id: string;
   de: string;
   para: string;
+  /** o destino para ler: "dnms.fun/novo/" ou o outro site sem o https */
+  paraMostrar: string;
+  externo: boolean;
   nivel: "ok" | "atencao";
   situacao: string;
+  /** o que fazer quando não está valendo (abrir o cadastro do cliente que ocupa o endereço) */
+  acao?: { href: string; rotulo: string };
   acessos: number;
   ultimoAcesso: string | null;
   ultimoAcessoCompleto: string | null;
@@ -56,8 +61,8 @@ export default function Redirecionamentos({
   function editar(item: ItemRedirecionamento) {
     setMostrarAviso(false);
     setEditando(item.id);
-    setDe(item.de);
-    setPara(item.para.replace(/^\//, ""));
+    setDe(item.de || "/");
+    setPara(item.externo ? item.para : item.para.replace(/^\//, ""));
     formulario.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     campoDe.current?.focus({ preventScroll: true });
   }
@@ -98,30 +103,27 @@ export default function Redirecionamentos({
                 required
               />
             </div>
-            <span className={gestao.dica}>O link que não existe mais.</span>
+            <span className={gestao.dica}>De onde vêm os acessos. Para a página inicial ({dominio}), digite só /.</span>
           </div>
           <span className={estilos.setaCampos} aria-hidden="true">
             →
           </span>
           <div className={gestao.campo}>
             <label htmlFor="redirecionamento-para">Destino</label>
-            <div className={estilos.prefixo}>
-              <span aria-hidden="true">{dominio}/</span>
-              <input
-                id="redirecionamento-para"
-                className={estilos.entrada}
-                type="text"
-                name="para"
-                value={para}
-                onChange={(e) => setPara(e.target.value)}
-                placeholder="novo-endereco"
-                list="redirecionamento-sugestoes"
-                autoComplete="off"
-                autoCapitalize="none"
-                spellCheck={false}
-              />
-            </div>
-            <span className={gestao.dica}>Uma página do {dominio}. Vazio leva para a página inicial.</span>
+            {/* sem o domínio fixo na frente: o destino pode ser outro site */}
+            <input
+              id="redirecionamento-para"
+              type="text"
+              name="para"
+              value={para}
+              onChange={(e) => setPara(e.target.value)}
+              placeholder="novo-endereco ou https://outrosite.com.br"
+              list="redirecionamento-sugestoes"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+            />
+            <span className={gestao.dica}>Uma página do {dominio} (só o final) ou o link completo de qualquer site.</span>
           </div>
         </div>
         <datalist id="redirecionamento-sugestoes">
@@ -157,19 +159,28 @@ export default function Redirecionamentos({
               <span className={`${estilos.sinal} ${estilos[item.nivel]}`} aria-hidden="true" />
               <div className={estilos.corpo}>
                 <p className={estilos.enderecos}>
-                  <a href={`/${item.de}/`} target="_blank" rel="noreferrer" title="Abrir o endereço antigo, para testar">
-                    {dominio}/{item.de}/
+                  <a href={item.de ? `/${item.de}/` : "/"} target="_blank" rel="noreferrer" title="Abrir o endereço antigo, para testar">
+                    {dominio}/{item.de && `${item.de}/`}
                   </a>
                   <span className={estilos.seta}>
                     <span aria-hidden="true">→</span>
                     <span className={gestao.somenteLeitor}>leva para</span>
                   </span>
-                  <a href={item.para} target="_blank" rel="noreferrer" title="Abrir o destino">
-                    {dominio}
-                    {item.para}
+                  <a href={item.para} target="_blank" rel="noopener noreferrer" title="Abrir o destino">
+                    {item.paraMostrar}
                   </a>
                 </p>
-                <p className={estilos.situacao}>{item.situacao}</p>
+                <p className={estilos.situacao}>
+                  {item.situacao}
+                  {item.acao && (
+                    <>
+                      {" "}
+                      <a className={estilos.acao} href={item.acao.href}>
+                        {item.acao.rotulo}
+                      </a>
+                    </>
+                  )}
+                </p>
                 <p className={estilos.meta}>
                   {item.acessos} {item.acessos === 1 ? "acesso" : "acessos"}
                   {item.ultimoAcesso && (
@@ -187,7 +198,8 @@ export default function Redirecionamentos({
                     type="submit"
                     className={`${gestao.btn} ${gestao.btnPerigo} ${gestao.btnMini}`}
                     onClick={(evento) => {
-                      if (!confirm(`Excluir o redirecionamento de ${dominio}/${item.de}/?\n\nQuem usar o link antigo volta a ver "página não encontrada".`)) {
+                      const depois = item.de ? 'Quem usar o link antigo volta a ver "página não encontrada".' : `A página inicial volta a levar para ${dominio}/paginadelinks/.`;
+                      if (!confirm(`Excluir o redirecionamento de ${dominio}/${item.de && `${item.de}/`}?\n\n${depois}`)) {
                         evento.preventDefault();
                         return;
                       }

@@ -171,8 +171,10 @@ então nada gravado antes precisou ser convertido.
 
 ## Redirecionamentos — 16/10/2026
 
-Botão **Redirecionamentos** no topo do painel (`/gestao/redirecionamentos`): um endereço antigo
-do dnms.fun que não existe mais (`dnms.fun/fulano`) passa a levar para outro do mesmo domínio.
+Botão **Redirecionamentos** no topo do painel (`/gestao/redirecionamentos`): um endereço do
+dnms.fun (`dnms.fun/fulano`, ou a página inicial) passa a levar para outro lugar. Desde 19/10/2026
+o destino pode ser **qualquer site**, não só o dnms.fun (pedido do Bruno: mandar os acessos do
+dnms.fun para a página de vendas nova no site da Dunamis).
 Tabela `Redirecionamento` (`de`, `para`, `acessos`, `ultimoAcessoEm`); a regra fica em
 `lib/redirecionamentos.ts`.
 
@@ -182,18 +184,26 @@ Tabela `Redirecionamento` (`de`, `para`, `acessos`, `ultimoAcessoEm`); a regra f
   trecho (`dnms.fun/fulano/links`) cai em `app/[slug]/[...resto]/page.tsx`, que só existe para isso
 - **Temporário (307), não permanente.** O navegador guarda redirecionamento permanente, e foi isso
   que deu o loop na troca do WordPress: com 307, mudar o destino ou excluir vale na hora para todo mundo
-- **Só dentro do dnms.fun.** O campo aceita o link inteiro, sem o https ou só o final; outro site é
-  recusado, e o destino é gravado como caminho (`/novo/`), então não há como mandar para fora.
-  Também são recusados: a página inicial como endereço antigo, as rotas do sistema (`gestao`,
-  `entrar`, `ir`, `api`), endereço repetido e **laço** (a → b → a, quem chegasse ficaria rodando)
+- **A origem é sempre do dnms.fun**, o domínio que a gente controla: o campo aceita o link inteiro,
+  sem o https ou só o final, e `/` (ou `dnms.fun`) é a página inicial. **O destino é do dnms.fun ou
+  de qualquer site:** do dnms.fun fica gravado como caminho (`/novo/`); de fora, como o link inteiro
+  (`https://…`; sem o https, ele entra sozinho). Só http e https: `mailto:`, `javascript:`, `ftp://`
+  e companhia são recusados. Também: as rotas do sistema (`gestao`, `entrar`, `ir`, `api`) como
+  origem, endereço repetido e **laço** (a → b → a, quem chegasse ficaria rodando); destino de fora
+  encerra a corrente
+- **A página inicial** (`app/page.tsx`) consulta o redirecionamento de `/`; sem ele, vai para
+  `/paginadelinks/`, como antes. Em 19/10/2026 o cliente `paginadelinks` saiu do sistema e o Bruno
+  criou `/paginadelinks/` → `/brunosantana/`, então a inicial sem redirecionamento próprio segue esse
+  caminho
 - **A busca de quem chega vai junto** (`?utm_source=…`), a não ser que o destino tenha a sua
 - **Endereço com ponto nem vai ao banco** (`/wp-login.php`, `/.env`): é o que os robôs mais
   tentam, e nenhum redirecionamento pode ter ponto
 - **Acessos** contados depois da resposta (`after()`), fora quem está logado no painel, como no
   DMetric. Trocar o endereço antigo de um redirecionamento zera a contagem
 - **Situação de cada um**, calculada na tela com as páginas de hoje: verde quando leva a uma página
-  no ar (ou à inicial, ou a outro redirecionamento); amarelo quando o endereço antigo ainda tem
-  página no ar (sem efeito por enquanto) ou quando o destino não abre nada
+  no ar, à inicial, a outro redirecionamento ou a outro site (que não dá para conferir daqui);
+  amarelo quando o endereço antigo ainda tem página no ar (sem efeito por enquanto, com o atalho
+  para o cadastro do cliente) ou quando o destino no dnms.fun não abre nada
 
 No celular, o topo do painel ganhou um botão a mais: "Novo cliente" vira "Novo" abaixo de 640 px,
 e abaixo de 380 px os botões ficam mais juntos, para caber em 360 px sem rolar de lado.

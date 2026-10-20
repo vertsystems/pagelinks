@@ -53,3 +53,7 @@
   .item { grid-template-columns: auto minmax(0, 1fr); }
   .acoes { grid-column: 2; }
 }
+
+/* atalho na situação (abrir o cadastro do cliente que ocupa o endereço antigo) */
+.acao { color: var(--g-destaque); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.acao:hover { text-decoration-thickness: 2px; }

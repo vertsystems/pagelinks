@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { exigirAdmin } from "@/lib/acesso";
-import { DOMINIO, caminhoDoDestino } from "@/lib/redirecionamentos";
+import { DOMINIO, caminhoDoDestino, destinoParaMostrar } from "@/lib/redirecionamentos";
 import { quandoMudou } from "../quando";
 import Redirecionamentos, { type ItemRedirecionamento } from "./Redirecionamentos";
 import gestao from "../gestao.module.css";
@@ -13,9 +13,10 @@ export const metadata: Metadata = { title: "Redirecionamentos — PageLinks" };
 const inteiro = new Intl.NumberFormat("pt-BR");
 
 /**
- * Redirecionamentos: endereço antigo do dnms.fun que leva para outro do mesmo domínio.
- * Cada um vem com a situação de verdade, olhando as páginas de hoje: se vale (o endereço
- * antigo não tem página no ar) e se o destino abre alguma coisa.
+ * Redirecionamentos: endereço do dnms.fun (ou a página inicial) que leva para outro lugar, no
+ * dnms.fun ou em qualquer site. Cada um vem com a situação de verdade, olhando as páginas de
+ * hoje: se vale (o endereço antigo não tem página no ar) e se o destino aqui dentro abre
+ * alguma coisa. Site de fora não dá para conferir daqui: aparece como está.
  */
 export default async function PaginaRedirecionamentos() {
   await exigirAdmin();
@@ -33,17 +34,23 @@ export default async function PaginaRedirecionamentos() {
   const agora = new Date();
 
   const itens: ItemRedirecionamento[] = redirecionamentos.map((r) => {
-    const destino = caminhoDoDestino(r.para);
-    const naOrigem = porSlug.get(r.de);
-    const noDestino = porSlug.get(destino);
+    const destino = caminhoDoDestino(r.para); // null: outro site
+    const naOrigem = r.de ? porSlug.get(r.de) : undefined;
+    const noDestino = destino ? porSlug.get(destino) : undefined;
 
     let nivel: ItemRedirecionamento["nivel"] = "ok";
     let situacao: string;
+    let acao: ItemRedirecionamento["acao"];
     if (naOrigem?.noAr) {
       nivel = "atencao";
-      situacao = `Sem efeito por enquanto: ${DOMINIO}/${r.de}/ é a página no ar de ${naOrigem.nome}, e a página ganha. Passa a valer quando ela sair do ar ou mudar de endereço.`;
+      situacao = `Sem efeito por enquanto: ${DOMINIO}/${r.de}/ é a página no ar de ${naOrigem.nome}, e a página ganha. Para o redirecionamento valer, tire a página do ar (desmarque "Cliente ativo" no cadastro) ou mude o endereço dela.`;
+      acao = { href: `/gestao/${r.de}`, rotulo: `Abrir o cadastro de ${naOrigem.nome}` };
+    } else if (destino === null) {
+      situacao = `Leva para outro site: ${destinoParaMostrar(r.para).split(/[/?#]/)[0]}.`;
     } else if (!destino) {
-      situacao = `Leva para a página inicial do ${DOMINIO}.`;
+      situacao = redirecionados.has("")
+        ? `Leva para a página inicial do ${DOMINIO}, que tem redirecionamento próprio: a pessoa passa por ele antes de chegar.`
+        : `Leva para a página inicial do ${DOMINIO}.`;
     } else if (noDestino?.noAr) {
       situacao = `Leva para a página de ${noDestino.nome}.`;
     } else if (redirecionados.has(destino)) {
@@ -60,8 +67,11 @@ export default async function PaginaRedirecionamentos() {
       id: r.id,
       de: r.de,
       para: r.para,
+      paraMostrar: destinoParaMostrar(r.para),
+      externo: destino === null,
       nivel,
       situacao,
+      acao,
       acessos: r.acessos,
       ultimoAcesso: ultimo?.texto ?? null,
       ultimoAcessoCompleto: ultimo?.completo ?? null,
@@ -83,7 +93,7 @@ export default async function PaginaRedirecionamentos() {
           </p>
           <h1>Redirecionamentos</h1>
           <p>
-            Link antigo do {DOMINIO} que não existe mais leva para outro endereço do {DOMINIO}.{" "}
+            Um endereço do {DOMINIO}, inclusive a página inicial, leva quem chega para outro lugar: aqui ou em qualquer site.{" "}
             {redirecionamentos.length
               ? `${redirecionamentos.length} ${redirecionamentos.length === 1 ? "redirecionamento" : "redirecionamentos"} · ${inteiro.format(acessos)} ${acessos === 1 ? "acesso" : "acessos"}`
               : "Nenhum ainda."}
