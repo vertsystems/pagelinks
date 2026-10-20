@@ -24,7 +24,7 @@
 <!-- Tudo o que a página usa mora nesta pasta (CSS do Tailwind, Alpine.js, fontes, imagens),
      para subir pelo FTP e funcionar sozinha. A exceção é o DMetric, que conta as visitas no
      servidor dele -->
-<link rel="stylesheet" href="assets/css/site.css?v=4290908044">
+<link rel="stylesheet" href="assets/css/site.css?v=1118466148">
 <script defer src="https://dspace.verts.me/dm.js"></script>
 <script defer src="assets/js/site.js?v=243160295"></script>
 <script defer src="assets/js/alpine.min.js"></script>
@@ -97,8 +97,34 @@
     <div class="envoltorio grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-12">
       <div class="relative z-20 text-center max-sm:-mt-[40vw] lg:text-left">
         <p class="olho max-sm:text-[14.4px]">Página de Links</p>
-        <h1 id="titulo" class="mx-auto max-w-[13ch] text-[clamp(2.4rem,6.2vw,4.4rem)] leading-[1.02] max-sm:text-[clamp(2.4rem,11.8vw,2.88rem)] lg:mx-0">Seu link da bio com a cara da sua marca.</h1>
-        <p class="mx-auto mt-6 mb-7 max-w-[34ch] text-[clamp(1.05rem,1.6vw,1.25rem)] text-apoio-claro max-sm:text-[1.26rem] max-sm:text-balance lg:mx-0">Uma página com seus links, WhatsApp e redes, feita com o seu logo e as suas cores. Você vê a primeira versão em até 24 horas.</p>
+        <h1 id="titulo" class="mx-auto max-w-[calc(13ch/var(--escala,1))] text-[calc(clamp(2.4rem,6.2vw,4.4rem)*var(--escala,1))] leading-[1.02] max-sm:text-[calc(clamp(2.4rem,11.8vw,2.88rem)*var(--escala,1))] lg:mx-0">Seu link da bio com a cara da sua marca.</h1>
+        <p id="subtitulo" class="mx-auto mt-6 mb-7 max-w-[34ch] text-[clamp(1.05rem,1.6vw,1.25rem)] text-apoio-claro max-sm:text-[1.26rem] max-sm:text-balance lg:mx-0">Uma página com seus links, WhatsApp e redes, feita com o seu logo e as suas cores. Você vê a primeira versão em até 24 horas.</p>
+        <script>
+          /* Manchete do topo: a cada visita, uma das 9 escolhidas pelo Bruno (20/10/2026). A primeira está
+             escrita aí em cima, e é a que o Google lê e a que aparece sem JavaScript. Este script roda
+             antes de a tela aparecer, para o texto não trocar na frente de quem chegou. Manchete longa sai
+             com a letra menor (mais de 44 letras, 14%; mais de 50, 20%), para não passar de 4 linhas */
+          (function () {
+            var MANCHETES = [
+          ["Seu link da bio com a cara da sua marca.", "Uma página com seus links, WhatsApp e redes, feita com o seu logo e as suas cores. Você vê a primeira versão em até 24 horas."],
+          ["Do post ao WhatsApp, tudo com a sua identidade.", "Seus links, redes e WhatsApp numa página feita com o seu logo e as suas cores, para o cliente reconhecer a sua marca em cada toque."],
+          ["Seu perfil é caprichado. O link da bio pode ser também.", "Troque a lista de botões iguais por uma página feita com a identidade da sua marca, pronta em até 24 horas."],
+          ["O primeiro contato com a sua marca começa num toque.", "O link da bio é o que o cliente abre antes de chamar, comprar ou visitar. Faça esse momento ter o seu logo, as suas cores e os caminhos certos."],
+          ["O caminho mais curto do seu post até o seu WhatsApp.", "O cliente toca no link e já cai numa conversa com mensagem pronta, ou no cardápio, no catálogo e na localização, tudo numa página com a sua marca."],
+          ["Menos toques entre o interesse e a compra.", "WhatsApp, cardápio, catálogo e localização logo na primeira tela, numa página feita com o seu logo e as suas cores."],
+          ["Um QR Code que você imprime uma vez só.", "Mudou a promoção ou o cardápio, a gente atualiza a página, e o QR Code da embalagem, da vitrine e do cardápio continua levando ao lugar certo."],
+          ["Sem aprender ferramenta e sem montar nada sozinho.", "A gente faz a sua página de links com a identidade da sua marca e cuida das trocas depois. Você só manda os links pelo WhatsApp."],
+          ["Link da bio sempre em dia, sem você mexer em nada.", "Mudou a promoção, o cardápio ou o número, é só mandar no WhatsApp que a gente troca, sem custo."]
+            ];
+            var n = Math.floor(Math.random() * MANCHETES.length), m = MANCHETES[n];
+            var titulo = document.getElementById("titulo");
+            // palavra de 1 ou 2 letras (o, a, e, da, um) fica presa à seguinte, sem sobrar no fim da linha
+            titulo.textContent = m[0].replace(/ (\S{1,2}) /g, " $1\u00a0");
+            document.getElementById("subtitulo").textContent = m[1];
+            titulo.setAttribute("data-manchete", n + 1);
+            if (m[0].length > 44) titulo.style.setProperty("--escala", m[0].length > 50 ? ".8" : ".86");
+          })();
+        </script>
         <p class="mb-6 text-[1.05rem] max-sm:text-[1.26rem]"><strong class="text-[1.35rem] font-extrabold max-sm:text-[1.62rem]">R$ 197</strong>, pagamento único.<br class="sm:hidden"> Sem mensalidade.</p>
         <a class="botao" href="https://wa.me/5513997287738?text=Oi%21%20Vi%20a%20P%C3%A1gina%20de%20Links%20e%20quero%20a%20minha." target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a9.9 9.9 0 0 0-8.6 14.9L2 22l5.3-1.4A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
@@ -356,9 +382,9 @@
 </footer>
 
 <!--
-  Manchetes alternativas, para testar uma por semana se quiser:
-  B (problema evitado): Um QR Code que você imprime uma vez só.
-  C (prova): Mais de 30 negócios já trocaram o link genérico pela própria página.
+  Manchetes: as 9 que giram a cada visita estão no script logo depois do texto do topo. As 20
+  propostas em 20/10/2026 e as escolhidas (1, 2, 4, 5, 8, 9, 10, 15 e 16 da lista) ficaram na conversa
+  com o Bruno; para trocar, mude a lista MANCHETES do script.
 -->
 </body>
 </html>

@@ -77,8 +77,11 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   seção "No ar hoje" mostra 3 páginas sorteadas a cada visita entre as 32 escolhidas pelo Bruno
   (prints reais em `img/paginas/`, 500 px; as outras saem da página antes de baixar a foto). Carrossel
   foi testado e recusado (19/10/2026): ficava poluído. Tem o script do DMetric no `<head>`; para medir
-  com o Lighthouse, bloquear `*dspace.verts.me*`. As manchetes alternativas ficam num comentário no
-  fim do `index.html`
+  com o Lighthouse, bloquear `*dspace.verts.me*`. A manchete e o texto do topo giram a cada visita entre
+  9 escolhidas pelo Bruno (20/10/2026), num script logo depois do texto do topo (lista `MANCHETES`): ele
+  roda antes de a tela aparecer, para o texto não trocar na frente de quem chegou, e diminui a letra
+  das longas (mais de 44 letras, 14%; mais de 50, 20%) para não passarem de 4 linhas. A primeira fica
+  escrita no HTML, para o Google e para quem está sem JavaScript
 - **Como a página de vendas é feita** (pedido do Bruno em 19/10/2026: framework de CSS e de JS, e
   tudo dentro da pasta para o FTP): Tailwind CSS 4.3.3 compilado em `assets/css/site.css`, Alpine.js
   3.17.4 em `assets/js/alpine.min.js` (só sorteia e desenha a vitrine; a lista das 32 está em
