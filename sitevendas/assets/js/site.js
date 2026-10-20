@@ -42,11 +42,17 @@ var PAGINAS = [
 ];
 
 document.addEventListener("alpine:init", function () {
-  /* A cada visita, 3 sorteadas entre as da lista. A do meio fica em destaque (o CSS cuida do
-     tamanho, do reflexo e do pulsar; no celular, só ela aparece inteira, as outras por trás). */
+  /* A cada visita, 3 sorteadas entre as da lista. A do centro fica em destaque (o CSS cuida do
+     tamanho, do reflexo e do pulsar; no celular, só ela aparece inteira, as outras por trás).
+     No celular, a cada 4 s a da direita vem para o centro, girando entre as 3; no tablet, no
+     computador e para quem pediu menos movimento, as três ficam paradas. */
+  var CELULAR = window.matchMedia("(max-width: 39.99rem)");
+  var CALMO = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var POSICOES = ["esquerda", "centro", "direita"];
   window.Alpine.data("vitrine", function () {
     return {
       escolhidas: [],
+      atual: 0,
       init: function () {
         var lista = PAGINAS.slice();
         for (var i = lista.length - 1; i > 0; i--) {
@@ -54,6 +60,15 @@ document.addEventListener("alpine:init", function () {
           var troca = lista[i]; lista[i] = lista[j]; lista[j] = troca;
         }
         this.escolhidas = lista.slice(0, 3);
+        var vitrine = this;
+        setInterval(function () {
+          if (CELULAR.matches && !CALMO.matches && !document.hidden) vitrine.atual = (vitrine.atual + 1) % 3;
+        }, 4000);
+        // saiu do celular (girou a tela, abriu a janela): volta cada uma ao seu lugar
+        CELULAR.addEventListener("change", function () { vitrine.atual = 0; });
+      },
+      posicao: function (i) {
+        return POSICOES[(i - this.atual + 3) % 3];
       },
     };
   });

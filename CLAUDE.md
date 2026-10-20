@@ -87,9 +87,12 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   instala o Tailwind fora do Drive, refaz o CSS e carimba `?v=` no CSS e no JS (o `.htaccess` da Dunamis
   guarda os dois por 1 mês). Cada print fica dentro de um iPhone feito em CSS (`.iphone`): a cor da
   barra de status vem do topo da página (`--cor-topo`), e `data-topo`/`data-base="claro"` deixam os
-  ícones e a barrinha de baixo pretos. A do meio da vitrine é 15% maior, com reflexo e pulso a cada
-  2,5 s; no celular só ela aparece na frente, com as outras duas por trás, desfocadas (`blur(5px)`)
-  e cortadas na borda da tela. No celular e no tablet, o topo põe os prints em cima e centraliza tudo
+  ícones e a barrinha de baixo pretos. A do centro da vitrine (`data-pos="centro"`, que o Alpine põe)
+  é 15% maior, com reflexo e pulso a cada 2,5 s; no celular só ela aparece na frente, com as outras duas
+  por trás, desfocadas (`blur(5px)`) e cortadas na borda da tela, e a cada 4 s a da direita vem para a
+  frente numa transição suave (20/10/2026; parado no tablet, no computador e com movimento reduzido).
+  No celular e no tablet, o topo põe os prints em cima e centraliza tudo; só no celular, os iPhones do
+  topo somem num esmaecido de baixo para cima e o texto, 20% maior, sobe por cima dele
 - **A dobra "Quem está à frente"** (20/10/2026), entre o preço e as perguntas: a bio do Bruno em
   terceira pessoa, como empresário que desenvolve soluções e sistemas (pedido dele: tom profissional,
   "atende clientes como"), num card branco por cima da foto, no modelo que ele mandou. A faixa
