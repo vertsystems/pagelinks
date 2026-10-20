@@ -234,7 +234,10 @@
 .separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
 
 .rodape { margin-top: 44px; font-size: 12px; opacity: 0.45; text-align: center; }
-.rodape a { color: inherit; }
+.rodape a { color: inherit; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+.rodape a:hover span, .rodape a:focus-visible span { text-decoration: underline; text-underline-offset: 2px; }
+.rodape svg { width: 13px; height: 13px; flex: none; }
+.rodape strong { font-weight: 700; }
 
 @media (max-width: 480px) {
   .tela { padding: 36px 16px 56px; padding-top: var(--topo); }

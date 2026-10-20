@@ -433,7 +433,19 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
             ))}
           </div>
 
-          <p className={estilos.rodape}>feito com PageLinks</p>
+          {/* a assinatura leva para a página de vendas do PageLinks (pedido do Bruno, 20/10/2026) */}
+          <p className={estilos.rodape}>
+            <a href="https://www.dunamiscompany.com.br/pagelinks/" target="_blank" rel="noopener">
+              {/* celular: ícone smartphone do Lucide (licença ISC) */}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                <path d="M12 18h.01" />
+              </svg>
+              <span>
+                <em>feito com</em> <strong>PageLinks</strong>
+              </span>
+            </a>
+          </p>
         </div>
       </main>
     </>
