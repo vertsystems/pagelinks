@@ -72,7 +72,8 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   botão no degradê verde → verde-água do botão principal do site da Dunamis (pedido do Bruno em
   19/10/2026), com o brilho da ponta mais suave para o texto branco passar no contraste. Preço, parcelas
   e garantia seguem `../oferta/servicos/pagina-de-links.md` e aparecem em quatro lugares (topo,
-  card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. A
+  card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. O card
+  mostra também a parcela ao lado do preço (3x de R$ 65,67): mudou o preço, muda a parcela. A
   seção "No ar hoje" mostra 3 páginas sorteadas a cada visita entre as 32 escolhidas pelo Bruno
   (prints reais em `img/paginas/`, 500 px; as outras saem da página antes de baixar a foto). Carrossel
   foi testado e recusado (19/10/2026): ficava poluído. Tem o script do DMetric no `<head>`; para medir
@@ -90,7 +91,8 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   ícones e a barrinha de baixo pretos. A do centro da vitrine (`data-pos="centro"`, que o Alpine põe)
   é 15% maior, com reflexo e pulso a cada 2,5 s; no celular só ela aparece na frente, com as outras duas
   por trás, desfocadas (`blur(5px)`) e cortadas na borda da tela, e a cada 4 s a da direita vem para a
-  frente numa transição suave (20/10/2026; parado no tablet, no computador e com movimento reduzido).
+  frente numa transição suave (20/10/2026; parado no tablet, no computador e com movimento reduzido). As de trás
+  ficam com o meio na altura do meio da da frente e somem num esmaecido nas duas laterais da tela.
   No celular e no tablet, o topo põe os prints em cima e centraliza tudo; só no celular, os iPhones do
   topo somem num esmaecido de baixo para cima e o texto, 20% maior, sobe por cima dele
 - **A dobra "Quem está à frente"** (20/10/2026), entre o preço e as perguntas: a bio do Bruno em

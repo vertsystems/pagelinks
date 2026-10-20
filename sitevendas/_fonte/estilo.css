@@ -168,19 +168,30 @@
     transform: translateX(-130%); animation: reflexo-vitrine 2.5s ease-in-out infinite;
   }
   @media (width < 40rem) {
-    .vitrines { grid-template-columns: minmax(0, 1fr); grid-template-areas: "pilha"; min-height: 520px; }
+    .vitrines { position: relative; grid-template-columns: minmax(0, 1fr); grid-template-areas: "pilha"; min-height: 520px; }
+    /* esmaecido nas duas laterais, da borda da tela para dentro, na cor do fundo da seção: as de trás
+       somem nas pontas, e a da frente (z-index 2) fica por cima dele (pedido do Bruno, 20/10/2026) */
+    .vitrines::before, .vitrines::after {
+      content: ""; position: absolute; z-index: 1; top: 0; bottom: 0; width: 25vw; pointer-events: none;
+    }
+    .vitrines::before { left: calc(-1 * clamp(20px, 4vw, 48px)); background: linear-gradient(90deg, var(--color-off), rgb(242 242 242 / .6) 35%, rgb(242 242 242 / .22) 68%, rgb(242 242 242 / 0)); }
+    .vitrines::after { right: calc(-1 * clamp(20px, 4vw, 48px)); background: linear-gradient(270deg, var(--color-off), rgb(242 242 242 / .6) 35%, rgb(242 242 242 / .22) 68%, rgb(242 242 242 / 0)); }
     .vitrines > li {
       grid-area: pilha; align-self: start;
-      transition: transform .9s cubic-bezier(.45, 0, .2, 1), filter .9s ease, opacity .9s ease;
+      transition: transform 1.2s cubic-bezier(.45, 0, .25, 1), filter 1.2s ease, opacity 1.2s ease;
     }
     /* todas do mesmo tamanho (a da frente ficou 8% menor, pedido do Bruno em 20/10/2026); as de trás
        encolhem pelo scale, e por isso a troca de lugar fica contínua */
     .vitrines > li .iphone, .vitrines > li[data-pos="centro"] .iphone { width: min(230px, 61vw); }
-    .vitrines > li[data-pos="centro"] { z-index: 2; }
+    /* a que chega na frente perde o desfoque mais rápido que o deslize: a troca fica leve, sem um
+       momento com as duas desfocadas */
+    .vitrines > li[data-pos="centro"] { z-index: 2; transition: transform 1.2s cubic-bezier(.45, 0, .25, 1), filter .6s ease, opacity .6s ease; }
     .vitrines > li:not([data-pos="centro"]) { z-index: 0; filter: blur(5px); opacity: .85; pointer-events: none; }
-    .vitrines > li[data-pos="esquerda"] { transform: translate(-40%, 6%) scale(.8); }
-    .vitrines > li[data-pos="direita"] { transform: translate(40%, 6%) scale(.8); }
-    .vitrines > li :is(h3, a) { transition: opacity .5s ease, visibility .5s; }
+    /* -1,5% na vertical: o meio do iPhone de trás fica na altura do meio do da frente (o scale encolhe
+       em torno do meio do <li>, que tem o nome e o link embaixo do iPhone) */
+    .vitrines > li[data-pos="esquerda"] { transform: translate(-40%, -1.5%) scale(.8); }
+    .vitrines > li[data-pos="direita"] { transform: translate(40%, -1.5%) scale(.8); }
+    .vitrines > li :is(h3, a) { transition: opacity .6s ease, visibility .6s; }
     .vitrines > li:not([data-pos="centro"]) :is(h3, a) { opacity: 0; visibility: hidden; }
   }
   @keyframes pulsar-vitrine { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
