@@ -36,6 +36,8 @@ pagelinks/
 ├── lib/         prisma, tema e o que for compartilhado
 ├── prisma/      schema, migrações e seed
 ├── public/      arquivos estáticos
+├── pagina-de-links/  a página de vendas do serviço (HTML único, sem JavaScript): mora em
+│                     dunamiscompany.com.br/pagina-de-links/, sobe por FTP com o site da Dunamis
 └── dev.db       banco local (não versionar)
 ```
 
@@ -64,6 +66,12 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
 - Nenhuma página vai ao ar sem o cliente ver antes
 - Página de links é peça de conversão: velocidade de carregamento e legibilidade no
   celular vêm antes de qualquer efeito visual
+- **A página de vendas** (`pagina-de-links/`, 19/10/2026) vende o serviço com a marca da Dunamis,
+  não a do PageLinks: laranja `#FF6F00` só no botão, Inter, uma ação só (WhatsApp). Preço, parcelas
+  e garantia seguem `../oferta/servicos/pagina-de-links.md` e aparecem em quatro lugares (topo,
+  card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. As
+  fotos em `img/` são prints reais da Lojas Mari, da Duda e do Nali Cuscuz Bar, escolhidos pelo
+  Bruno; as manchetes alternativas ficam num comentário no fim do `index.html`
 
 <!-- BEGIN:nextjs-agent-rules -->
 
