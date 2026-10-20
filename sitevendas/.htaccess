@@ -1,0 +1,12 @@
+# Página de vendas da PageLinks: cache das fotos (WebP) e das fontes (woff2), que o .htaccess da
+# raiz do site da Dunamis não cobre. Compactação, https e o cache de CSS e JS vêm de lá.
+# Se a hospedagem não for Apache, pode apagar: a página funciona sem ele.
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 6 months"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>

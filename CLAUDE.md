@@ -36,8 +36,9 @@ pagelinks/
 ├── lib/         prisma, tema e o que for compartilhado
 ├── prisma/      schema, migrações e seed
 ├── public/      arquivos estáticos
-├── sitevendas/  a página de vendas do serviço (HTML único, sem JavaScript): mora em
-│                dunamiscompany.com.br/pagelinks/ (sobe por FTP numa pasta pagelinks/ do site da Dunamis)
+├── sitevendas/  a página de vendas do serviço (HTML + Tailwind + Alpine.js, tudo dentro da pasta):
+│                mora em dunamiscompany.com.br/pagelinks/ (sobe por FTP numa pasta pagelinks/ do site
+│                da Dunamis, sem a _fonte/)
 └── dev.db       banco local (não versionar)
 ```
 
@@ -71,9 +72,24 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   botão no degradê verde → verde-água do botão principal do site da Dunamis (pedido do Bruno em
   19/10/2026), com o brilho da ponta mais suave para o texto branco passar no contraste. Preço, parcelas
   e garantia seguem `../oferta/servicos/pagina-de-links.md` e aparecem em quatro lugares (topo,
-  card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. As
-  fotos em `img/` são prints reais da Lojas Mari, da Duda e do Nali Cuscuz Bar, escolhidos pelo
-  Bruno; as manchetes alternativas ficam num comentário no fim do `index.html`
+  card de preço, perguntas e os dados para o Google no `<head>`): mudou lá, muda nos quatro. A
+  seção "No ar hoje" mostra 3 páginas sorteadas a cada visita entre as 32 escolhidas pelo Bruno
+  (prints reais em `img/paginas/`, 500 px; as outras saem da página antes de baixar a foto). Carrossel
+  foi testado e recusado (19/10/2026): ficava poluído. Tem o script do DMetric no `<head>`; para medir
+  com o Lighthouse, bloquear `*dspace.verts.me*`. As manchetes alternativas ficam num comentário no
+  fim do `index.html`
+- **Como a página de vendas é feita** (pedido do Bruno em 19/10/2026: framework de CSS e de JS, e
+  tudo dentro da pasta para o FTP): Tailwind CSS 4.3.3 compilado em `assets/css/site.css`, Alpine.js
+  3.17.4 em `assets/js/alpine.min.js` (só sorteia e desenha a vitrine; a lista das 32 está em
+  `assets/js/site.js`), Inter e Source Serif 4 em woff2 em `assets/fonts/`. O estilo se escreve em
+  `_fonte/estilo.css` (cores da Dunamis no `@theme`, componentes como `.botao`, `.iphone` e `.vitrines`)
+  e nas classes do `index.html`; depois de mudar, rodar `sh sitevendas/_fonte/construir.sh`, que
+  instala o Tailwind fora do Drive, refaz o CSS e carimba `?v=` no CSS e no JS (o `.htaccess` da Dunamis
+  guarda os dois por 1 mês). Cada print fica dentro de um iPhone feito em CSS (`.iphone`): a cor da
+  barra de status vem do topo da página (`--cor-topo`), e `data-topo`/`data-base="claro"` deixam os
+  ícones e a barrinha de baixo pretos. A do meio da vitrine é 15% maior, com reflexo e pulso a cada
+  2,5 s; no celular só ela aparece na frente, com as outras duas por trás, desfocadas (`blur(5px)`)
+  e cortadas na borda da tela. No celular e no tablet, o topo põe os prints em cima e centraliza tudo
 
 <!-- BEGIN:nextjs-agent-rules -->
 

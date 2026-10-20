@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Página de vendas estática (sobe por FTP, fora do app), com o Alpine.js minificado
+    "sitevendas/**",
   ]),
 ]);
 
