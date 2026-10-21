@@ -45,6 +45,20 @@ export function linkDoVideo(colado: string | null | undefined): string | null {
   }
 }
 
+/** Quantos vídeos cabem num bloco: o principal e mais 9, que passam para o lado na página. */
+export const MAXIMO_DE_VIDEOS = 10;
+
+/**
+ * Os vídeos do bloco, na ordem: o link principal (Card.url) e os outros (Card.itens, um por linha,
+ * o campo que na lista guarda os itens). Com mais de um, a página mostra a galeria (VideoGaleria).
+ */
+export function linksDoBloco(url: string | null | undefined, itens: string | null | undefined): string[] {
+  return [url ?? "", ...String(itens ?? "").split("\n")]
+    .map((link) => link.trim())
+    .filter(Boolean)
+    .slice(0, MAXIMO_DE_VIDEOS);
+}
+
 /** "90", "1m30s" ou "1h2m3s" em segundos (o começo do vídeo no YouTube). */
 function segundos(valor: string | null): number {
   if (!valor) return 0;

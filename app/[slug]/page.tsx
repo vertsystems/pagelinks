@@ -13,10 +13,11 @@ import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import { emVigor } from "@/lib/linksProgramados";
-import { capaDoVimeo, capaDoYouTube, comAutoplay, lerVideo, orientacaoDoVideo } from "@/lib/video";
+import { capaDoVimeo, capaDoYouTube, comAutoplay, lerVideo, linksDoBloco, orientacaoDoVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
-import VideoComCapa from "./VideoComCapa";
+import VideoComCapa, { PlayerDoVideo } from "./VideoComCapa";
+import VideoGaleria from "./VideoGaleria";
 import { familiaDaFonte } from "./fontes";
 import estilos from "./pagina.module.css";
 
@@ -164,13 +165,15 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
 
   // Capa dos vídeos (lib/video.ts), todas buscadas juntas aqui: a do YouTube conferida (a grande,
   // ou a hq quando o vídeo não tem a grande), guardada por uma semana; a do Vimeo pela API dele,
-  // guardada por um dia. Sem capa, a página mostra o player do serviço direto
+  // guardada por um dia. Sem capa, a página mostra o player do serviço direto. Num bloco com vários
+  // vídeos, cada um tem a sua: a chave é o bloco e a posição do vídeo (linksDoBloco)
   const capas = new Map(
     await Promise.all(
       pagina.cards
-        .map((c) => ({ id: c.id, video: c.tipo === "video" ? lerVideo(c.url) : null }))
-        .filter((c) => c.video?.capa || c.video?.vimeo)
-        .map(async (c) => [c.id, c.video!.capa ? await capaDoYouTube(c.video!) : await capaDoVimeo(c.video!)] as const),
+        .filter((c) => c.tipo === "video")
+        .flatMap((c) => linksDoBloco(c.url, c.itens).map((link, i) => ({ chave: `${c.id}#${i}`, video: lerVideo(link) })))
+        .filter((v) => v.video?.capa || v.video?.vimeo)
+        .map(async (v) => [v.chave, v.video!.capa ? await capaDoYouTube(v.video!) : await capaDoVimeo(v.video!)] as const),
     ),
   );
 
@@ -228,27 +231,32 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
       // O vídeo fica no serviço dele (YouTube, Vimeo, Instagram, TikTok…), deitado ou em pé
       // (lib/video.ts), numa moldura de borda em degradê. YouTube e Vimeo entram com capa: só a
       // imagem e o play, e o player chega quando a pessoa aperta (VideoComCapa). Os outros não
-      // dão a imagem do vídeo: vai o player deles direto. O referrer vai junto porque o YouTube
-      // recusa o player sem ele
+      // dão a imagem do vídeo: vai o player deles direto. Com mais de um vídeo no bloco, eles
+      // passam para o lado (VideoGaleria), todos no mesmo formato e tamanho
       case "video": {
-        const video = lerVideo(card.url);
-        if (!video) return null;
+        const videos = linksDoBloco(card.url, card.itens)
+          .map((link, i) => ({ video: lerVideo(link), capa: capas.get(`${card.id}#${i}`) ?? null }))
+          .filter((v) => v.video);
+        if (!videos.length) return null;
         const vertical = orientacaoDoVideo(card.formato, card.url) === "vertical";
-        const capa = capas.get(card.id);
         const titulo = card.titulo || "Vídeo";
+        if (videos.length > 1) {
+          return (
+            <VideoGaleria
+              key={card.id}
+              titulo={titulo}
+              vertical={vertical}
+              videos={videos.map(({ video, capa }) => ({ player: video!.player, tocar: comAutoplay(video!.player), capa, reserva: video!.capa?.reserva }))}
+            />
+          );
+        }
+        const [{ video, capa }] = videos;
         return (
           <div key={card.id} className={estilos.video} data-video="" data-orientacao={vertical ? "vertical" : undefined}>
             {capa ? (
-              <VideoComCapa player={comAutoplay(video.player)} capa={capa} reserva={video.capa?.reserva} titulo={titulo} />
+              <VideoComCapa player={comAutoplay(video!.player)} capa={capa} reserva={video!.capa?.reserva} titulo={titulo} />
             ) : (
-              <iframe
-                src={video.player}
-                title={titulo}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
+              <PlayerDoVideo src={video!.player} titulo={titulo} adiado />
             )}
           </div>
         );

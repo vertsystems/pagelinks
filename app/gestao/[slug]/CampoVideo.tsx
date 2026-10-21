@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { lerVideo, orientacaoDoVideo, type Orientacao } from "@/lib/video";
+import { MAXIMO_DE_VIDEOS, lerVideo, linksDoBloco, orientacaoDoVideo, type Orientacao } from "@/lib/video";
 import type { ValoresTela } from "@/lib/ajustes";
 import { salvarOrientacao, type LinkProgramadoDoBloco } from "../acoes";
 import { retocarPrevia } from "./BarraAjuste";
@@ -11,12 +11,26 @@ import estilos from "../gestao.module.css";
 
 /**
  * O vídeo do bloco: o link (ou o código <iframe>) do serviço onde ele está, deitado ou em pé,
- * e o tamanho por tela (lib/video.ts). Enquanto digita, diz se reconheceu o vídeo. O link vai
- * no Salvar bloco; o formato e o tamanho gravam sozinhos, como a animação e os ajustes por tela.
+ * e o tamanho por tela (lib/video.ts). Enquanto digita, diz se reconheceu o vídeo. Com outros
+ * vídeos no bloco, a página os mostra passando para o lado (VideoGaleria). Os links vão no
+ * Salvar bloco; o formato e o tamanho gravam sozinhos, como a animação e os ajustes por tela.
  */
+
+/** O que o painel diz de um link colado: reconhecido, de outro serviço ou que não toca. */
+function avisoDoLink(colado: string): { texto: string; erro: boolean } {
+  const video = lerVideo(colado);
+  if (!video) {
+    return { texto: "Esse link não toca na página. Use o link do vídeo (no TikTok, o completo, com /video/ no endereço) ou o link de incorporação do serviço, começando com https://.", erro: true };
+  }
+  if (video.servico.includes(".")) {
+    return { texto: `Link de incorporação de ${video.servico}: aparece na página do jeito que esse serviço deixar. Se não aparecer, use o link que o serviço dá para incorporar (embed).`, erro: false };
+  }
+  return { texto: `Reconhecido: ${video.servico}. Depois de salvar, ele toca na página.`, erro: false };
+}
 export default function CampoVideo({
   cardId,
   url,
+  itens,
   formato,
   valoresTamanho,
   programados,
@@ -24,17 +38,21 @@ export default function CampoVideo({
 }: {
   cardId: string;
   url: string | null;
+  /** os outros vídeos do bloco, um link por linha */
+  itens: string | null;
   formato: string | null;
   valoresTamanho: ValoresTela;
   programados: LinkProgramadoDoBloco[];
   agora: number;
 }) {
   const [colado, setColado] = useState(url ?? "");
+  // os outros vídeos: o que está gravado em itens (linksDoBloco já tira linha vazia)
+  const [outros, setOutros] = useState<string[]>(() => linksDoBloco("", itens));
+  const cabeMais = 1 + outros.length < MAXIMO_DE_VIDEOS;
   const [orientacao, setOrientacao] = useState<Orientacao>(orientacaoDoVideo(formato, url));
   const [erro, setErro] = useState<string | null>(null);
-  const video = lerVideo(colado);
   const vazio = !colado.trim();
-  const conhecido = video && !video.servico.includes(".");
+  const aviso = avisoDoLink(colado);
 
   async function escolher(valor: Orientacao) {
     const antes = orientacao;
@@ -67,15 +85,62 @@ export default function CampoVideo({
         autoComplete="off"
         spellCheck={false}
       />
-      <span className={vazio || video ? estilos.dica : estilos.erroCampo} aria-live="polite">
+      <span className={vazio || !aviso.erro ? estilos.dica : estilos.erroCampo} aria-live="polite">
         {vazio
           ? "YouTube, Vimeo, Instagram, TikTok, Google Drive, Loom ou o link de incorporação (embed) de qualquer outro serviço. Pode colar o código <iframe> inteiro: fica só o link dele. O vídeo continua lá, não vem para o PageLinks."
-          : video
-            ? conhecido
-              ? `Reconhecido: ${video.servico}. Depois de salvar, ele toca na página.`
-              : `Link de incorporação de ${video.servico}: aparece na página do jeito que esse serviço deixar. Se não aparecer, use o link que o serviço dá para incorporar (embed).`
-            : "Esse link não toca na página. Use o link do vídeo (no TikTok, o completo, com /video/ no endereço) ou o link de incorporação do serviço, começando com https://."}
+          : aviso.texto}
       </span>
+
+      {/* outros vídeos: na página, passam para o lado, um por vez (VideoGaleria). O marcador
+          outrosVideos vai sempre, para tirar o último também gravar */}
+      <input type="hidden" name="outrosVideos" value="1" />
+      {outros.map((link, i) => {
+        const avisoDoOutro = avisoDoLink(link);
+        return (
+          <div key={i} style={{ marginTop: 10 }}>
+            <label htmlFor={`outro-${cardId}-${i}`}>Vídeo {i + 2}</label>
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                id={`outro-${cardId}-${i}`}
+                type="text"
+                name="outroVideo"
+                value={link}
+                onChange={(e) => setOutros((lista) => lista.map((l, j) => (j === i ? e.target.value : l)))}
+                placeholder="https://youtu.be/… ou o código <iframe> do serviço"
+                autoComplete="off"
+                spellCheck={false}
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className={estilos.iconeBtn}
+                onClick={() => setOutros((lista) => lista.filter((_, j) => j !== i))}
+                aria-label={`Tirar o vídeo ${i + 2}`}
+                title="Tirar"
+              >
+                ✕
+              </button>
+            </div>
+            {link.trim() && (
+              <span className={avisoDoOutro.erro ? estilos.erroCampo : estilos.dica} aria-live="polite">
+                {avisoDoOutro.texto}
+              </span>
+            )}
+          </div>
+        );
+      })}
+      {cabeMais && (
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <button type="button" className={`${estilos.btn} ${estilos.btnFantasma} ${estilos.btnMini}`} onClick={() => setOutros((lista) => [...lista, ""])}>
+            + Adicionar vídeo
+          </button>
+          <span className={estilos.dica}>
+            {outros.length
+              ? `Na página, os ${outros.length + 1} vídeos passam para o lado, um por vez. Salve o bloco para valer.`
+              : `Com mais de um, os vídeos passam para o lado na página, um por vez (até ${MAXIMO_DE_VIDEOS}).`}
+          </span>
+        </div>
+      )}
 
       <div className={estilos.tamanho} style={{ marginTop: 6 }}>
         <span>Formato</span>

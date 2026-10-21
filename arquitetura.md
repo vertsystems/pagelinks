@@ -137,6 +137,13 @@ qualquer outro serviço, o link https colado já é o player. Só https: `javasc
   do próprio serviço
 - Todo vídeo fica numa moldura de 1,5 px em degradê, do branco ao cinza-claro (`.video`, com o
   `data-video` por onde o painel acha a moldura na prévia)
+- **Vários vídeos no bloco** (pedido do Bruno, 21/10/2026): até 10, o link principal (`Card.url`) e os
+  outros em `Card.itens`, um link por linha (`linksDoBloco`), o campo que na lista guarda os itens. Na
+  página passam para o lado, um por vez (`VideoGaleria.tsx`): encaixe do próprio navegador
+  (scroll-snap), setas e bolinhas embaixo, na cor do texto. Trocou de vídeo, o que tocava volta à capa e
+  para. Formato e tamanho valem para todos. No editor, "+ Adicionar vídeo" e o ✕ de cada um; o
+  marcador `outrosVideos` vai sempre no formulário, para tirar o último também gravar. O link
+  programado continua só para o principal. A capa de cada vídeo tem a chave `<bloco>#<posição>`
 - O player leva `referrerpolicy="strict-origin-when-cross-origin"` (o YouTube recusa o player sem o
   referrer) e `loading="lazy"`
 - O editor (`CampoVideo`) diz, enquanto se cola, se reconheceu o vídeo. O campo é de texto, não de url,

@@ -5,14 +5,18 @@
 import { useEffect, useRef, useState } from "react";
 import estilos from "./pagina.module.css";
 
+const PERMISSOES = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen";
+
+/** O player do serviço, como a página sempre mostrou. O referrer vai junto porque o YouTube recusa o player sem ele. */
+export function PlayerDoVideo({ src, titulo, adiado }: { src: string; titulo: string; adiado?: boolean }) {
+  return <iframe src={src} title={titulo} loading={adiado ? "lazy" : undefined} allow={PERMISSOES} referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />;
+}
+
 /**
- * Vídeo com capa (pedido do Bruno, 21/10/2026): antes do play, só a imagem do vídeo e um play
- * cinza-claro translúcido, sem o nome do canal, o título e o botão vermelho do YouTube. O player
- * só carrega quando a pessoa aperta o play, e entra já tocando (a página fica mais leve até lá).
- * Depois disso, os controles são os do próprio serviço.
+ * A capa (pedido do Bruno, 21/10/2026): só a imagem do vídeo e um play cinza-claro translúcido,
+ * sem o nome do canal, o título e o botão vermelho do YouTube.
  */
-export default function VideoComCapa({ player, capa, reserva, titulo }: { player: string; capa: string; reserva?: string; titulo: string }) {
-  const [tocando, setTocando] = useState(false);
+export function CapaDoVideo({ capa, reserva, rotulo, aoTocar }: { capa: string; reserva?: string; rotulo: string; aoTocar: () => void }) {
   const [imagem, setImagem] = useState(capa);
   const foto = useRef<HTMLImageElement>(null);
   // Reserva, se a capa escolhida no servidor falhar: no lugar da grande do YouTube vem uma cinza
@@ -24,31 +28,22 @@ export default function VideoComCapa({ player, capa, reserva, titulo }: { player
   };
   useEffect(() => conferir(foto.current));
 
-  if (tocando) {
-    return (
-      <iframe
-        src={player}
-        title={titulo}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      />
-    );
-  }
   return (
-    <button type="button" className={estilos.videoCapa} onClick={() => setTocando(true)} aria-label={`Assistir: ${titulo}`}>
-      <img
-        ref={foto}
-        src={imagem}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        onLoad={(e) => conferir(e.currentTarget)}
-        onError={trocarPelaReserva}
-      />
+    <button type="button" className={estilos.videoCapa} onClick={aoTocar} aria-label={rotulo}>
+      <img ref={foto} src={imagem} alt="" loading="lazy" decoding="async" onLoad={(e) => conferir(e.currentTarget)} onError={trocarPelaReserva} />
       <span className={estilos.videoPlay} aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg>
       </span>
     </button>
   );
+}
+
+/**
+ * Vídeo com capa: o player só carrega quando a pessoa aperta o play, e entra já tocando (a página
+ * fica mais leve até lá). Depois disso, os controles são os do próprio serviço.
+ */
+export default function VideoComCapa({ player, capa, reserva, titulo }: { player: string; capa: string; reserva?: string; titulo: string }) {
+  const [tocando, setTocando] = useState(false);
+  if (tocando) return <PlayerDoVideo src={player} titulo={titulo} />;
+  return <CapaDoVideo capa={capa} reserva={reserva} rotulo={`Assistir: ${titulo}`} aoTocar={() => setTocando(true)} />;
 }

@@ -259,7 +259,29 @@
 .videoPlay svg { width: 30px; height: 30px; margin-left: 2px; fill: rgb(245 245 245 / .95); filter: drop-shadow(0 1px 2px rgb(0 0 0 / .25)); }
 .videoCapa:hover .videoPlay, .videoCapa:focus-visible .videoPlay { background: rgb(235 235 235 / .45); transform: scale(1.06); }
 .videoCapa:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .videoPlay { transition: none; } }
+/* vários vídeos no bloco (VideoGaleria.tsx): passam para o lado, um por vez, com encaixe. A
+   galeria tem a largura do vídeo (a mesma conta do .video) e cada vídeo é uma moldura inteira */
+.videoGaleria { width: var(--imagem); margin-inline: auto; }
+.videoGaleria[data-orientacao="vertical"] { width: min(var(--imagem), 80svh * 9 / 16); }
+.videoTrilho {
+  position: relative; display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+}
+.videoTrilho::-webkit-scrollbar { display: none; }
+.videoTrilho > .video { flex: 0 0 100%; width: 100%; margin: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.videoGaleria[data-orientacao="vertical"] .videoTrilho > .video { aspect-ratio: 9 / 16; }
+/* setas e bolinhas embaixo, na cor do texto da página: cada uma com 28 px de alvo para o dedo */
+.videoNavegar { display: flex; align-items: center; justify-content: center; gap: 2px; margin-top: 10px; }
+.videoSeta, .videoPonto { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; background: none; color: var(--texto); cursor: pointer; }
+.videoSeta svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.videoSeta:disabled { opacity: .3; cursor: default; }
+.videoPonto::before {
+  content: ""; width: 7px; height: 7px; border-radius: 4px;
+  background: color-mix(in srgb, var(--texto) 35%, transparent); transition: width .2s ease, background-color .2s ease;
+}
+.videoPonto[aria-current="true"]::before { width: 18px; background: var(--texto); }
+.videoSeta:focus-visible, .videoPonto:focus-visible { outline: 2px solid var(--texto); outline-offset: -2px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .videoPlay, .videoPonto::before { transition: none; } }
 
 .separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
 

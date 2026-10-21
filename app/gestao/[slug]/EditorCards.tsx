@@ -483,11 +483,12 @@ export default function EditorCards({
                       {/* vídeo: link ou código <iframe>, horizontal ou vertical e o tamanho (CampoVideo) */}
                       {card.tipo === "video" && (
                         <CampoVideo
-                          // refaz só quando o link gravado muda (depois do Salvar bloco): o formato grava
+                          // refaz só quando os links gravados mudam (depois do Salvar bloco): o formato grava
                           // sozinho, e refazer junto com ele apagava o link colado e ainda não salvo
-                          key={`${card.id}|${card.url}`}
+                          key={`${card.id}|${card.url}|${card.itens}`}
                           cardId={card.id}
                           url={card.url}
+                          itens={card.itens}
                           formato={card.formato}
                           valoresTamanho={valoresPorTela(card, "imagem")}
                           programados={card.programados}

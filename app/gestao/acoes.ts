@@ -17,7 +17,7 @@ import { normalizarTrechos, temFormatacao, textoSimples } from "@/lib/textoRico"
 import { TIPOS_COM_ANIMACAO, animacaoValida } from "@/lib/animacoes";
 import { dataHoraCurta, deHorarioDeBrasilia } from "@/lib/horario";
 import { MAXIMO_DE_LINKS_PROGRAMADOS, TIPOS_COM_LINK_PROGRAMADO, lerLink } from "@/lib/linksProgramados";
-import { linkDoVideo, lerVideo } from "@/lib/video";
+import { MAXIMO_DE_VIDEOS, linkDoVideo, lerVideo } from "@/lib/video";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -250,6 +250,18 @@ export async function salvarCard(cardId: string, dados: FormData) {
       // lista: só quando o formulário traz os campos, para trocar o tipo do bloco não apagar os itens
       ...(dados.has("itens") && { itens: String(dados.get("itens") ?? "").trim().slice(0, 5000) || null }),
       ...(dados.has("marcador") && { marcador: lerMarcador(String(dados.get("marcador"))) === "ponto" ? null : lerMarcador(String(dados.get("marcador"))) }),
+      // vídeo: os outros vídeos do bloco, um por linha em itens (lib/video.ts), cada um já como link
+      // quando veio o código <iframe>. O marcador outrosVideos vem sempre: tirar o último também apaga
+      ...(tipo === "video" && dados.has("outrosVideos") && {
+        itens:
+          dados
+            .getAll("outroVideo")
+            .map((v) => String(v).replace(/\s+/g, " ").trim())
+            .map((v) => linkDoVideo(v) ?? v)
+            .filter(Boolean)
+            .slice(0, MAXIMO_DE_VIDEOS - 1)
+            .join("\n") || null,
+      }),
     },
   });
   if (dados.has("icones")) await salvarIcones(cardId, dados);
