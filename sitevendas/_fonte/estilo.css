@@ -5,6 +5,8 @@
 
 @import "tailwindcss" source(none);
 @source "../index.html";
+@source "../en/index.html";
+@source "../es/index.html";
 @source "../assets/js/site.js";
 
 /* ---------- cores, fontes e telas da marca (identidade/design-guide.md da Dunamis) ---------- */
@@ -248,6 +250,15 @@
     .bio-redes { width: auto; justify-self: start; margin: 16px 0 0 -6px; }
     .bio-card { --lado: 44px; grid-area: 1 / 2 / 2 / 4; margin: 0; width: auto; max-width: none; padding: 40px var(--lado); }
   }
+
+  /* seletor de idioma (PT · EN · ES): no topo, à direita, a partir do tablet; no rodapé, sempre */
+  .idiomas { display: flex; gap: 2px; font-size: 12px; font-weight: 600; letter-spacing: .08em; }
+  .idiomas a { padding: 6px 8px; border-radius: 6px; color: var(--color-apoio-claro); transition: color .2s ease, background-color .2s ease; }
+  .idiomas a:hover { color: var(--color-off); }
+  .idiomas a[aria-current] { color: var(--color-off); background: rgb(242 242 242 / .08); }
+  .idiomas a:focus-visible { outline: 2px solid var(--color-off); outline-offset: 2px; }
+  .idiomas--topo { position: absolute; top: 50%; right: clamp(20px, 4vw, 48px); transform: translateY(-50%); }
+  @media (width < 40rem) { .idiomas--topo { display: none; } }
 
   /* perguntas: abre e fecha sem JavaScript */
   .perguntas details { border-top: 1px solid var(--color-linha-escura); }

@@ -85,3 +85,11 @@ document.addEventListener("alpine:init", function () {
     observador.disconnect();
   }, { rootMargin: "600px 0px" }).observe(faixa);
 })();
+
+/* Seletor de idioma: guarda a escolha, que manda mais que o fuso do aparelho na próxima visita
+   (o script do <head> do português lê "pl-idioma" antes de decidir se leva para en/ ou es/) */
+document.addEventListener("click", function (evento) {
+  var link = evento.target.closest && evento.target.closest("[data-idioma]");
+  if (!link) return;
+  try { localStorage.setItem("pl-idioma", link.getAttribute("data-idioma")); } catch (e) {}
+});

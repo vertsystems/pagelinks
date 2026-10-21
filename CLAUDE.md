@@ -38,7 +38,7 @@ pagelinks/
 ├── public/      arquivos estáticos
 ├── sitevendas/  a página de vendas do serviço (HTML + Tailwind + Alpine.js, tudo dentro da pasta):
 │                mora em dunamiscompany.com.br/pagelinks/ (sobe por FTP numa pasta pagelinks/ do site
-│                da Dunamis, sem a _fonte/)
+│                da Dunamis, sem a _fonte/), com as versões en/ e es/ geradas a partir do português
 └── dev.db       banco local (não versionar)
 ```
 
@@ -98,6 +98,22 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
   ficam com o meio na altura do meio da da frente e somem num esmaecido nas duas laterais da tela.
   No celular e no tablet, o topo põe os prints em cima e centraliza tudo; só no celular, os iPhones do
   topo somem num esmaecido de baixo para cima e o texto, 20% maior, sobe por cima dele
+- **Três idiomas** (21/10/2026, pedido do Bruno): o `index.html` em português é a fonte, e o
+  `_fonte/idiomas.mjs` gera `en/index.html` e `es/index.html` dentro do `construir.sh`, com cada texto em
+  português e as duas traduções lado a lado. Mudou um texto no português, o gerador para e diz qual
+  tradução falta; e no fim ele procura português que sobrou nas versões. Nunca editar `en/` e `es/` à mão.
+  Fora do Brasil o preço é só **US$ 37** (mudança grande a partir de US$ 5), no cartão internacional ou
+  combinado no WhatsApp, sem parcelas: o card de preço perde as 3 parcelas e os dados para o Google viram
+  USD. O português leva quem chega de fora para a versão certa pelo fuso do aparelho (sem serviço de fora):
+  Brasil e Portugal ficam no português, Espanha e América Latina vão para o espanhol, o resto para o inglês;
+  sem fuso, vale a língua do navegador. O seletor PT · EN · ES (topo a partir do tablet, rodapé sempre) guarda
+  a escolha em `pl-idioma`, que manda mais que o fuso. Robôs (Google, prévia de link) e o Lighthouse ficam no
+  português. O script fica **depois** do CSS no `<head>`. As três se apontam por `hreflang` e no
+  `site/sitemap.xml`, e cada uma tem a imagem de compartilhamento na língua dela (`img/og-en.png`, `og-es.png`)
+- **No topo, os iPhones vêm antes do texto no HTML** (o `lg:order-last` os leva para a direita no
+  computador). Com o texto antes, a internet lenta mostrava o texto sozinho e ele pulava 365 px quando os
+  iPhones chegavam (CLS de 0,47). O Lighthouse não pega isso, porque carrega o HTML inteiro de uma vez:
+  para conferir salto, medir com rede lenta de verdade (`Network.emulateNetworkConditions`)
 - **A dobra "Quem está à frente"** (20/10/2026), entre o preço e as perguntas: a bio do Bruno em
   terceira pessoa, como empresário que desenvolve soluções e sistemas (pedido dele: tom profissional,
   "atende clientes como"), num card branco por cima da foto, no modelo que ele mandou. A faixa

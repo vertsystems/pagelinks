@@ -7,6 +7,11 @@
 <meta name="description" content="Seu link da bio numa página feita com o seu logo e as suas cores, com WhatsApp, redes e QR Code. R$ 197, pagamento único, sem mensalidade.">
 <meta name="theme-color" content="#101010">
 <link rel="canonical" href="https://www.dunamiscompany.com.br/pagelinks/">
+<!-- as três versões da página, para o Google mostrar a certa em cada país -->
+<link rel="alternate" hreflang="pt" href="https://www.dunamiscompany.com.br/pagelinks/">
+<link rel="alternate" hreflang="en" href="https://www.dunamiscompany.com.br/pagelinks/en/">
+<link rel="alternate" hreflang="es" href="https://www.dunamiscompany.com.br/pagelinks/es/">
+<link rel="alternate" hreflang="x-default" href="https://www.dunamiscompany.com.br/pagelinks/">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="apple-touch-icon" href="img/favicon-192.png">
 
@@ -24,9 +29,44 @@
 <!-- Tudo o que a página usa mora nesta pasta (CSS do Tailwind, Alpine.js, fontes, imagens),
      para subir pelo FTP e funcionar sozinha. A exceção é o DMetric, que conta as visitas no
      servidor dele -->
-<link rel="stylesheet" href="assets/css/site.css?v=1118466148">
+<link rel="stylesheet" href="assets/css/site.css?v=3607251723">
+<!-- idioma:inicio -->
+<script>
+  /* Idioma (21/10/2026): quem abre esta página de fora do Brasil e de Portugal vai para a versão em
+     espanhol (es/: Espanha e América Latina) ou em inglês (en/: o resto). O país sai do fuso horário do
+     aparelho, sem consultar serviço de fora; sem fuso, vale a língua do navegador. A escolha feita no
+     seletor de idioma fica guardada e manda mais que o fuso. Robôs (Google, prévia de link) e medições
+     ficam aqui, para o português ser indexado. As versões en/ e es/ são geradas por _fonte/idiomas.mjs,
+     sem este script: elas não redirecionam. Fica depois do CSS de propósito: antes dele, o Chrome
+     pintava a página sem estilo e o topo pulava (CLS de 0,47) */
+  (function () {
+    var destino;
+    try {
+      if (/bot|crawl|spider|slurp|lighthouse|headless|preview|facebookexternalhit|whatsapp/i.test(navigator.userAgent)) return;
+      var escolha = localStorage.getItem("pl-idioma");
+      if (escolha === "pt") return;
+      if (escolha === "en" || escolha === "es") destino = escolha;
+    } catch (e) {}
+    if (!destino) {
+      var fuso = "";
+      try { fuso = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+      if (fuso) {
+        // Brasil e Portugal (com Madeira e Açores) ficam no português; Angola, Guiné-Bissau, São Tomé e Cabo Verde também
+        if (/^(America\/(Sao_Paulo|Rio_Branco|Manaus|Cuiaba|Campo_Grande|Belem|Fortaleza|Recife|Bahia|Maceio|Araguaina|Santarem|Porto_Velho|Boa_Vista|Eirunepe|Noronha)|Brazil\/|Europe\/Lisbon|Portugal$|Atlantic\/(Madeira|Azores|Cape_Verde)|Africa\/(Luanda|Bissau|Sao_Tome))/.test(fuso)) return;
+        // Espanha (com Canárias e Ceuta) e os países de língua espanhola das Américas vão para o espanhol
+        destino = /^(Europe\/Madrid|Africa\/(Ceuta|Malabo)|Atlantic\/Canary|America\/(Argentina\/|Buenos_Aires|Cordoba|Catamarca|Jujuy|Mendoza|Santiago|Punta_Arenas|Bogota|Lima|Caracas|La_Paz|Asuncion|Montevideo|Guayaquil|Mexico_City|Cancun|Merida|Monterrey|Matamoros|Chihuahua|Ciudad_Juarez|Ojinaga|Mazatlan|Bahia_Banderas|Hermosillo|Tijuana|Ensenada|Guatemala|El_Salvador|Tegucigalpa|Managua|Costa_Rica|Panama|Havana|Santo_Domingo|Puerto_Rico)|Pacific\/(Galapagos|Easter)|Chile\/|Mexico\/|Cuba$)/.test(fuso) ? "es" : "en";
+      } else {
+        var lingua = String(navigator.language || "pt").toLowerCase();
+        if (lingua.indexOf("pt") === 0) return;
+        destino = lingua.indexOf("es") === 0 ? "es" : "en";
+      }
+    }
+    location.replace(destino + "/" + location.search + location.hash);
+  })();
+</script>
+<!-- idioma:fim -->
 <script defer src="https://dspace.verts.me/dm.js"></script>
-<script defer src="assets/js/site.js?v=243160295"></script>
+<script defer src="assets/js/site.js?v=3121252400"></script>
 <script defer src="assets/js/alpine.min.js"></script>
 
 <!-- Os dois prints do topo são o que aparece primeiro: vão na frente das outras imagens. No
@@ -81,20 +121,33 @@
 <body class="bg-preto font-sans text-off antialiased">
 
 <header class="py-[22px]">
-  <div class="envoltorio flex justify-center">
+  <div class="envoltorio relative flex justify-center">
     <a class="inline-flex items-center gap-2.5 rounded text-[13px] tracking-[.01em] text-apoio-claro hover:text-off focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-off" href="https://www.dunamiscompany.com.br/">
       <span>Desenvolvido por</span>
       <img class="w-32" src="img/logo-horizontal-branco.webp" alt="Dunamis Company" width="384" height="39">
     </a>
+    <!-- seletor de idioma: no topo a partir do tablet; no celular, só no rodapé -->
+    <nav class="idiomas idiomas--topo" aria-label="Idioma">
+      <a href="./" hreflang="pt" lang="pt" title="Português" data-idioma="pt" aria-current="page">PT</a>
+      <a href="en/" hreflang="en" lang="en" title="English" data-idioma="en">EN</a>
+      <a href="es/" hreflang="es" lang="es" title="Español" data-idioma="es">ES</a>
+    </nav>
   </div>
 </header>
 
 <main>
   <!-- 1. Abertura: a promessa, o preço e a chamada. No computador, o texto à esquerda e as páginas
        reais à direita; no celular e no tablet, as páginas em cima e tudo centralizado. Só no celular, os
-       iPhones somem no fundo embaixo e o texto, 20% maior, sobe por cima do esmaecido -->
+       iPhones somem no fundo embaixo e o texto, 20% maior, sobe por cima do esmaecido. Os iPhones vêm
+       antes do texto no HTML (e o lg:order-last os leva para a direita no computador): com internet
+       lenta o HTML chega em pedaços, e com o texto antes ele aparecia sozinho e pulava 365 px quando
+       os iPhones chegavam (CLS de 0,47, achado em 21/10/2026) -->
   <section class="pt-[clamp(24px,5vw,64px)] pb-[clamp(72px,10vw,128px)]" aria-labelledby="titulo">
     <div class="envoltorio grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-12">
+      <div class="topo-celulares relative flex justify-center pt-4 lg:order-last" aria-hidden="true">
+        <div class="iphone w-[min(260px,44vw)] translate-x-[18%] -translate-y-[6%]" style="--cor-topo:#523E31" data-topo="escuro" data-base="escuro"><div class="tela"><img src="img/nalicuscuzbar.webp" srcset="img/nalicuscuzbar-360.webp 360w, img/nalicuscuzbar.webp 600w" sizes="(min-width: 37rem) 250px, 42vw" alt="" width="600" height="1298" fetchpriority="high"></div></div>
+        <div class="iphone z-10 -ml-[14%] w-[min(260px,44vw)]" style="--cor-topo:#EAC2BD" data-topo="claro" data-base="claro"><div class="tela"><img src="img/lojasmari.webp" srcset="img/lojasmari-360.webp 360w, img/lojasmari.webp 600w" sizes="(min-width: 37rem) 250px, 42vw" alt="" width="600" height="1298" fetchpriority="high"></div></div>
+      </div>
       <div class="relative z-20 text-center max-sm:-mt-[40vw] lg:text-left">
         <p class="olho max-sm:text-[14.4px]">Página de Links</p>
         <h1 id="titulo" class="mx-auto max-w-[calc(13ch/var(--escala,1))] text-[calc(clamp(2.4rem,6.2vw,4.4rem)*var(--escala,1))] leading-[1.02] max-sm:text-[calc(clamp(2.4rem,11.8vw,2.88rem)*var(--escala,1))] lg:mx-0">Seu link da bio com a cara da sua marca.</h1>
@@ -131,10 +184,6 @@
           Quero minha PageLinks
         </a>
         <p class="mt-3.5 text-sm text-apoio-claro">Rápido e prático.</p>
-      </div>
-      <div class="topo-celulares relative order-first flex justify-center pt-4 lg:order-none" aria-hidden="true">
-        <div class="iphone w-[min(260px,44vw)] translate-x-[18%] -translate-y-[6%]" style="--cor-topo:#523E31" data-topo="escuro" data-base="escuro"><div class="tela"><img src="img/nalicuscuzbar.webp" srcset="img/nalicuscuzbar-360.webp 360w, img/nalicuscuzbar.webp 600w" sizes="(min-width: 37rem) 250px, 42vw" alt="" width="600" height="1298" fetchpriority="high"></div></div>
-        <div class="iphone z-10 -ml-[14%] w-[min(260px,44vw)]" style="--cor-topo:#EAC2BD" data-topo="claro" data-base="claro"><div class="tela"><img src="img/lojasmari.webp" srcset="img/lojasmari-360.webp 360w, img/lojasmari.webp 600w" sizes="(min-width: 37rem) 250px, 42vw" alt="" width="600" height="1298" fetchpriority="high"></div></div>
       </div>
     </div>
   </section>
@@ -378,6 +427,11 @@
         dunamiscompany.com.br
       </a>
     </p>
+    <nav class="idiomas" aria-label="Idioma">
+      <a href="./" hreflang="pt" lang="pt" title="Português" data-idioma="pt" aria-current="page">PT</a>
+      <a href="en/" hreflang="en" lang="en" title="English" data-idioma="en">EN</a>
+      <a href="es/" hreflang="es" lang="es" title="Español" data-idioma="es">ES</a>
+    </nav>
   </div>
 </footer>
 
