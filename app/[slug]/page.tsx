@@ -13,7 +13,7 @@ import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import { emVigor } from "@/lib/linksProgramados";
-import { urlDeVideo } from "@/lib/video";
+import { lerVideo, orientacaoDoVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import { familiaDaFonte } from "./fontes";
@@ -82,7 +82,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: titulo,
     description: descricao,
-    icons: pagina.faviconUrl ? [{ url: pagina.faviconUrl }] : undefined,
+    // sem ícone próprio, a chave nem entra: icons: undefined apagava o ícone do PageLinks (app/layout.tsx)
+    ...(pagina.faviconUrl && { icons: [{ url: pagina.faviconUrl }] }),
     openGraph: {
       title: titulo,
       description: descricao,
@@ -211,11 +212,25 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         if (!imagem) return null;
         return card.url ? banner : <div key={card.id}>{imagem}</div>;
 
+      // o vídeo fica no serviço dele (YouTube, Vimeo, Instagram, TikTok…): aqui vai o player, deitado
+      // ou em pé (lib/video.ts). O referrer vai junto porque o YouTube recusa o player sem ele
       case "video": {
-        const player = card.url ? urlDeVideo(card.url) : null;
-        return player ? (
-          <iframe key={card.id} className={estilos.video} src={player} title={card.titulo ?? "Vídeo"} allowFullScreen />
-        ) : null;
+        const video = lerVideo(card.url);
+        if (!video) return null;
+        const vertical = orientacaoDoVideo(card.formato, card.url) === "vertical";
+        return (
+          <iframe
+            key={card.id}
+            className={estilos.video}
+            data-orientacao={vertical ? "vertical" : undefined}
+            src={video.player}
+            title={card.titulo || "Vídeo"}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        );
       }
 
       case "whatsapp":

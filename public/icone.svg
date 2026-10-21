@@ -1,0 +1,37 @@
+<svg width="165" height="165" viewBox="0 0 165 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Ícone do PageLinks (enviado pelo Bruno em 21/10/2026, 165×152), em quadrado: o fundo cresce até 165 e o desenho desce 6,5 para ficar no meio -->
+<rect width="165" height="165" rx="7" fill="url(#paint0_linear_548_18)"/>
+<g transform="translate(0 6.5)">
+<path d="M42.4754 118.397H121.529C121.529 100.705 109.205 85.8452 92.4606 81.3767C101.235 77.3963 107.349 68.5742 107.349 58.3169C107.349 44.3184 95.9914 32.9799 82.0024 32.9799C68.0134 32.9799 56.6557 44.328 56.6557 58.3169C56.6557 68.5934 62.7699 77.3963 71.5537 81.3767C54.7899 85.8452 42.4658 100.705 42.4658 118.397H42.4754Z" fill="url(#paint1_linear_548_18)"/>
+<path d="M15.7988 49.9063C18.4397 49.9063 20.583 47.763 20.583 45.1221V18.5315H47.1736C49.8145 18.5315 51.9578 16.3882 51.9578 13.7473C51.9578 11.1065 49.8145 8.96315 47.1736 8.96315H19.8654C14.9855 8.95358 11.0146 12.9245 11.0146 17.8043V45.1221C11.0146 47.763 13.1484 49.9063 15.7988 49.9063Z" fill="url(#paint2_linear_548_18)"/>
+<path d="M144.14 8.95361H116.822C114.181 8.95361 112.038 11.0969 112.038 13.7378C112.038 16.3787 114.181 18.522 116.822 18.522H143.412V45.1125C143.412 47.7534 145.556 49.8967 148.197 49.8967C150.837 49.8967 152.981 47.7534 152.981 45.1125V17.8139C152.981 12.9341 149.01 8.95361 144.13 8.95361H144.14Z" fill="url(#paint3_linear_548_18)"/>
+<path d="M148.206 101.48C145.565 101.48 143.422 103.623 143.422 106.264V132.855H116.832C114.191 132.855 112.047 134.998 112.047 137.639C112.047 140.28 114.191 142.423 116.832 142.423H144.14C149.02 142.423 153 138.452 153 133.563V106.255C153 103.614 150.857 101.47 148.216 101.47L148.206 101.48Z" fill="url(#paint4_linear_548_18)"/>
+<path d="M47.1831 132.855H20.583V106.264C20.583 103.623 18.4397 101.48 15.7988 101.48C13.158 101.48 11.0146 103.623 11.0146 106.264V133.572C11.0146 138.452 14.9855 142.433 19.8654 142.433H47.1736C49.8145 142.433 51.9578 140.289 51.9578 137.648C51.9578 135.007 49.8145 132.864 47.1736 132.864L47.1831 132.855Z" fill="url(#paint5_linear_548_18)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_548_18" x1="82.5" y1="0" x2="82.5" y2="165" gradientUnits="userSpaceOnUse">
+<stop stop-color="#474747"/>
+<stop offset="1" stop-color="#1D1D1D"/>
+</linearGradient>
+<linearGradient id="paint1_linear_548_18" x1="62.2256" y1="35.2493" x2="105.395" y2="116.74" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999"/>
+</linearGradient>
+<linearGradient id="paint2_linear_548_18" x1="21.2472" y1="10.0509" x2="41.0213" y2="50.3778" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999"/>
+</linearGradient>
+<linearGradient id="paint3_linear_548_18" x1="122.27" y1="10.0414" x2="142.044" y2="50.3682" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999"/>
+</linearGradient>
+<linearGradient id="paint4_linear_548_18" x1="122.282" y1="102.559" x2="142.061" y2="142.895" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999"/>
+</linearGradient>
+<linearGradient id="paint5_linear_548_18" x1="21.2472" y1="102.568" x2="41.0287" y2="142.901" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999"/>
+</linearGradient>
+</defs>
+</svg>

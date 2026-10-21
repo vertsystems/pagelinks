@@ -1,8 +1,119 @@
-/** Converte link do YouTube/Vimeo em URL de player. Devolve null se não reconhecer. */
-export function urlDeVideo(url: string): string | null {
-  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
-  const vm = url.match(/vimeo\.com\/(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return null;
+/**
+ * Bloco de vídeo. O vídeo não vem para o PageLinks: fica no serviço onde já está (YouTube,
+ * Vimeo, Instagram, TikTok, Google Drive, Loom, Facebook ou qualquer outro que dê um link de
+ * incorporação), e a página mostra o player dele num <iframe>. No painel vale colar o link
+ * do vídeo, o link de incorporação ou o código <iframe> inteiro.
+ *
+ * Horizontal (16:9) ou vertical (9:16) fica em Card.formato. Vazio é o do próprio vídeo:
+ * Shorts, Reels e TikTok em pé, o resto deitado.
+ */
+
+export type Orientacao = "horizontal" | "vertical";
+
+export type Video = {
+  /** endereço do player, o src do <iframe> */
+  player: string;
+  /** de onde é, para o painel dizer o que reconheceu */
+  servico: string;
+  /** o vídeo nasceu em pé (Shorts, Reels, TikTok) */
+  emPe: boolean;
+};
+
+/**
+ * Do que foi colado no painel, o link a gravar: o src do <iframe> quando vem o código inteiro,
+ * com o https na frente quando falta. null quando não é um endereço de site.
+ */
+export function linkDoVideo(colado: string | null | undefined): string | null {
+  let t = String(colado ?? "").trim().slice(0, 4000);
+  const iframe = t.match(/<iframe\b[^>]*?\bsrc\s*=\s*(["'])(.*?)\1/i);
+  if (iframe) t = iframe[2].replace(/&amp;/g, "&").trim();
+  if (!t || /\s/.test(t)) return null;
+  if (t.startsWith("//")) t = `https:${t}`;
+  else if (!/^[a-z][a-z0-9+.-]*:/i.test(t)) t = `https://${t}`;
+  try {
+    const url = new URL(t);
+    // a página é https: um player em http seria bloqueado pelo navegador
+    if (url.protocol === "http:") url.protocol = "https:";
+    if (url.protocol !== "https:" || !url.hostname.includes(".")) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+/** "90", "1m30s" ou "1h2m3s" em segundos (o começo do vídeo no YouTube). */
+function segundos(valor: string | null): number {
+  if (!valor) return 0;
+  if (/^\d+$/.test(valor)) return Number(valor);
+  const m = valor.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+  return m ? Number(m[1] ?? 0) * 3600 + Number(m[2] ?? 0) * 60 + Number(m[3] ?? 0) : 0;
+}
+
+/** O player do que foi colado no painel, ou null quando não dá para tocar. */
+export function lerVideo(colado: string | null | undefined): Video | null {
+  const link = linkDoVideo(colado);
+  if (!link) return null;
+  const url = new URL(link);
+  const host = url.hostname.toLowerCase().replace(/^(www\.|m\.|mobile\.)/, "");
+  const caminho = url.pathname;
+
+  if (host === "youtu.be" || host === "youtube.com" || host.endsWith(".youtube.com") || host === "youtube-nocookie.com") {
+    const id = host === "youtu.be" ? caminho.slice(1).split("/")[0] : (url.searchParams.get("v") ?? caminho.match(/^\/(?:embed|shorts|live|v)\/([\w-]+)/)?.[1]);
+    if (id && /^[\w-]{11}$/.test(id) && id !== "videoseries") {
+      const inicio = segundos(url.searchParams.get("t") ?? url.searchParams.get("start"));
+      return { player: `https://www.youtube.com/embed/${id}${inicio ? `?start=${inicio}` : ""}`, servico: "YouTube", emPe: caminho.startsWith("/shorts/") };
+    }
+    const lista = url.searchParams.get("list");
+    if (lista && /^[\w-]+$/.test(lista)) return { player: `https://www.youtube.com/embed/videoseries?list=${lista}`, servico: "YouTube (playlist)", emPe: false };
+    return null; // canal ou página do YouTube que não é um vídeo
+  }
+
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    const m = caminho.match(/(?:^|\/)(\d{5,})(?:\/([\da-f]{6,}))?(?:\/|$)/);
+    if (!m) return null;
+    // vídeo não listado: o código depois do número (vimeo.com/123/abc) ou o ?h= do player
+    const chave = m[2] ?? url.searchParams.get("h");
+    return { player: `https://player.vimeo.com/video/${m[1]}${chave ? `?h=${chave}` : ""}`, servico: "Vimeo", emPe: false };
+  }
+
+  if (host === "instagram.com") {
+    const m = caminho.match(/^\/(p|reels?|tv)\/([\w-]+)/);
+    if (!m) return null;
+    const tipo = m[1] === "reels" ? "reel" : m[1];
+    return { player: `https://www.instagram.com/${tipo}/${m[2]}/embed`, servico: "Instagram", emPe: tipo === "reel" };
+  }
+
+  if (host === "tiktok.com") {
+    const id = caminho.match(/\/video\/(\d+)/)?.[1] ?? caminho.match(/^\/embed(?:\/v2)?\/(\d+)/)?.[1];
+    return id ? { player: `https://www.tiktok.com/embed/v2/${id}`, servico: "TikTok", emPe: true } : null;
+  }
+  // o link curto do TikTok (vm.tiktok.com/…) só diz qual é o vídeo depois de aberto
+  if (host.endsWith(".tiktok.com")) return null;
+
+  if (host === "drive.google.com") {
+    const id = caminho.match(/\/file\/d\/([\w-]+)/)?.[1] ?? url.searchParams.get("id");
+    return id && /^[\w-]+$/.test(id) ? { player: `https://drive.google.com/file/d/${id}/preview`, servico: "Google Drive", emPe: false } : null;
+  }
+
+  if (host === "loom.com") {
+    const id = caminho.match(/^\/(?:share|embed)\/([\da-f]+)/)?.[1];
+    return id ? { player: `https://www.loom.com/embed/${id}`, servico: "Loom", emPe: false } : null;
+  }
+
+  if (host === "facebook.com" || host === "fb.watch") {
+    if (caminho.startsWith("/plugins/video.php")) return { player: link, servico: "Facebook", emPe: false };
+    if (host === "fb.watch" || /\/(videos|reel|watch)\b/.test(caminho)) {
+      return { player: `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(link)}&show_text=false`, servico: "Facebook", emPe: caminho.startsWith("/reel") };
+    }
+    return null;
+  }
+
+  // qualquer outro serviço: o link de incorporação que ele deu já é o player
+  return { player: link, servico: host, emPe: false };
+}
+
+/** Horizontal ou vertical: o que foi escolhido no painel, ou o do próprio vídeo. */
+export function orientacaoDoVideo(formato: string | null | undefined, url: string | null | undefined): Orientacao {
+  if (formato === "vertical" || formato === "horizontal") return formato;
+  return lerVideo(url)?.emPe ? "vertical" : "horizontal";
 }

@@ -112,6 +112,32 @@ blocos se a página ainda estiver intocada. Página já editada no painel é pre
 npm run db:importar
 ```
 
+## Vídeo de qualquer serviço, deitado ou em pé, e o ícone da aba — 21/10/2026
+
+**Vídeo.** O vídeo não vem para o PageLinks: fica no serviço dele, e a página mostra o player num
+`<iframe>`. No painel vale colar o link do vídeo, o link de incorporação ou o código `<iframe>` inteiro
+(fica só o `src`). `lib/video.ts` reconhece YouTube (vídeo, Shorts, playlist e o começo pelo `t=`), Vimeo
+(inclusive não listado), Instagram (post e Reels), TikTok (o link completo; o curto, `vm.tiktok.com`, só diz
+o vídeo depois de aberto e é recusado), Google Drive, Loom e Facebook, e monta o player de cada um. De
+qualquer outro serviço, o link https colado já é o player. Só https: `javascript:` e `data:` são recusados.
+
+- **Deitado ou em pé** fica em `Card.formato` (o campo que no título e no texto guarda negrito e itálico):
+  `horizontal` (16:9) ou `vertical` (9:16). Vazio é o do próprio vídeo: Shorts, Reels e TikTok em pé.
+  Grava sozinho no painel (`salvarOrientacao`) e muda a prévia na hora pelo `data-orientacao` do player
+- **Tamanho:** o ajuste `imagem` por tela (% da coluna), o mesmo da imagem, no meio da coluna. Em pé, o
+  vídeo nunca passa de 80% da altura da tela (`min(var(--imagem), 80svh * 9 / 16)`): cabe inteiro sem rolar
+- O player leva `referrerpolicy="strict-origin-when-cross-origin"` (o YouTube recusa o player sem o
+  referrer) e `loading="lazy"`
+- O editor (`CampoVideo`) diz, enquanto se cola, se reconheceu o vídeo. O campo é de texto, não de url,
+  para aceitar o código `<iframe>`; ele só se refaz quando o link gravado muda, porque refazer junto com o
+  formato apagava o link colado e ainda não salvo
+
+**Ícone da aba.** O ícone do PageLinks (`public/icone.svg`, com `icone-32.png`, `apple-touch-icon.png` e
+`favicon.ico` gerados dele) vale no painel e nas páginas de cliente. Fica no `metadata.icons` do
+`app/layout.tsx`, e não em `app/icon.svg`: ícone por arquivo vence o da página, e a página com ícone
+próprio (`Pagina.faviconUrl`) precisa trocar o do PageLinks pelo dela. Por isso a página só devolve a
+chave `icons` quando tem o seu (`icons: undefined` apagava o herdado).
+
 ## Velocidade e estabilidade das páginas — 16/10/2026
 
 O DMetric mostrava notas de 75 a 89 (Ana Julia, Relojoaria Litoral, Duda), com a página pulando

@@ -229,7 +229,11 @@
    fica guardado antes de a imagem chegar (sem isso a página pulava, o CLS) */
 .moldura img { width: 100%; height: auto; display: block; }
 
-.video { width: 100%; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
+/* vídeo: a largura é o ajuste "Tamanho" do bloco, por tela (--imagem, como a imagem), no meio da
+   coluna. Em pé (9:16), nunca passa de 80% da altura da tela: assim cabe inteiro, no celular e no
+   computador, sem precisar rolar para ver o fim do vídeo */
+.video { display: block; width: var(--imagem); margin-inline: auto; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
+.video[data-orientacao="vertical"] { aspect-ratio: 9 / 16; width: min(var(--imagem), 80svh * 9 / 16); }
 
 .separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
 

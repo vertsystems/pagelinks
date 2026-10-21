@@ -17,7 +17,7 @@ import { normalizarTrechos, temFormatacao, textoSimples } from "@/lib/textoRico"
 import { TIPOS_COM_ANIMACAO, animacaoValida } from "@/lib/animacoes";
 import { dataHoraCurta, deHorarioDeBrasilia } from "@/lib/horario";
 import { MAXIMO_DE_LINKS_PROGRAMADOS, TIPOS_COM_LINK_PROGRAMADO, lerLink } from "@/lib/linksProgramados";
-import { urlDeVideo } from "@/lib/video";
+import { linkDoVideo, lerVideo } from "@/lib/video";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -232,7 +232,9 @@ export async function salvarCard(cardId: string, dados: FormData) {
       titulo: trechos ? textoSimples(trechos) || null : (texto("titulo")?.replace(/\r\n?/g, "\n") ?? null),
       ...(trechos && { rico: temFormatacao(trechos) ? JSON.stringify(trechos) : null }),
       subtitulo: texto("subtitulo"),
-      url: texto("url"),
+      // vídeo: do código <iframe> colado fica só o link dele (lib/video.ts); o que não é link fica
+      // como veio, para o painel mostrar o que foi digitado e dizer que não toca
+      url: tipo === "video" ? (linkDoVideo(texto("url")) ?? texto("url")) : texto("url"),
       telefone: texto("telefone"),
       mensagem: texto("mensagem"),
       // cor, fonte e formato só quando o formulário traz o campo: antes, salvar qualquer
@@ -854,6 +856,20 @@ export async function salvarAnimacao(cardId: string, valor: string | null): Prom
   return {};
 }
 
+/**
+ * Vídeo deitado (16:9) ou em pé (9:16), em Card.formato (lib/video.ts). Grava sozinho, como a
+ * animação: a prévia já mudou na hora pelo data-orientacao do player.
+ */
+export async function salvarOrientacao(cardId: string, orientacao: string): Promise<{ erro?: string }> {
+  await exigirAdmin();
+  if (orientacao !== "horizontal" && orientacao !== "vertical") return { erro: "Esse formato de vídeo não existe." };
+  const card = await prisma.card.findUnique({ where: { id: String(cardId) }, select: { tipo: true, pagina: { select: { cliente: { select: { slug: true } } } } } });
+  if (!card || card.tipo !== "video") return { erro: "Esse bloco não é de vídeo." };
+  await prisma.card.update({ where: { id: String(cardId) }, data: { formato: orientacao } });
+  revalidar(card.pagina.cliente.slug);
+  return {};
+}
+
 // ---------- links programados ----------
 
 export type LinkProgramadoDoBloco = { id: string; url: string; inicio: Date; fim: Date };
@@ -874,9 +890,11 @@ export async function salvarLinkProgramado(cardId: string, id: string | null, li
   if (!card) return { erro: "Não encontrei esse bloco. Recarregue a página." };
   if (!TIPOS_COM_LINK_PROGRAMADO.includes(card.tipo)) return { erro: "Esse tipo de bloco não tem endereço de destino para programar." };
 
-  const lido = lerLink(link);
+  // vídeo: vale o link ou o código <iframe>, como no endereço principal do bloco
+  const doVideo = card.tipo === "video" ? linkDoVideo(link) : null;
+  const lido = card.tipo === "video" ? (doVideo ? { url: doVideo } : { erro: "Cole o link do vídeo ou o código de incorporação, começando com https://." }) : lerLink(link);
   if ("erro" in lido) return lido;
-  if (card.tipo === "video" && !urlDeVideo(lido.url)) return { erro: "No bloco de vídeo, o link precisa ser de um vídeo do YouTube ou do Vimeo." };
+  if (card.tipo === "video" && !lerVideo(lido.url)) return { erro: "Esse link não toca na página. Use o link do vídeo (no TikTok, o completo, com /video/) ou o de incorporação." };
 
   const inicio = deHorarioDeBrasilia(inicioTexto);
   const fim = deHorarioDeBrasilia(fimTexto);

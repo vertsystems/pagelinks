@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { alternarCard, criarCard, duplicarCard, excluirCard, reordenarCards, salvarCard, type LinkProgramadoDoBloco } from "../acoes";
 import { BotaoSalvar } from "./Salvar";
 import CampoImagem from "./CampoImagem";
+import CampoVideo from "./CampoVideo";
 import EditorIcones from "./EditorIcones";
 import EditorCarrossel from "./EditorCarrossel";
 import EditorUnidades from "./EditorUnidades";
@@ -68,7 +69,7 @@ const TIPOS: { valor: string; nome: string; ajuda: string }[] = [
   { valor: "texto", nome: "Texto", ajuda: "Um parágrafo curto, sem link" },
   { valor: "lista", nome: "Lista", ajuda: "Itens um embaixo do outro (serviços, horários…), um por linha" },
   { valor: "imagem", nome: "Imagem", ajuda: "Foto ou banner, clicável se tiver link" },
-  { valor: "video", nome: "Vídeo", ajuda: "YouTube ou Vimeo, tocando na página" },
+  { valor: "video", nome: "Vídeo", ajuda: "Vídeo do YouTube, Vimeo, Instagram, TikTok ou de qualquer serviço com link de incorporação, deitado ou em pé, tocando na página" },
   { valor: "redes", nome: "Redes", ajuda: "Ícones lado a lado (WhatsApp, Instagram…), cada um com o seu link" },
   { valor: "carrossel", nome: "Carrossel", ajuda: "Várias imagens passando sozinhas, cada uma com link se quiser" },
   { valor: "unidades", nome: "Unidades", ajuda: "Cartões com foto, nome e endereço, cada um com o seu link (para quem tem vários endereços)" },
@@ -479,7 +480,22 @@ export default function EditorCards({
                         </div>
                       )}
 
-                      {usa.url && (
+                      {/* vídeo: link ou código <iframe>, horizontal ou vertical e o tamanho (CampoVideo) */}
+                      {card.tipo === "video" && (
+                        <CampoVideo
+                          // refaz só quando o link gravado muda (depois do Salvar bloco): o formato grava
+                          // sozinho, e refazer junto com ele apagava o link colado e ainda não salvo
+                          key={`${card.id}|${card.url}`}
+                          cardId={card.id}
+                          url={card.url}
+                          formato={card.formato}
+                          valoresTamanho={valoresPorTela(card, "imagem")}
+                          programados={card.programados}
+                          agora={agora}
+                        />
+                      )}
+
+                      {usa.url && card.tipo !== "video" && (
                         <div className={estilos.campo}>
                           <label htmlFor={`url-${card.id}`}>Endereço de destino</label>
                           <input id={`url-${card.id}`} type="url" name="url" defaultValue={card.url ?? ""} placeholder="https://" />
