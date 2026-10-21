@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- a capa vem do YouTube ou do Vimeo, não do nosso Storage */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import estilos from "./pagina.module.css";
 
 /**
@@ -14,8 +14,15 @@ import estilos from "./pagina.module.css";
 export default function VideoComCapa({ player, capa, reserva, titulo }: { player: string; capa: string; reserva?: string; titulo: string }) {
   const [tocando, setTocando] = useState(false);
   const [imagem, setImagem] = useState(capa);
-  // a capa grande do YouTube nem todo vídeo tem: no lugar dela vem uma cinza de 120 px, ou um erro
+  const foto = useRef<HTMLImageElement>(null);
+  // Reserva, se a capa escolhida no servidor falhar: no lugar da grande do YouTube vem uma cinza
+  // de 120 px, ou um erro. A imagem pode chegar antes de a página ficar pronta, e aí o onLoad e o
+  // onError já passaram: por isso a mesma conferência roda também quando o componente monta
   const trocarPelaReserva = () => reserva && imagem !== reserva && setImagem(reserva);
+  const conferir = (img: HTMLImageElement | null) => {
+    if (img?.complete && img.naturalWidth <= 120) trocarPelaReserva();
+  };
+  useEffect(() => conferir(foto.current));
 
   if (tocando) {
     return (
@@ -31,11 +38,12 @@ export default function VideoComCapa({ player, capa, reserva, titulo }: { player
   return (
     <button type="button" className={estilos.videoCapa} onClick={() => setTocando(true)} aria-label={`Assistir: ${titulo}`}>
       <img
+        ref={foto}
         src={imagem}
         alt=""
         loading="lazy"
         decoding="async"
-        onLoad={(e) => e.currentTarget.naturalWidth <= 120 && trocarPelaReserva()}
+        onLoad={(e) => conferir(e.currentTarget)}
         onError={trocarPelaReserva}
       />
       <span className={estilos.videoPlay} aria-hidden="true">

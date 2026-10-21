@@ -13,7 +13,7 @@ import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import { emVigor } from "@/lib/linksProgramados";
-import { capaDoVimeo, comAutoplay, lerVideo, orientacaoDoVideo } from "@/lib/video";
+import { capaDoVimeo, capaDoYouTube, comAutoplay, lerVideo, orientacaoDoVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
 import VideoComCapa from "./VideoComCapa";
@@ -162,14 +162,15 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
     return i === 0 ? { fetchPriority: "high" as const } : i >= 3 ? { loading: "lazy" as const } : {};
   };
 
-  // Capa dos vídeos do Vimeo: vem da API dele (lib/video.ts), guardada por um dia, todas buscadas
-  // juntas aqui. A do YouTube sai direto do endereço do vídeo e não precisa disso
-  const capasDoVimeo = new Map(
+  // Capa dos vídeos (lib/video.ts), todas buscadas juntas aqui: a do YouTube conferida (a grande,
+  // ou a hq quando o vídeo não tem a grande), guardada por uma semana; a do Vimeo pela API dele,
+  // guardada por um dia. Sem capa, a página mostra o player do serviço direto
+  const capas = new Map(
     await Promise.all(
       pagina.cards
         .map((c) => ({ id: c.id, video: c.tipo === "video" ? lerVideo(c.url) : null }))
-        .filter((c) => c.video?.vimeo)
-        .map(async (c) => [c.id, await capaDoVimeo(c.video!)] as const),
+        .filter((c) => c.video?.capa || c.video?.vimeo)
+        .map(async (c) => [c.id, c.video!.capa ? await capaDoYouTube(c.video!) : await capaDoVimeo(c.video!)] as const),
     ),
   );
 
@@ -233,7 +234,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         const video = lerVideo(card.url);
         if (!video) return null;
         const vertical = orientacaoDoVideo(card.formato, card.url) === "vertical";
-        const capa = video.capa?.src ?? capasDoVimeo.get(card.id);
+        const capa = capas.get(card.id);
         const titulo = card.titulo || "Vídeo";
         return (
           <div key={card.id} className={estilos.video} data-video="" data-orientacao={vertical ? "vertical" : undefined}>

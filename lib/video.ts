@@ -138,6 +138,22 @@ export function comAutoplay(player: string): string {
 }
 
 /**
+ * A capa do YouTube que existe de verdade: a grande, quando o vídeo tem, senão a hq, que sempre
+ * existe. Conferida no servidor e guardada por uma semana. Sem a grande, o YouTube responde 404
+ * com uma imagem cinza de 120 px, e escolher no navegador não bastava: quando a imagem chegava
+ * antes de a página ficar pronta, a troca não acontecia e a cinza ficava (21/10/2026).
+ */
+export async function capaDoYouTube(video: Video): Promise<string | null> {
+  if (!video.capa) return null;
+  try {
+    const resposta = await fetch(video.capa.src, { method: "HEAD", next: { revalidate: 604800 }, signal: AbortSignal.timeout(2500) });
+    return resposta.ok ? video.capa.src : video.capa.reserva;
+  } catch {
+    return video.capa.reserva;
+  }
+}
+
+/**
  * A capa de um vídeo do Vimeo, pela API pública dele (oEmbed), guardada por um dia. Sem resposta
  * em 2,5 s, ou se o vídeo não deixa, fica sem capa: a página mostra o player do Vimeo direto.
  */
