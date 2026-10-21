@@ -17,6 +17,10 @@ export type Video = {
   servico: string;
   /** o vídeo nasceu em pé (Shorts, Reels, TikTok) */
   emPe: boolean;
+  /** YouTube: a imagem do vídeo, para a capa (e a menor, que sempre existe, se a grande faltar) */
+  capa?: { src: string; reserva: string };
+  /** Vimeo: o endereço do vídeo, para buscar a capa na API dele (capaDoVimeo) */
+  vimeo?: string;
 };
 
 /**
@@ -61,7 +65,14 @@ export function lerVideo(colado: string | null | undefined): Video | null {
     const id = host === "youtu.be" ? caminho.slice(1).split("/")[0] : (url.searchParams.get("v") ?? caminho.match(/^\/(?:embed|shorts|live|v)\/([\w-]+)/)?.[1]);
     if (id && /^[\w-]{11}$/.test(id) && id !== "videoseries") {
       const inicio = segundos(url.searchParams.get("t") ?? url.searchParams.get("start"));
-      return { player: `https://www.youtube.com/embed/${id}${inicio ? `?start=${inicio}` : ""}`, servico: "YouTube", emPe: caminho.startsWith("/shorts/") };
+      const emPe = caminho.startsWith("/shorts/");
+      return {
+        player: `https://www.youtube.com/embed/${id}${inicio ? `?start=${inicio}` : ""}`,
+        servico: "YouTube",
+        emPe,
+        // a grande (maxres) nem todo vídeo tem; Shorts têm a em pé (oar). A hq existe sempre
+        capa: { src: `https://i.ytimg.com/vi/${id}/${emPe ? "oardefault" : "maxresdefault"}.jpg`, reserva: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` },
+      };
     }
     const lista = url.searchParams.get("list");
     if (lista && /^[\w-]+$/.test(lista)) return { player: `https://www.youtube.com/embed/videoseries?list=${lista}`, servico: "YouTube (playlist)", emPe: false };
@@ -73,7 +84,7 @@ export function lerVideo(colado: string | null | undefined): Video | null {
     if (!m) return null;
     // vídeo não listado: o código depois do número (vimeo.com/123/abc) ou o ?h= do player
     const chave = m[2] ?? url.searchParams.get("h");
-    return { player: `https://player.vimeo.com/video/${m[1]}${chave ? `?h=${chave}` : ""}`, servico: "Vimeo", emPe: false };
+    return { player: `https://player.vimeo.com/video/${m[1]}${chave ? `?h=${chave}` : ""}`, servico: "Vimeo", emPe: false, vimeo: `https://vimeo.com/${m[1]}${chave ? `/${chave}` : ""}` };
   }
 
   if (host === "instagram.com") {
@@ -110,6 +121,39 @@ export function lerVideo(colado: string | null | undefined): Video | null {
 
   // qualquer outro serviço: o link de incorporação que ele deu já é o player
   return { player: link, servico: host, emPe: false };
+}
+
+/**
+ * O player já tocando: é o que entra no lugar da capa quando a pessoa aperta o play (um toque só,
+ * sem precisar apertar de novo dentro do player).
+ */
+export function comAutoplay(player: string): string {
+  const url = new URL(player);
+  url.searchParams.set("autoplay", "1");
+  if (url.hostname.endsWith("youtube.com")) {
+    url.searchParams.set("rel", "0"); // no fim, vídeos do mesmo canal, e não de qualquer um
+    url.searchParams.set("playsinline", "1"); // no iPhone, toca na página em vez de abrir em tela cheia
+  }
+  return url.toString();
+}
+
+/**
+ * A capa de um vídeo do Vimeo, pela API pública dele (oEmbed), guardada por um dia. Sem resposta
+ * em 2,5 s, ou se o vídeo não deixa, fica sem capa: a página mostra o player do Vimeo direto.
+ */
+export async function capaDoVimeo(video: Video): Promise<string | null> {
+  if (!video.vimeo) return null;
+  try {
+    const resposta = await fetch(`https://vimeo.com/api/oembed.json?width=1280&url=${encodeURIComponent(video.vimeo)}`, {
+      next: { revalidate: 86400 },
+      signal: AbortSignal.timeout(2500),
+    });
+    if (!resposta.ok) return null;
+    const dados = (await resposta.json()) as { thumbnail_url?: string };
+    return dados.thumbnail_url?.startsWith("https://") ? dados.thumbnail_url : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Horizontal ou vertical: o que foi escolhido no painel, ou o do próprio vídeo. */

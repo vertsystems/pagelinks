@@ -232,8 +232,34 @@
 /* vídeo: a largura é o ajuste "Tamanho" do bloco, por tela (--imagem, como a imagem), no meio da
    coluna. Em pé (9:16), nunca passa de 80% da altura da tela: assim cabe inteiro, no celular e no
    computador, sem precisar rolar para ver o fim do vídeo */
-.video { display: block; width: var(--imagem); margin-inline: auto; aspect-ratio: 16 / 9; border: none; border-radius: min(var(--raio), 18px); }
+.video {
+  --canto: min(var(--raio), 18px);
+  position: relative; display: block; width: var(--imagem); margin-inline: auto; aspect-ratio: 16 / 9;
+  /* moldura de 1,5 px em degradê, do branco ao cinza-claro (pedido do Bruno, 21/10/2026) */
+  padding: 1.5px; border-radius: var(--canto); background: linear-gradient(145deg, #fff, #cfcfcf);
+}
 .video[data-orientacao="vertical"] { aspect-ratio: 9 / 16; width: min(var(--imagem), 80svh * 9 / 16); }
+.video > iframe, .videoCapa {
+  display: block; width: 100%; height: 100%; border: 0; overflow: hidden; background: #000;
+  border-radius: max(0px, var(--canto) - 1.5px);
+}
+/* a capa: a imagem do vídeo, sem nada por cima, e um play cinza-claro translúcido no meio
+   (VideoComCapa.tsx). O vidro escurece um pouco o que está atrás dele (brightness), e é isso que
+   mantém o play à vista até em imagem clara */
+.videoCapa { position: relative; padding: 0; cursor: pointer; font: inherit; color: inherit; }
+.videoCapa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.videoPlay {
+  position: absolute; top: 50%; left: 50%; width: 68px; height: 68px; margin: -34px 0 0 -34px;
+  display: grid; place-items: center; border-radius: 50%;
+  background: rgb(235 235 235 / .26); border: 1px solid rgb(255 255 255 / .5);
+  -webkit-backdrop-filter: blur(8px) brightness(.8); backdrop-filter: blur(8px) brightness(.8);
+  box-shadow: 0 6px 20px rgb(0 0 0 / .18);
+  transition: transform .2s ease, background-color .2s ease;
+}
+.videoPlay svg { width: 30px; height: 30px; margin-left: 4px; fill: rgb(245 245 245 / .95); filter: drop-shadow(0 1px 2px rgb(0 0 0 / .25)); }
+.videoCapa:hover .videoPlay, .videoCapa:focus-visible .videoPlay { background: rgb(235 235 235 / .45); transform: scale(1.06); }
+.videoCapa:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .videoPlay { transition: none; } }
 
 .separador { height: 1px; background: color-mix(in srgb, var(--texto) 18%, transparent); margin: 12px 0; border: none; }
 

@@ -126,6 +126,17 @@ qualquer outro serviço, o link https colado já é o player. Só https: `javasc
   Grava sozinho no painel (`salvarOrientacao`) e muda a prévia na hora pelo `data-orientacao` do player
 - **Tamanho:** o ajuste `imagem` por tela (% da coluna), o mesmo da imagem, no meio da coluna. Em pé, o
   vídeo nunca passa de 80% da altura da tela (`min(var(--imagem), 80svh * 9 / 16)`): cabe inteiro sem rolar
+- **Capa** (pedido do Bruno, 21/10/2026): YouTube e Vimeo entram com a imagem do vídeo e um play
+  cinza-claro translúcido (`VideoComCapa.tsx`), sem o nome do canal, o título e o botão vermelho que o
+  player do YouTube desenha por cima e não deixa esconder. O player só carrega no play, já tocando
+  (`comAutoplay`), e a página fica mais leve até lá. A capa do YouTube sai do endereço do vídeo
+  (`maxresdefault`, `oardefault` no Shorts, e a `hqdefault`, que sempre existe, quando a grande falta);
+  a do Vimeo vem da API pública dele (oEmbed), buscada no servidor, guardada por um dia e com limite de
+  2,5 s. Vídeo do Vimeo com privacidade de incorporação responde 404, e aí vai o player direto, como nos
+  serviços que não dão a imagem (Instagram, TikTok, os genéricos). Depois do play, os controles são os
+  do próprio serviço
+- Todo vídeo fica numa moldura de 1,5 px em degradê, do branco ao cinza-claro (`.video`, com o
+  `data-video` por onde o painel acha a moldura na prévia)
 - O player leva `referrerpolicy="strict-origin-when-cross-origin"` (o YouTube recusa o player sem o
   referrer) e `loading="lazy"`
 - O editor (`CampoVideo`) diz, enquanto se cola, se reconheceu o vídeo. O campo é de texto, não de url,

@@ -13,9 +13,10 @@ import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import { emVigor } from "@/lib/linksProgramados";
-import { lerVideo, orientacaoDoVideo } from "@/lib/video";
+import { capaDoVimeo, comAutoplay, lerVideo, orientacaoDoVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
+import VideoComCapa from "./VideoComCapa";
 import { familiaDaFonte } from "./fontes";
 import estilos from "./pagina.module.css";
 
@@ -161,6 +162,17 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
     return i === 0 ? { fetchPriority: "high" as const } : i >= 3 ? { loading: "lazy" as const } : {};
   };
 
+  // Capa dos vídeos do Vimeo: vem da API dele (lib/video.ts), guardada por um dia, todas buscadas
+  // juntas aqui. A do YouTube sai direto do endereço do vídeo e não precisa disso
+  const capasDoVimeo = new Map(
+    await Promise.all(
+      pagina.cards
+        .map((c) => ({ id: c.id, video: c.tipo === "video" ? lerVideo(c.url) : null }))
+        .filter((c) => c.video?.vimeo)
+        .map(async (c) => [c.id, await capaDoVimeo(c.video!)] as const),
+    ),
+  );
+
   /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
     const destino = `/ir/${card.id}/`; // com a barra: vai direto, sem redirecionar antes
@@ -212,24 +224,32 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         if (!imagem) return null;
         return card.url ? banner : <div key={card.id}>{imagem}</div>;
 
-      // o vídeo fica no serviço dele (YouTube, Vimeo, Instagram, TikTok…): aqui vai o player, deitado
-      // ou em pé (lib/video.ts). O referrer vai junto porque o YouTube recusa o player sem ele
+      // O vídeo fica no serviço dele (YouTube, Vimeo, Instagram, TikTok…), deitado ou em pé
+      // (lib/video.ts), numa moldura de borda em degradê. YouTube e Vimeo entram com capa: só a
+      // imagem e o play, e o player chega quando a pessoa aperta (VideoComCapa). Os outros não
+      // dão a imagem do vídeo: vai o player deles direto. O referrer vai junto porque o YouTube
+      // recusa o player sem ele
       case "video": {
         const video = lerVideo(card.url);
         if (!video) return null;
         const vertical = orientacaoDoVideo(card.formato, card.url) === "vertical";
+        const capa = video.capa?.src ?? capasDoVimeo.get(card.id);
+        const titulo = card.titulo || "Vídeo";
         return (
-          <iframe
-            key={card.id}
-            className={estilos.video}
-            data-orientacao={vertical ? "vertical" : undefined}
-            src={video.player}
-            title={card.titulo || "Vídeo"}
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+          <div key={card.id} className={estilos.video} data-video="" data-orientacao={vertical ? "vertical" : undefined}>
+            {capa ? (
+              <VideoComCapa player={comAutoplay(video.player)} capa={capa} reserva={video.capa?.reserva} titulo={titulo} />
+            ) : (
+              <iframe
+                src={video.player}
+                title={titulo}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            )}
+          </div>
         );
       }
 

@@ -39,9 +39,9 @@ export default function CampoVideo({
   async function escolher(valor: Orientacao) {
     const antes = orientacao;
     setOrientacao(valor);
-    // a prévia muda na hora: o data-orientacao do player é o que o CSS da página lê
+    // a prévia muda na hora: o data-orientacao da moldura do vídeo é o que o CSS da página lê
     retocarPrevia(`orientacao ${cardId}`, `[data-pl-bloco="${cardId}"]`, (celula) => {
-      const player = celula.querySelector("iframe");
+      const player = celula.querySelector<HTMLElement>("[data-video]");
       if (!player) return;
       if (valor === "vertical") player.dataset.orientacao = "vertical";
       else delete player.dataset.orientacao;
