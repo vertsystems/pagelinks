@@ -5,7 +5,8 @@
 import { useState } from "react";
 import estilos from "./pagina.module.css";
 
-export type ItemDoCarrossel = { id: string; imagemUrl: string; largura: number | null; altura: number | null; destino: string | null; novaAba: boolean };
+/** destino: o /ir/ (que conta o clique no PageLinks); link: aonde ele leva, para o DMetric (data-dm-link). */
+export type ItemDoCarrossel = { id: string; imagemUrl: string; largura: number | null; altura: number | null; destino: string | null; link: string | null; novaAba: boolean };
 
 /**
  * Com poucas imagens, a volta repete o conjunto até ter pelo menos 3: uma volta precisa
@@ -51,7 +52,7 @@ export default function Carrossel({ titulo, itens, tempo }: { titulo: string; it
             return (
               <div key={i} className={estilos.slide} aria-hidden={copia || undefined} data-copia={copia || undefined}>
                 {item.destino ? (
-                  <a href={item.destino} tabIndex={copia ? -1 : undefined} {...(item.novaAba ? { target: "_blank", rel: "noopener" } : {})}>
+                  <a href={item.destino} data-dm-link={item.link ?? undefined} tabIndex={copia ? -1 : undefined} {...(item.novaAba ? { target: "_blank", rel: "noopener" } : {})}>
                     {imagem}
                   </a>
                 ) : (

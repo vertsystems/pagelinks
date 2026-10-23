@@ -180,6 +180,10 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
   /** O que um bloco mostra na página; null quando não tem o que mostrar (imagem sem arquivo, WhatsApp sem número…). */
   function conteudoDoBloco(card: NonNullable<typeof pagina>["cards"][number]) {
     const destino = `/ir/${card.id}/`; // com a barra: vai direto, sem redirecionar antes
+    // O destino de verdade vai em data-dm-link, para o DMetric (o dm.js do <head>) contar o
+    // clique pelo lugar aonde ele leva: WhatsApp, Mapa, Instagram… O /ir/ é do próprio dnms.fun
+    // e, sem isto, o clique parecia navegação dentro da página e não contava (23/10/2026).
+    const real = (card.tipo === "whatsapp" && card.telefone ? linkDoWhatsApp(card.telefone, card.mensagem) : card.url) ?? undefined;
     const aba = abrirEmNovaAba(card.tipo === "whatsapp" ? null : card.url); // WhatsApp é sempre https
     // A imagem vai numa moldura do tamanho dela: é por onde o reflexo passa (uma <img> não
     // tem ::after) e o que pulsa ou treme; largura e encosto ficam na moldura. --arte é a
@@ -193,7 +197,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
     ) : null;
     // Card clicável com imagem: a arte é o próprio card, com o texto já desenhado nela
     // (era assim nas páginas do WordPress). O título fica só como texto alternativo.
-    const banner = imagem && <a key={card.id} href={destino} {...aba}>{imagem}</a>;
+    const banner = imagem && <a key={card.id} href={destino} data-dm-link={real} {...aba}>{imagem}</a>;
 
     switch (card.tipo) {
       // fonte, cor e formato próprios (lib/fontes.ts); sem nada gravado, o estilo de sempre
@@ -266,7 +270,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         if (!card.telefone) return null;
         if (banner) return banner;
         return (
-          <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino} {...aba}>
+          <a key={card.id} className={`${estilos.botao} ${card.destaque ? estilos.destaque : ""}`} href={destino} data-dm-link={real} {...aba}>
             {card.titulo ?? "Chamar no WhatsApp"}
             {card.subtitulo && <span className={estilos.sub}>{card.subtitulo}</span>}
           </a>
@@ -289,6 +293,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
                     key={icone.id}
                     className={estilos.icone}
                     href={`${destino}?icone=${icone.id}`}
+                    data-dm-link={destinoDoIcone(icone.rede, icone.url)}
                     {...abrirEmNovaAba(destinoDoIcone(icone.rede, icone.url))}
                     aria-label={rede.nome}
                     title={rede.nome}
@@ -306,7 +311,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         // que vieram do WordPress sem link eram espaço reservado e levavam para lugar nenhum.
         if (!card.url) return null;
         return (
-          <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino} {...aba}>
+          <a key={card.id} className={`${estilos.botao} ${estilos.secundario}`} href={destino} data-dm-link={real} {...aba}>
             {card.titulo}
           </a>
         );
@@ -328,7 +333,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
                 <article key={u.id} className={estilos.unidade}>
                   {foto &&
                     (link ? (
-                      <a href={link} {...abaDaUnidade} className={estilos.unidadeFoto} tabIndex={-1} aria-hidden="true">
+                      <a href={link} data-dm-link={u.url ?? undefined} {...abaDaUnidade} className={estilos.unidadeFoto} tabIndex={-1} aria-hidden="true">
                         {foto}
                       </a>
                     ) : (
@@ -338,7 +343,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
                     <p className={estilos.unidadeNome}>{u.nome}</p>
                     {u.endereco && <p className={estilos.unidadeEndereco}>{u.endereco}</p>}
                     {link && (
-                      <a href={link} {...abaDaUnidade} className={estilos.unidadeSeta} aria-label={`${u.nome}: abrir`}>
+                      <a href={link} data-dm-link={u.url ?? undefined} {...abaDaUnidade} className={estilos.unidadeSeta} aria-label={`${u.nome}: abrir`}>
                         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
@@ -365,6 +370,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
               largura: i.largura,
               altura: i.altura,
               destino: i.url ? `${destino}?imagem=${i.id}` : null,
+              link: i.url,
               novaAba: !!i.url && "target" in abrirEmNovaAba(i.url),
             }))}
           />
@@ -379,6 +385,7 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
             key={card.id}
             className={`${estilos.botao} ${card.destaque || card.tipo === "destaque" ? estilos.destaque : ""} ${card.tipo === "redes" ? estilos.secundario : ""}`}
             href={destino}
+            data-dm-link={real}
             {...aba}
             style={card.corFundo ? { background: card.corFundo, color: card.corTexto ?? undefined } : undefined}
           >
