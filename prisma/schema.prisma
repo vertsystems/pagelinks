@@ -233,6 +233,7 @@ model Clique {
   card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
   iconeId  String? // qual ícone, quando o clique foi num bloco de redes
   icone    Icone?   @relation(fields: [iconeId], references: [id], onDelete: SetNull)
+  itemId   String? // qual unidade ou imagem do carrossel (o clique conta para o bloco; este é o item dentro dele)
   data     DateTime @default(now())
   origem   String? // referrer, quando houver
 

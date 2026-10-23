@@ -32,8 +32,8 @@ export async function GET(
       telefone: true,
       mensagem: true,
       icones: iconeId ? { where: { id: iconeId }, select: { id: true, rede: true, url: true } } : false,
-      imagens: imagemId ? { where: { id: imagemId }, select: { url: true } } : false,
-      unidades: unidadeId ? { where: { id: unidadeId }, select: { url: true } } : false,
+      imagens: imagemId ? { where: { id: imagemId }, select: { id: true, url: true } } : false,
+      unidades: unidadeId ? { where: { id: unidadeId }, select: { id: true, url: true } } : false,
       // link programado no ar agora, no lugar do endereço de destino (lib/linksProgramados.ts)
       programados: { where: emVigor(new Date()), orderBy: { inicio: "desc" }, take: 1, select: { url: true } },
     },
@@ -58,9 +58,17 @@ export async function GET(
   }
 
   // Não bloquear o redirecionamento por causa da contagem: se o registro falhar,
-  // a pessoa segue para o destino do mesmo jeito.
+  // a pessoa segue para o destino do mesmo jeito. O item (a unidade, a imagem do
+  // carrossel) vai junto: o DMetric mostra qual loja ou imagem rende mais.
   prisma.clique
-    .create({ data: { cardId: card.id, iconeId: icone?.id, origem: request.headers.get("referer") ?? undefined } })
+    .create({
+      data: {
+        cardId: card.id,
+        iconeId: icone?.id,
+        itemId: imagem?.id ?? unidade?.id,
+        origem: request.headers.get("referer") ?? undefined,
+      },
+    })
     .catch(() => {});
 
   return NextResponse.redirect(new URL(destino, request.url), { status: 302 });
