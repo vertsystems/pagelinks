@@ -236,7 +236,9 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
       // (lib/video.ts), numa moldura de borda em degradê. YouTube e Vimeo entram com capa: só a
       // imagem e o play, e o player chega quando a pessoa aperta (VideoComCapa). Os outros não
       // dão a imagem do vídeo: vai o player deles direto. Com mais de um vídeo no bloco, eles
-      // passam para o lado (VideoGaleria), todos no mesmo formato e tamanho
+      // passam para o lado (VideoGaleria), todos no mesmo formato e tamanho. Embaixo, o título
+      // e a legenda do bloco (pedido do Bruno, 26/10/2026), um para o bloco todo, na largura do
+      // vídeo: o <figure> é quem tem a largura e o formato, e o vídeo ou a galeria o preenchem
       case "video": {
         const videos = linksDoBloco(card.url, card.itens)
           .map((link, i) => ({ video: lerVideo(link), capa: capas.get(`${card.id}#${i}`) ?? null }))
@@ -244,25 +246,30 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
         if (!videos.length) return null;
         const vertical = orientacaoDoVideo(card.formato, card.url) === "vertical";
         const titulo = card.titulo || "Vídeo";
-        if (videos.length > 1) {
-          return (
-            <VideoGaleria
-              key={card.id}
-              titulo={titulo}
-              vertical={vertical}
-              videos={videos.map(({ video, capa }) => ({ player: video!.player, tocar: comAutoplay(video!.player), capa, reserva: video!.capa?.reserva }))}
-            />
-          );
-        }
         const [{ video, capa }] = videos;
         return (
-          <div key={card.id} className={estilos.video} data-video="" data-orientacao={vertical ? "vertical" : undefined}>
-            {capa ? (
-              <VideoComCapa player={comAutoplay(video!.player)} capa={capa} reserva={video!.capa?.reserva} titulo={titulo} />
+          <figure key={card.id} className={estilos.videoBloco} data-video="" data-orientacao={vertical ? "vertical" : undefined}>
+            {videos.length > 1 ? (
+              <VideoGaleria
+                titulo={titulo}
+                videos={videos.map(({ video, capa }) => ({ player: video!.player, tocar: comAutoplay(video!.player), capa, reserva: video!.capa?.reserva }))}
+              />
             ) : (
-              <PlayerDoVideo src={video!.player} titulo={titulo} adiado />
+              <div className={estilos.video}>
+                {capa ? (
+                  <VideoComCapa player={comAutoplay(video!.player)} capa={capa} reserva={video!.capa?.reserva} titulo={titulo} />
+                ) : (
+                  <PlayerDoVideo src={video!.player} titulo={titulo} adiado />
+                )}
+              </div>
             )}
-          </div>
+            {(card.titulo || card.subtitulo) && (
+              <figcaption className={estilos.videoTexto}>
+                {card.titulo && <p className={estilos.videoTitulo}>{card.titulo}</p>}
+                {card.subtitulo && <p className={estilos.videoLegenda}>{card.subtitulo}</p>}
+              </figcaption>
+            )}
+          </figure>
         );
       }
 

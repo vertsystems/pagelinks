@@ -17,9 +17,10 @@ export type VideoDaGaleria = {
  * Vários vídeos no mesmo bloco (pedido do Bruno, 21/10/2026): passam para o lado, um por vez, com
  * o dedo no celular e pelas setas ou bolinhas embaixo. O encaixe é do próprio navegador (scroll-snap,
  * pagina.module.css); aqui só se sabe qual está à vista. Trocou de vídeo, o que tocava volta à capa
- * e para: dois tocando ao mesmo tempo, um fora da tela, não faz sentido.
+ * e para: dois tocando ao mesmo tempo, um fora da tela, não faz sentido. A largura e o formato
+ * (deitado ou em pé) vêm do bloco em volta, o .videoBloco da página.
  */
-export default function VideoGaleria({ videos, titulo, vertical }: { videos: VideoDaGaleria[]; titulo: string; vertical: boolean }) {
+export default function VideoGaleria({ videos, titulo }: { videos: VideoDaGaleria[]; titulo: string }) {
   const trilho = useRef<HTMLDivElement>(null);
   const [atual, setAtual] = useState(0);
   const [tocando, setTocando] = useState<number | null>(null);
@@ -49,7 +50,7 @@ export default function VideoGaleria({ videos, titulo, vertical }: { videos: Vid
   }
 
   return (
-    <div className={estilos.videoGaleria} data-video="" data-orientacao={vertical ? "vertical" : undefined} role="group" aria-roledescription="galeria de vídeos" aria-label={titulo}>
+    <div className={estilos.videoGaleria} role="group" aria-roledescription="galeria de vídeos" aria-label={titulo}>
       <div ref={trilho} className={estilos.videoTrilho} onScroll={aoRolar}>
         {videos.map((v, i) => {
           const nome = `${titulo}, vídeo ${i + 1} de ${total}`;

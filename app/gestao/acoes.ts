@@ -231,7 +231,8 @@ export async function salvarCard(cardId: string, dados: FormData) {
       // título e texto vêm de caixa de várias linhas: o navegador manda a quebra como \r\n
       titulo: trechos ? textoSimples(trechos) || null : (texto("titulo")?.replace(/\r\n?/g, "\n") ?? null),
       ...(trechos && { rico: temFormatacao(trechos) ? JSON.stringify(trechos) : null }),
-      subtitulo: texto("subtitulo"),
+      // a legenda do vídeo vem de caixa de várias linhas, como o título acima
+      subtitulo: texto("subtitulo")?.replace(/\r\n?/g, "\n") ?? null,
       // vídeo: do código <iframe> colado fica só o link dele (lib/video.ts); o que não é link fica
       // como veio, para o painel mostrar o que foi digitado e dizer que não toca
       url: tipo === "video" ? (linkDoVideo(texto("url")) ?? texto("url")) : texto("url"),

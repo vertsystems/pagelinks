@@ -135,8 +135,16 @@ qualquer outro serviço, o link https colado já é o player. Só https: `javasc
   2,5 s. Vídeo do Vimeo com privacidade de incorporação responde 404, e aí vai o player direto, como nos
   serviços que não dão a imagem (Instagram, TikTok, os genéricos). Depois do play, os controles são os
   do próprio serviço
-- Todo vídeo fica numa moldura de 1,5 px em degradê, do branco ao cinza-claro (`.video`, com o
-  `data-video` por onde o painel acha a moldura na prévia)
+- Todo vídeo fica numa moldura de 1,5 px em degradê, do branco ao cinza-claro (`.video`). Desde
+  26/10/2026, a largura e o formato ficam no bloco em volta (`.videoBloco`, um `<figure>`, com o
+  `data-video` por onde o painel acha o bloco na prévia), e o vídeo ou a galeria o preenchem
+- **Título e legenda embaixo do vídeo** (pedido do Bruno, 26/10/2026): o título é o `Card.titulo` (18 px,
+  negrito, na cor do texto) e a legenda é o `Card.subtitulo` (14 px, mais apagada, pode ter várias
+  linhas), centralizados no `<figcaption>`, na largura do vídeo. Um par para o bloco todo: na galeria,
+  fica embaixo das bolinhas e não muda quando o vídeo passa. Sem os dois, nada aparece embaixo. Até
+  aqui o título só era o nome do player para o leitor de tela (e continua sendo); os dois vídeos que
+  tinham título traziam nomes do WordPress e ficaram sem ele (migração `20261026120000_titulo_do_video`,
+  com os textos antigos), para essas páginas não mudarem sem o cliente ver
 - **Vários vídeos no bloco** (pedido do Bruno, 21/10/2026): até 10, o link principal (`Card.url`) e os
   outros em `Card.itens`, um link por linha (`linksDoBloco`), o campo que na lista guarda os itens. Na
   página passam para o lado, um por vez (`VideoGaleria.tsx`): encaixe do próprio navegador

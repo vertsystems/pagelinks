@@ -86,8 +86,9 @@ function camposDoTipo(tipo: string) {
       return { titulo: false, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
     case "imagem":
       return { titulo: true, subtitulo: false, url: true, imagem: true, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
+    // vídeo: o título e a legenda (subtitulo) aparecem embaixo do vídeo
     case "video":
-      return { titulo: true, subtitulo: false, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
+      return { titulo: true, subtitulo: true, url: true, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: false };
     case "unidades":
       return { titulo: true, subtitulo: false, url: false, imagem: false, whatsapp: false, icones: false, carrossel: false, lista: false, unidades: true };
     case "lista":
@@ -428,9 +429,10 @@ export default function EditorCards({
                         {usa.titulo && card.tipo !== "titulo" && card.tipo !== "texto" && (
                           <div className={estilos.campo}>
                             <label htmlFor={`titulo-${card.id}`}>
-                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" || card.tipo === "unidades" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : "Título"}
+                              {card.tipo === "texto" ? "Texto" : card.tipo === "redes" || card.tipo === "unidades" ? "Nome do bloco (só no painel)" : card.tipo === "carrossel" ? "Nome do carrossel (vira o texto alternativo das imagens)" : card.tipo === "lista" ? "Título da lista (opcional)" : card.tipo === "video" ? "Título (opcional)" : "Título"}
                             </label>
                             <input id={`titulo-${card.id}`} type="text" name="titulo" defaultValue={card.titulo ?? ""} />
+                            {card.tipo === "video" && <span className={estilos.dica}>Aparece embaixo do vídeo, em letra maior que a legenda.</span>}
                           </div>
                         )}
                       </div>
@@ -473,7 +475,15 @@ export default function EditorCards({
                         </div>
                       )}
 
-                      {usa.subtitulo && (
+                      {/* no vídeo, a legenda: embaixo do título, em letra menor, e pode ter mais de uma linha */}
+                      {usa.subtitulo && card.tipo === "video" && (
+                        <div className={estilos.campo}>
+                          <label htmlFor={`sub-${card.id}`}>Legenda (opcional)</label>
+                          <textarea id={`sub-${card.id}`} name="subtitulo" rows={2} defaultValue={card.subtitulo ?? ""} />
+                          <span className={estilos.dica}>Aparece embaixo do título, em letra um pouco menor. Com vários vídeos no bloco, o título e a legenda valem para todos.</span>
+                        </div>
+                      )}
+                      {usa.subtitulo && card.tipo !== "video" && (
                         <div className={estilos.campo}>
                           <label htmlFor={`sub-${card.id}`}>Linha de apoio (opcional)</label>
                           <input id={`sub-${card.id}`} type="text" name="subtitulo" defaultValue={card.subtitulo ?? ""} />
