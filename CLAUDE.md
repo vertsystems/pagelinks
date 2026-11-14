@@ -44,6 +44,38 @@ pagelinks/
 
 Conteúdo de cliente vive no banco, nunca em arquivo.
 
+## Código, banco e publicação
+
+- **Next 16 e React 19:** o Next 16 muda coisas conhecidas. Leia o guia em
+  `node_modules/next/dist/docs/` antes de escrever código (o bloco do fim deste arquivo)
+- **Sessão do painel:** o cookie `pl_sessao`, assinado com `SESSAO_SEGREDO` (`lib/sessao.ts`)
+- **Banco:** Supabase `vertsys-db`, plano Free. O banco de desenvolvimento é o de produção. Schema
+  em `prisma/schema.prisma`, migrations em `prisma/migrations/`; nunca `prisma migrate reset` nem
+  `prisma db push`. Sem uso, o banco pausa: o painel e as páginas dão 500 com
+  `tenant/user … not found`, e só o Bruno restaura (botão Restore no painel do Supabase). O
+  `/api/manter-banco/` roda a cada 5 dias (`vercel.json`) para isso não acontecer
+- **DMetric:** todo link que passa pelo `/ir/` leva `data-dm-link`, senão o clique some do DMetric.
+  Medir velocidade com o Lighthouse sempre com `--blocked-url-patterns='*dspace.verts.me*'`, senão
+  a medição conta como visita do cliente
+- **Sem bateria de testes:** confira com `npm run build` e `npm run lint`. O ESLint já travou no
+  Drive: se ficar parado sem gastar CPU, pare e registre
+- **O repositório `vertsystems/pagelinks` é público:** nada de `.env`, chave ou dado de cliente no
+  commit. Commit só dos arquivos do trabalho, pelo nome
+- **Publicar** (o Bruno quer sem perguntar, desde 13/10/2026): o push no GitHub não publica, porque
+  o projeto `pagelinks` da Vercel (time `vert-projects`) não está ligado a ele. O deploy sai de uma
+  cópia limpa, para nenhum `.env` subir junto:
+
+  ```bash
+  D="${TMPDIR:?}/pagelinks-deploy" && rm -rf "$D" && mkdir -p "$D/.vercel" \
+    && git archive HEAD | tar -x -C "$D" && cp .vercel/project.json "$D/.vercel/" \
+    && cd "$D" && npx -y vercel@latest deploy --prod --yes --scope vert-projects
+  ```
+
+  Confira em dnms.fun. A URL sem a proteção da Vercel é `pagelinks-ivory.vercel.app`. Voltar
+  atrás: deploy de novo a partir do commit anterior, pela mesma cópia limpa
+- **A página de vendas** sobe por FTP na Hostinger, sem a `_fonte/`. Sem a credencial do FTP, quem
+  sobe é o Bruno
+
 ## Contexto herdado
 
 A pasta mora em `dunamiscompany/pagelinks/` desde 16/10/2026 (veio de `vertsystems/produtos/`),
