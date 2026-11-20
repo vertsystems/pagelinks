@@ -13,6 +13,7 @@ import { animacaoValida } from "@/lib/animacoes";
 import { usuarioLogado } from "@/lib/acesso";
 import { destinoDoRedirecionamento } from "@/lib/redirecionamentos";
 import { emVigor } from "@/lib/linksProgramados";
+import { comAparencia, comFoto, lerVer } from "@/lib/programacoes";
 import { capaDoVimeo, capaDoYouTube, comAutoplay, lerVideo, linksDoBloco, orientacaoDoVideo } from "@/lib/video";
 import DesenhoRede from "./DesenhoRede";
 import Carrossel from "./Carrossel";
@@ -21,7 +22,7 @@ import VideoGaleria from "./VideoGaleria";
 import { familiaDaFonte } from "./fontes";
 import estilos from "./pagina.module.css";
 
-type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string; [chave: string]: string | string[] | undefined }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ previa?: string; ver?: string; [chave: string]: string | string[] | undefined }> };
 
 /**
  * DMetric (dspace.verts.me): conta as visitas e mede a página no aparelho de quem visita.
@@ -60,17 +61,41 @@ const buscarPagina = cache(async (slug: string) => {
               programados: { where: emVigor(agora), orderBy: { inicio: "desc" }, take: 1, select: { url: true } },
             },
           },
+          // a foto e a aparência programadas que estão no ar agora (lib/programacoes.ts)
+          fotosProgramadas: { where: emVigor(agora), orderBy: { inicio: "desc" }, take: 1, select: { imagemUrl: true, largura: true, altura: true } },
+          aparenciasProgramadas: { where: emVigor(agora), orderBy: { inicio: "desc" }, take: 1 },
         },
       },
     },
   });
-  const pagina = cliente?.paginas[0];
-  if (!pagina) return null;
+  const encontrada = cliente?.paginas[0];
+  if (!encontrada) return null;
+  // No período de uma foto ou aparência programada, ela vale no lugar da de sempre: trocada
+  // aqui, vale para a página toda e para a imagem de compartilhar (generateMetadata).
+  const { fotosProgramadas, aparenciasProgramadas, ...pagina } = encontrada;
   // No período de um link programado, o bloco leva para ele no lugar do endereço de destino
   // (lib/linksProgramados.ts). Trocado aqui, vale para tudo abaixo: o vídeo, a imagem que vira
   // link, a nova aba. O clique em si passa pelo /ir, que faz a mesma conta.
-  return { ...pagina, cards: pagina.cards.map(({ programados, ...card }) => ({ ...card, url: programados[0]?.url ?? card.url })) };
+  return {
+    ...comAparencia(comFoto(pagina, fotosProgramadas[0]), aparenciasProgramadas[0]),
+    cards: pagina.cards.map(({ programados, ...card }) => ({ ...card, url: programados[0]?.url ?? card.url })),
+  };
 });
+
+/**
+ * A prévia do painel mostra uma foto ou aparência programada antes de ela entrar no ar
+ * (?ver=foto.<id> ou aparencia.<id>, lib/programacoes.ts). Só para quem está logado, e só
+ * uma programação da própria página: para todo o resto, a página fica como está.
+ */
+async function comProgramacaoVista<T extends NonNullable<Awaited<ReturnType<typeof buscarPagina>>>>(pagina: T, ver: unknown): Promise<T> {
+  const pedida = lerVer(ver);
+  if (!pedida) return pagina;
+  if (pedida.tipo === "foto") {
+    const foto = await prisma.fotoProgramada.findFirst({ where: { id: pedida.id, paginaId: pagina.id }, select: { imagemUrl: true, largura: true, altura: true } });
+    return comFoto(pagina, foto);
+  }
+  return comAparencia(pagina, await prisma.aparenciaProgramada.findFirst({ where: { id: pedida.id, paginaId: pagina.id } }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -136,13 +161,14 @@ export default async function PaginaPublica({ params, searchParams }: Props) {
   // e quem está logado no painel olhando a página. Sem o cookie do painel, isto não vai ao banco.
   const [busca, usuario] = await Promise.all([searchParams, usuarioLogado()]);
   const medirVisita = busca?.previa === undefined && !usuario;
-  const pagina = await buscarPagina(slug);
-  if (!pagina) {
+  const noAr = await buscarPagina(slug);
+  if (!noAr) {
     // Sem página no ar: pode ser um endereço antigo com redirecionamento (lib/redirecionamentos.ts).
     const destino = await destinoDoRedirecionamento([slug], busca, !usuario);
     if (destino) redirect(destino);
     notFound();
   }
+  const pagina = usuario && busca?.ver ? await comProgramacaoVista(noAr, busca.ver) : noAr;
 
   // a fonte vem do próprio dnms.fun (./fontes.ts), não mais do Google Fonts
   const familia = familiaDaFonte(pagina.fonte);

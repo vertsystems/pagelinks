@@ -53,7 +53,13 @@ Conteúdo de cliente vive no banco, nunca em arquivo.
   em `prisma/schema.prisma`, migrations em `prisma/migrations/`; nunca `prisma migrate reset` nem
   `prisma db push`. Sem uso, o banco pausa: o painel e as páginas dão 500 com
   `tenant/user … not found`, e só o Bruno restaura (botão Restore no painel do Supabase). O
-  `/api/manter-banco/` roda a cada 5 dias (`vercel.json`) para isso não acontecer
+  `/api/manter-banco/` roda a cada 5 dias (`vercel.json`) para isso não acontecer (e, na mesma passada,
+  apaga as fotos e aparências programadas que já acabaram, com as imagens)
+- **Migration pendente de propósito:** a `20261026120000_titulo_do_video` tira o título "Video Apresentação
+  NaLi Cuscuzbar" de um vídeo da NaLi, que está na página desde 26/10, e espera o ok do Bruno. Enquanto
+  isso, `prisma migrate deploy` aplicaria ela junto: migration nova entra por `prisma db execute --file …`
+  e `prisma migrate resolve --applied <nome>` (como a de 20/11/2026), e depois `prisma migrate diff
+  --from-config-datasource --to-schema prisma/schema.prisma --script` precisa sair vazio
 - **DMetric:** todo link que passa pelo `/ir/` leva `data-dm-link`, senão o clique some do DMetric.
   Medir velocidade com o Lighthouse sempre com `--blocked-url-patterns='*dspace.verts.me*'`, senão
   a medição conta como visita do cliente
@@ -94,6 +100,22 @@ Vert Systems (`../../vertsystems/`). **Não usa a identidade da Dunamis** — ne
 - **Layout por tela** (celular, tablet, computador): tamanho, espaço e largura são por tela;
   o resto é igual nas três. Ajuste novo de layout entra em `AJUSTES` (lib/ajustes.ts) e no
   bloco "Layout por tela" do pagina.module.css, nunca como estilo fixo na página
+- **Foto e aparência programadas** (20/11/2026, pedido do Bruno; `lib/programacoes.ts`): num período, a
+  página mostra outra foto ou logo no topo (no mesmo formato e tamanho) ou outra aparência (cores, fonte,
+  formato dos botões e fundo, com imagem própria), e volta sozinha à de sempre no fim. Mesmo jeito dos
+  links programados: até 10 de cada por página, sem sobrepor períodos, horário de Brasília, amarela antes
+  de entrar e verde no ar. A foto fica embaixo da foto do topo e a aparência no fim do bloco Aparência; a
+  nova aparência já vem com a de agora. Tudo é conferido antes de a imagem subir, e as que acabaram são
+  apagadas com a imagem. O "Ver na prévia" mostra a programação antes de ela entrar (`?ver=foto.<id>` ou
+  `aparencia.<id>`, só para quem está logado)
+- **A prévia do editor na silhueta do aparelho** (20/11/2026): celular, tablet e MacBook, todos na largura
+  da coluna da prévia, que não muda mais com a tela (antes ela alargava e a coluna do editor ficava
+  estreita). Tablet e computador são desenhados no tamanho deles (820×1000 e 1280×800) e reduzidos na
+  proporção. Cores do aparelho por token (`--g-aparelho*`)
+- **O menu do topo** (20/11/2026): flutuante, 10 px abaixo do topo, cantos arredondados, na largura do
+  conteúdo (alinhado com o título da página e a borda direita), em cinza escuro de vidro nos dois temas,
+  com texto e botões no cinza claro do fundo. A logo é `public/logo-pagelinks.png`, mandada pelo Bruno:
+  "Page" em branco e "Links" em cinza, feita para fundo escuro (não usar em fundo claro sem tratar)
 - **Imagem entra em WebP ou PNG e sai sempre em WebP q90**, no tamanho que a página usa
   (`lib/imagens.ts`). Decisão do Bruno em 12/10/2026: PNG também, porque é mais prático
 - Nenhuma página vai ao ar sem o cliente ver antes

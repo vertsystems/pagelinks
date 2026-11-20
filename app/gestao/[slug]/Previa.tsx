@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TELAS } from "@/lib/ajustes";
 import { esquecerRetoques, refazerRetoques } from "./BarraAjuste";
-import { useTela } from "./Tela";
+import { useTela, useVer } from "./Tela";
 import estilos from "../gestao.module.css";
 
 // tablet e computador simulados: a página é desenhada nesse tamanho e reduzida para caber.
@@ -23,14 +23,20 @@ const SIMULADA = { tablet: { largura: 820, altura: 1000 }, computador: { largura
  * O data-previa fica só no iframe à vista: é por ele que as barras do editor mexem na
  * página ao vivo.
  *
- * Três telas: celular (a página na largura de um telefone), tablet (820×1000) e
- * computador (1280×800), as duas últimas reduzidas em escala; a coluna da prévia
- * alarga (ver .editor:has()). A tela escolhida aqui é a que o editor inteiro edita
- * (ver Tela.tsx). Os iframes são os mesmos nas três: trocar não recarrega nem perde a rolagem.
+ * Três telas, cada uma na silhueta do aparelho (20/11/2026, pedido do Bruno): celular (a
+ * página na largura de um telefone), tablet (820×1000) e computador (1280×800, num MacBook),
+ * as duas últimas reduzidas em escala para caber na coluna, que tem sempre a mesma largura:
+ * antes ela alargava no tablet e no computador, e a coluna do editor ficava estreita. A tela
+ * escolhida aqui é a que o editor inteiro edita (ver Tela.tsx). Os iframes são os mesmos nas
+ * três: trocar não recarrega nem perde a rolagem.
+ *
+ * Com uma foto ou aparência programada à vista (o "Ver na prévia" dela, Programacoes.tsx), o
+ * endereço leva o ?ver= e um aviso em cima diz o que está sendo mostrado.
  */
 export default function Previa({ slug, versao }: { slug: string; versao: string }) {
   const area = useRef<HTMLDivElement>(null);
   const { tela, setTela } = useTela();
+  const { ver, setVer } = useVer();
   const [escala, setEscala] = useState(0.5);
   const simulada = tela === "celular" ? null : SIMULADA[tela];
 
@@ -40,10 +46,12 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
   // métricas na prévia (cada recarga contaria como visita)
   const [atual, setAtual] = useState(`/${slug}?previa=inicio`);
   const [proxima, setProxima] = useState<string | null>(null);
-  const [versaoVista, setVersaoVista] = useState(versao);
-  if (versaoVista !== versao) {
-    setVersaoVista(versao);
-    const endereco = `/${slug}?previa=${encodeURIComponent(versao)}`;
+  // carrega de novo quando a versão muda ou quando liga/desliga uma programação à vista
+  const pedida = `${versao}|${ver?.chave ?? ""}`;
+  const [pedidaVista, setPedidaVista] = useState(pedida);
+  if (pedidaVista !== pedida) {
+    setPedidaVista(pedida);
+    const endereco = `/${slug}?previa=${encodeURIComponent(versao)}${ver ? `&ver=${encodeURIComponent(ver.chave)}` : ""}`;
     setProxima(endereco === atual ? null : endereco);
   }
   const esperada = useRef(proxima);
@@ -81,7 +89,7 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
     : undefined;
 
   return (
-    <div className={`${estilos.previa} ${simulada ? estilos.previaComputador : ""}`}>
+    <div className={estilos.previa}>
       <div className={estilos.previaBarra}>
         <div className={estilos.alternador} role="group" aria-label="Tela que está sendo vista e editada">
           {TELAS.map((t) => (
@@ -99,39 +107,45 @@ export default function Previa({ slug, versao }: { slug: string; versao: string 
           Abrir ↗
         </a>
       </div>
-      <div
-        className={`${estilos.previaMoldura} ${simulada ? estilos.molduraComputador : ""}`}
-        style={simulada ? undefined : { maxWidth: 380, marginInline: "auto" }}
-      >
-        {simulada && (
-          <div className={estilos.navegador} aria-hidden="true">
-            <i /><i /><i />
-            <span>dnms.fun/{slug}</span>
+      {ver && (
+        <p className={estilos.previaAviso} role="status">
+          <strong>{ver.rotulo}.</strong> Na página, só aparece no período.{" "}
+          <button type="button" onClick={() => setVer(null)}>
+            Voltar ao normal
+          </button>
+        </p>
+      )}
+      {/* a mesma árvore nas três telas (o vazio no lugar da barra do navegador e da base guarda
+          o lugar): os iframes não são recriados ao trocar de tela */}
+      <div className={estilos.aparelho} data-tela={tela}>
+        <div className={estilos.aparelhoCorpo}>
+          {tela === "computador" && (
+            <div className={estilos.navegador} aria-hidden="true">
+              <i /><i /><i />
+              <span>dnms.fun/{slug}</span>
+            </div>
+          )}
+          <div ref={area} className={estilos.aparelhoTela} style={simulada ? { height: simulada.altura * escala } : undefined}>
+            {[atual, proxima].map((endereco) => {
+              if (!endereco) return null;
+              const aVista = endereco === atual;
+              return (
+                <iframe
+                  key={endereco}
+                  src={endereco}
+                  title={aVista ? `Prévia de ${slug}` : "Prévia carregando a versão nova"}
+                  data-previa={aVista ? "" : undefined}
+                  aria-hidden={aVista ? undefined : true}
+                  tabIndex={aVista ? undefined : -1}
+                  className={aVista ? undefined : estilos.previaProxima}
+                  onLoad={aVista ? undefined : (evento) => quandoCarregar(evento, endereco)}
+                  style={tamanho}
+                />
+              );
+            })}
           </div>
-        )}
-        <div
-          ref={area}
-          className={estilos.previaArea}
-          style={simulada ? { height: simulada.altura * escala } : undefined}
-        >
-          {[atual, proxima].map((endereco) => {
-            if (!endereco) return null;
-            const aVista = endereco === atual;
-            return (
-              <iframe
-                key={endereco}
-                src={endereco}
-                title={aVista ? `Prévia de ${slug}` : "Prévia carregando a versão nova"}
-                data-previa={aVista ? "" : undefined}
-                aria-hidden={aVista ? undefined : true}
-                tabIndex={aVista ? undefined : -1}
-                className={aVista ? undefined : estilos.previaProxima}
-                onLoad={aVista ? undefined : (evento) => quandoCarregar(evento, endereco)}
-                style={tamanho}
-              />
-            );
-          })}
         </div>
+        {tela === "computador" && <div className={estilos.aparelhoBase} aria-hidden="true" />}
       </div>
     </div>
   );

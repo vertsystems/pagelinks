@@ -216,7 +216,7 @@ export function medirServidor() {
 export function medirArquivos() {
   return medir(async () => {
     const prefixo = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BUCKET}/`;
-    const [objetos, paginas, cards, carrosseis, unidades, clientes] = await Promise.all([
+    const [objetos, paginas, cards, carrosseis, unidades, clientes, fotos, aparencias] = await Promise.all([
       consulta<{ name: string; bytes: bigint }>(`select name, coalesce((metadata->>'size')::bigint, 0) as bytes from storage.objects where bucket_id = '${BUCKET}'`),
       prisma.pagina.findMany({
         select: { avatarUrl: true, cabecalhoImagemUrl: true, fundoImagemUrl: true, seoImagemUrl: true, faviconUrl: true, cliente: { select: { nome: true, slug: true } } },
@@ -225,6 +225,8 @@ export function medirArquivos() {
       prisma.imagemCarrossel.findMany({ select: { imagemUrl: true, card: { select: { titulo: true, pagina: { select: { cliente: { select: { nome: true, slug: true } } } } } } } }),
       prisma.unidade.findMany({ where: { imagemUrl: { not: null } }, select: { imagemUrl: true, nome: true, card: { select: { pagina: { select: { cliente: { select: { nome: true, slug: true } } } } } } } }),
       prisma.cliente.findMany({ select: { id: true, nome: true, slug: true } }),
+      prisma.fotoProgramada.findMany({ select: { imagemUrl: true, pagina: { select: { cliente: { select: { nome: true, slug: true } } } } } }),
+      prisma.aparenciaProgramada.findMany({ where: { fundoImagemUrl: { not: null } }, select: { fundoImagemUrl: true, pagina: { select: { cliente: { select: { nome: true, slug: true } } } } } }),
     ]);
 
     // o que o banco aponta, e de onde
@@ -242,6 +244,8 @@ export function medirArquivos() {
     for (const c of cards) usos.push({ url: c.imagemUrl!, cliente: c.pagina.cliente, onde: `bloco “${c.titulo ?? "sem nome"}”` });
     for (const i of carrosseis) usos.push({ url: i.imagemUrl, cliente: i.card.pagina.cliente, onde: `carrossel “${i.card.titulo ?? "sem nome"}”` });
     for (const u of unidades) usos.push({ url: u.imagemUrl!, cliente: u.card.pagina.cliente, onde: `unidade “${u.nome}”` });
+    for (const f of fotos) usos.push({ url: f.imagemUrl, cliente: f.pagina.cliente, onde: "foto programada" });
+    for (const a of aparencias) usos.push({ url: a.fundoImagemUrl!, cliente: a.pagina.cliente, onde: "fundo da aparência programada" });
 
     const existentes = new Map(objetos.map((o) => [o.name, numero(o.bytes)]));
     const usados = new Set(usos.filter((u) => u.url.startsWith(prefixo)).map((u) => u.url.slice(prefixo.length)));

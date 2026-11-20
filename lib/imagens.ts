@@ -92,7 +92,7 @@ export async function guardarImagem(clienteId: string, uso: UsoImagem, conteudo:
 }
 
 /**
- * Apaga do bucket as imagens que nenhuma página, bloco, carrossel ou unidade usa mais. Endereço de
+ * Apaga do bucket as imagens que nenhuma página, bloco, carrossel, unidade ou programação usa mais. Endereço de
  * fora do bucket é ignorado. Confere o banco antes porque duplicar um bloco
  * copia o endereço: dois blocos podem apontar para o mesmo arquivo.
  * Falha aqui não volta para a tela: no pior caso sobra um arquivo no bucket.
@@ -104,7 +104,7 @@ export async function apagarImagensOrfas(urls: (string | null | undefined)[]) {
   try {
     const orfas: string[] = [];
     for (const u of candidatas) {
-      const [paginas, cards, carrosseis, unidades] = await Promise.all([
+      const [paginas, cards, carrosseis, unidades, fotos, aparencias] = await Promise.all([
         prisma.pagina.count({
           where: {
             OR: [
@@ -119,8 +119,11 @@ export async function apagarImagensOrfas(urls: (string | null | undefined)[]) {
         prisma.card.count({ where: { imagemUrl: u } }),
         prisma.imagemCarrossel.count({ where: { imagemUrl: u } }),
         prisma.unidade.count({ where: { imagemUrl: u } }),
+        // a aparência programada pode usar a mesma imagem de fundo da página (lib/programacoes.ts)
+        prisma.fotoProgramada.count({ where: { imagemUrl: u } }),
+        prisma.aparenciaProgramada.count({ where: { fundoImagemUrl: u } }),
       ]);
-      if (paginas + cards + carrosseis + unidades === 0) orfas.push(u.slice(prefixoPublico().length));
+      if (paginas + cards + carrosseis + unidades + fotos + aparencias === 0) orfas.push(u.slice(prefixoPublico().length));
     }
     if (orfas.length === 0) return;
 

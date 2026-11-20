@@ -18,6 +18,8 @@ import { TIPOS_COM_ANIMACAO, animacaoValida } from "@/lib/animacoes";
 import { dataHoraCurta, deHorarioDeBrasilia } from "@/lib/horario";
 import { MAXIMO_DE_LINKS_PROGRAMADOS, TIPOS_COM_LINK_PROGRAMADO, lerLink } from "@/lib/linksProgramados";
 import { MAXIMO_DE_VIDEOS, linkDoVideo, lerVideo } from "@/lib/video";
+import { MAXIMO_DE_PROGRAMACOES, lerAparencia, lerPeriodo, periodoQueBate, type Aparencia } from "@/lib/programacoes";
+import { limparProgramacoesVencidas } from "@/lib/programacoes-banco";
 
 export type EstadoForm = { erro?: string; ok?: boolean };
 
@@ -96,6 +98,8 @@ export async function excluirCliente(id: string) {
           seoImagemUrl: true,
           faviconUrl: true,
           cards: { select: { imagemUrl: true, imagens: { select: { imagemUrl: true } }, unidades: { select: { imagemUrl: true } } } },
+          fotosProgramadas: { select: { imagemUrl: true } },
+          aparenciasProgramadas: { select: { fundoImagemUrl: true } },
         },
       },
     },
@@ -111,6 +115,8 @@ export async function excluirCliente(id: string) {
       p.seoImagemUrl,
       p.faviconUrl,
       ...p.cards.flatMap((card) => [card.imagemUrl, ...card.imagens.map((i) => i.imagemUrl), ...card.unidades.map((u) => u.imagemUrl)]),
+      ...p.fotosProgramadas.map((f) => f.imagemUrl),
+      ...p.aparenciasProgramadas.map((a) => a.fundoImagemUrl),
     ]),
   );
   revalidar(c?.slug);
@@ -951,5 +957,178 @@ export async function removerLinkProgramado(id: string): Promise<EstadoImagem> {
   await prisma.linkProgramado.delete({ where: { id: String(id) } });
   await marcarBloco(programado.cardId);
   revalidar(programado.card.pagina.cliente.slug);
+  return {};
+}
+
+// ---------- foto e aparência programadas ----------
+
+export type FotoProgramadaDaPagina = { id: string; imagemUrl: string; inicio: Date; fim: Date };
+export type AparenciaProgramadaDaPagina = Aparencia & { id: string; inicio: Date; fim: Date };
+
+const PROGRAMACAO_SUMIU = "Essa programação não existe mais (já tinha acabado?). Recarregue a página.";
+
+/** A página que vai ganhar a programação, com o que as duas ações precisam. */
+function paginaParaProgramar(paginaId: string) {
+  return prisma.pagina.findUnique({
+    where: { id: String(paginaId) },
+    select: { id: true, clienteId: true, fundoImagemUrl: true, cliente: { select: { slug: true } } },
+  });
+}
+
+/** Marca a página como mudada, para a prévia do editor recarregar: a programação pode estar no ar. */
+async function marcarPagina(id: string) {
+  await prisma.pagina.update({ where: { id }, data: { atualizadoEm: new Date() } });
+}
+
+function veioArquivo(dados: FormData) {
+  const arquivo = dados.get("arquivo");
+  return arquivo instanceof File && arquivo.size > 0;
+}
+
+/**
+ * Cria (id null) ou muda uma foto programada (lib/programacoes.ts). Chega num FormData: inicio e
+ * fim como o datetime-local manda (horário de Brasília) e o arquivo da foto (obrigatório ao criar;
+ * ao mudar, só se for trocar). Tudo é conferido antes de a imagem subir: recusa não deixa arquivo
+ * solto no bucket. As que já acabaram são apagadas aqui, com a imagem.
+ */
+export async function salvarFotoProgramada(paginaId: string, id: string | null, dados: FormData): Promise<{ erro?: string; id?: string }> {
+  await exigirAdmin();
+  const pagina = await paginaParaProgramar(paginaId);
+  if (!pagina) return { erro: "Não encontrei essa página. Recarregue." };
+  const agora = new Date();
+  const periodo = lerPeriodo(dados.get("inicio"), dados.get("fim"), agora);
+  if ("erro" in periodo) return periodo;
+  const comArquivo = veioArquivo(dados);
+  if (!id && !comArquivo) return { erro: "Escolha a foto que vai aparecer no período." };
+
+  await limparProgramacoesVencidas(pagina.id);
+  const anterior = id ? await prisma.fotoProgramada.findFirst({ where: { id: String(id), paginaId: pagina.id }, select: { imagemUrl: true } }) : null;
+  if (id && !anterior) return { erro: PROGRAMACAO_SUMIU };
+  const outras = await prisma.fotoProgramada.findMany({
+    where: { paginaId: pagina.id, ...(id ? { NOT: { id: String(id) } } : {}) },
+    select: { inicio: true, fim: true },
+  });
+  const bate = periodoQueBate(outras, periodo);
+  if (bate) {
+    return { erro: `Bate com a foto programada de ${dataHoraCurta(bate.inicio, agora)} a ${dataHoraCurta(bate.fim, agora)}. Uma foto por vez: ajuste as datas para uma acabar antes da outra começar (pode ser no mesmo minuto).` };
+  }
+  if (!id && outras.length >= MAXIMO_DE_PROGRAMACOES) {
+    return { erro: `A página já tem ${MAXIMO_DE_PROGRAMACOES} fotos programadas. Quando uma acabar (ou se tirar uma), abre espaço.` };
+  }
+
+  let imagem: { imagemUrl: string; largura: number | null; altura: number | null } | null = null;
+  if (comArquivo) {
+    const arquivo = await arquivoOtimizado(dados, "avatar");
+    if ("erro" in arquivo) return arquivo;
+    const guardada = await guardarNoStorage(pagina.clienteId, "avatar", arquivo.otimizada);
+    if ("erro" in guardada) return guardada;
+    imagem = { imagemUrl: guardada.url, largura: arquivo.tamanho?.largura ?? null, altura: arquivo.tamanho?.altura ?? null };
+  }
+
+  let gravado: string;
+  if (id) {
+    const mudou = await prisma.fotoProgramada.updateMany({ where: { id: String(id), paginaId: pagina.id }, data: { ...periodo, ...imagem } });
+    if (!mudou.count) {
+      await apagarImagensOrfas([imagem?.imagemUrl]);
+      return { erro: PROGRAMACAO_SUMIU };
+    }
+    gravado = String(id);
+    if (imagem) await apagarImagensOrfas([anterior?.imagemUrl]);
+  } else {
+    gravado = (await prisma.fotoProgramada.create({ data: { paginaId: pagina.id, ...periodo, ...imagem! }, select: { id: true } })).id;
+  }
+  await marcarPagina(pagina.id);
+  revalidar(pagina.cliente.slug);
+  return { id: gravado };
+}
+
+export async function removerFotoProgramada(id: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const foto = await prisma.fotoProgramada.findUnique({
+    where: { id: String(id) },
+    select: { imagemUrl: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+  });
+  if (!foto) return {};
+  await prisma.fotoProgramada.deleteMany({ where: { id: String(id) } });
+  await apagarImagensOrfas([foto.imagemUrl]);
+  await marcarPagina(foto.paginaId);
+  revalidar(foto.pagina.cliente.slug);
+  return {};
+}
+
+/**
+ * Cria (id null) ou muda uma aparência programada (lib/programacoes.ts). O FormData traz os campos
+ * do tema (os mesmos nomes da Pagina), inicio e fim, e a imagem de fundo: um arquivo novo, ou
+ * "imagemAtual" para continuar com a que já estava (a desta programação ou, ao criar, a de fundo
+ * da página, que vem preenchida). Outro endereço em "imagemAtual" é ignorado.
+ */
+export async function salvarAparenciaProgramada(paginaId: string, id: string | null, dados: FormData): Promise<{ erro?: string; id?: string }> {
+  await exigirAdmin();
+  const pagina = await paginaParaProgramar(paginaId);
+  if (!pagina) return { erro: "Não encontrei essa página. Recarregue." };
+  const lida = lerAparencia(dados);
+  if ("erro" in lida) return lida;
+  const agora = new Date();
+  const periodo = lerPeriodo(dados.get("inicio"), dados.get("fim"), agora);
+  if ("erro" in periodo) return periodo;
+  const comArquivo = veioArquivo(dados);
+
+  await limparProgramacoesVencidas(pagina.id);
+  const anterior = id ? await prisma.aparenciaProgramada.findFirst({ where: { id: String(id), paginaId: pagina.id }, select: { fundoImagemUrl: true } }) : null;
+  if (id && !anterior) return { erro: PROGRAMACAO_SUMIU };
+  const pedida = String(dados.get("imagemAtual") ?? "") || null;
+  const mantida = pedida && (pedida === anterior?.fundoImagemUrl || pedida === pagina.fundoImagemUrl) ? pedida : null;
+  if (lida.aparencia.fundoTipo === "imagem" && !comArquivo && !mantida) return { erro: "Escolha a imagem de fundo (ou outro tipo de fundo)." };
+
+  const outras = await prisma.aparenciaProgramada.findMany({
+    where: { paginaId: pagina.id, ...(id ? { NOT: { id: String(id) } } : {}) },
+    select: { inicio: true, fim: true },
+  });
+  const bate = periodoQueBate(outras, periodo);
+  if (bate) {
+    return { erro: `Bate com a aparência programada de ${dataHoraCurta(bate.inicio, agora)} a ${dataHoraCurta(bate.fim, agora)}. Uma aparência por vez: ajuste as datas para uma acabar antes da outra começar (pode ser no mesmo minuto).` };
+  }
+  if (!id && outras.length >= MAXIMO_DE_PROGRAMACOES) {
+    return { erro: `A página já tem ${MAXIMO_DE_PROGRAMACOES} aparências programadas. Quando uma acabar (ou se tirar uma), abre espaço.` };
+  }
+
+  let fundoImagemUrl = mantida;
+  if (comArquivo) {
+    const arquivo = await arquivoOtimizado(dados, "fundo");
+    if ("erro" in arquivo) return arquivo;
+    const guardada = await guardarNoStorage(pagina.clienteId, "fundo", arquivo.otimizada);
+    if ("erro" in guardada) return guardada;
+    fundoImagemUrl = guardada.url;
+  }
+
+  const data = { ...lida.aparencia, fundoImagemUrl, ...periodo };
+  let gravado: string;
+  if (id) {
+    const mudou = await prisma.aparenciaProgramada.updateMany({ where: { id: String(id), paginaId: pagina.id }, data });
+    if (!mudou.count) {
+      if (comArquivo) await apagarImagensOrfas([fundoImagemUrl]);
+      return { erro: PROGRAMACAO_SUMIU };
+    }
+    gravado = String(id);
+    if (anterior?.fundoImagemUrl !== fundoImagemUrl) await apagarImagensOrfas([anterior?.fundoImagemUrl]);
+  } else {
+    gravado = (await prisma.aparenciaProgramada.create({ data: { paginaId: pagina.id, ...data }, select: { id: true } })).id;
+  }
+  await marcarPagina(pagina.id);
+  revalidar(pagina.cliente.slug);
+  return { id: gravado };
+}
+
+export async function removerAparenciaProgramada(id: string): Promise<EstadoImagem> {
+  await exigirAdmin();
+  const aparencia = await prisma.aparenciaProgramada.findUnique({
+    where: { id: String(id) },
+    select: { fundoImagemUrl: true, paginaId: true, pagina: { select: { cliente: { select: { slug: true } } } } },
+  });
+  if (!aparencia) return {};
+  await prisma.aparenciaProgramada.deleteMany({ where: { id: String(id) } });
+  await apagarImagensOrfas([aparencia.fundoImagemUrl]);
+  await marcarPagina(aparencia.paginaId);
+  revalidar(aparencia.pagina.cliente.slug);
   return {};
 }

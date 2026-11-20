@@ -33,7 +33,7 @@ export const PADRAO_DA_LETRA: Record<string, number> = { titulo: 13, texto: 15, 
 
 export type AjustePagina = keyof typeof AJUSTE_PAGINA;
 
-const RAIO: Record<string, string> = {
+export const RAIO: Record<string, string> = {
   arredondado: "12px",
   reto: "0px",
   pilula: "999px",
@@ -69,6 +69,21 @@ const FONTES_PERMITIDAS = new Set([
 ]);
 
 export const FONTES = [...FONTES_PERMITIDAS];
+
+/** Formato dos botões, como o painel mostra (o valor vai para Pagina.estiloBotao). */
+export const ESTILOS_BOTAO = [
+  { valor: "arredondado", nome: "Cantos suaves" },
+  { valor: "pilula", nome: "Totalmente redondo" },
+  { valor: "reto", nome: "Cantos vivos" },
+  { valor: "contorno", nome: "Só contorno" },
+];
+
+/** Tipo de fundo da página (Pagina.fundoTipo). */
+export const TIPOS_DE_FUNDO = [
+  { valor: "solido", nome: "Cor única" },
+  { valor: "gradiente", nome: "Degradê entre duas cores" },
+  { valor: "imagem", nome: "Imagem" },
+];
 
 /**
  * Largura de um bloco na linha. Blocos lado a lado se encaixam, e frações que

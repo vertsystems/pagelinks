@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { limparProgramacoesVencidas } from "@/lib/programacoes-banco";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,9 @@ export const dynamic = "force-dynamic";
  * uso, e a página de todo cliente cai junto. A Vercel chama esta rota a cada
  * 5 dias (vercel.json), com uma consulta de verdade ao banco para contar como atividade.
  * Só responde a quem traz o CRON_SECRET, que é o que a Vercel envia no agendamento.
+ *
+ * Na mesma passada, apaga as fotos e aparências programadas que já acabaram, com as imagens
+ * delas (lib/programacoes-banco.ts): a página que não grava outra programação não as limparia.
  */
 export async function GET(request: Request) {
   const segredo = process.env.CRON_SECRET;
@@ -16,5 +20,9 @@ export async function GET(request: Request) {
   }
 
   const clientes = await prisma.cliente.count();
-  return NextResponse.json({ ok: true, clientes, em: new Date().toISOString() });
+  const programacoesApagadas = await limparProgramacoesVencidas().catch((erro) => {
+    console.error("Falha ao limpar programações vencidas:", erro);
+    return null;
+  });
+  return NextResponse.json({ ok: true, clientes, programacoesApagadas, em: new Date().toISOString() });
 }

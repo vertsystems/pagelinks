@@ -2,12 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { exigirAdmin } from "@/lib/acesso";
-import { FONTES } from "@/lib/tema";
+import { ESTILOS_BOTAO, FONTES, TIPOS_DE_FUNDO } from "@/lib/tema";
 import { valoresPorTela } from "@/lib/ajustes";
 import { excluirCliente, salvarPagina } from "../acoes";
 import FormCadastro from "./FormCadastro";
 import CampoImagem from "./CampoImagem";
 import CamposTopo from "./CamposTopo";
+import AparenciasProgramadas from "./AparenciasProgramadas";
 import CampoCor from "./CampoCor";
 import EditorCards from "./EditorCards";
 import Previa from "./Previa";
@@ -18,13 +19,6 @@ import BotaoExcluir from "./BotaoExcluir";
 import estilos from "../gestao.module.css";
 
 export const dynamic = "force-dynamic";
-
-const ESTILOS_BOTAO = [
-  { valor: "arredondado", nome: "Cantos suaves" },
-  { valor: "pilula", nome: "Totalmente redondo" },
-  { valor: "reto", nome: "Cantos vivos" },
-  { valor: "contorno", nome: "Só contorno" },
-];
 
 export default async function EditorCliente({ params }: { params: Promise<{ slug: string }> }) {
   await exigirAdmin();
@@ -47,6 +41,9 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
               programados: { where: { fim: { gt: agora } }, orderBy: { inicio: "asc" }, select: { id: true, url: true, inicio: true, fim: true } },
             },
           },
+          // foto e aparência programadas que ainda não acabaram (lib/programacoes.ts)
+          fotosProgramadas: { where: { fim: { gt: agora } }, orderBy: { inicio: "asc" }, select: { id: true, imagemUrl: true, inicio: true, fim: true } },
+          aparenciasProgramadas: { where: { fim: { gt: agora } }, orderBy: { inicio: "asc" }, omit: { paginaId: true, criadoEm: true } },
         },
       },
     },
@@ -111,6 +108,8 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                   titulo: valoresPorTela(pagina, "titulo"),
                   bio: valoresPorTela(pagina, "bio"),
                 }}
+                fotosProgramadas={pagina.fotosProgramadas}
+                agora={agora.getTime()}
               />
               {/* marca que este formulário cuida da chave: desmarcada, ela não iria no envio */}
               <input type="hidden" name="publicada" value="" />
@@ -161,9 +160,7 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
                 <div className={estilos.campo}>
                   <label htmlFor="fundoTipo">Tipo de fundo</label>
                   <select key={pagina.fundoTipo} id="fundoTipo" name="fundoTipo" defaultValue={pagina.fundoTipo}>
-                    <option value="solido">Cor única</option>
-                    <option value="gradiente">Degradê entre duas cores</option>
-                    <option value="imagem">Imagem</option>
+                    {TIPOS_DE_FUNDO.map((t) => <option key={t.valor} value={t.valor}>{t.nome}</option>)}
                   </select>
                 </div>
                 <CampoCor nome="fundoCorFim" rotulo="Segunda cor do degradê" valor={pagina.fundoCorFim ?? pagina.corFundo} />
@@ -179,6 +176,23 @@ export default async function EditorCliente({ params }: { params: Promise<{ slug
             <div className={estilos.salvarBarra}>
               <BotaoSalvar rotulo="Salvar aparência" />
             </div>
+            {/* cada programação grava no próprio botão; os campos não têm name e não entram no Salvar acima */}
+            <AparenciasProgramadas
+              paginaId={pagina.id}
+              programadas={pagina.aparenciasProgramadas}
+              base={{
+                corFundo: pagina.corFundo,
+                corTexto: pagina.corTexto,
+                corDestaque: pagina.corDestaque,
+                corTextoBotao: pagina.corTextoBotao,
+                fonte: pagina.fonte,
+                estiloBotao: pagina.estiloBotao,
+                fundoTipo: pagina.fundoTipo,
+                fundoCorFim: pagina.fundoCorFim,
+                fundoImagemUrl: pagina.fundoImagemUrl,
+              }}
+              agora={agora.getTime()}
+            />
           </form>
 
           {/* busca e compartilhamento */}

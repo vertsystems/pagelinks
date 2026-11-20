@@ -91,9 +91,52 @@ model Pagina {
   atualizadoEm DateTime @updatedAt
 
   cards Card[]
+  // num período, outra foto do topo ou outra aparência no lugar das de sempre (lib/programacoes.ts)
+  fotosProgramadas      FotoProgramada[]
+  aparenciasProgramadas AparenciaProgramada[]
 
   @@index([clienteId])
   @@index([publicada])
+}
+
+/// Foto programada do topo (lib/programacoes.ts): de `inicio` até `fim`, a página mostra esta
+/// imagem no lugar da foto ou logo (Pagina.avatarUrl), no mesmo formato e tamanho. Os períodos
+/// de uma página não se sobrepõem. Até 10 por página; as que acabaram são apagadas com a imagem.
+model FotoProgramada {
+  id        String   @id @default(cuid())
+  paginaId  String
+  pagina    Pagina   @relation(fields: [paginaId], references: [id], onDelete: Cascade)
+  imagemUrl String
+  largura   Int? // tamanho real do arquivo, como Pagina.avatarLargura
+  altura    Int?
+  inicio    DateTime
+  fim       DateTime
+  criadoEm  DateTime @default(now())
+
+  @@index([paginaId, inicio])
+}
+
+/// Aparência programada (lib/programacoes.ts): de `inicio` até `fim`, cores, fonte, formato dos
+/// botões e fundo da página são estes, no lugar dos da Pagina. Mesmos campos e valores do tema
+/// da Pagina. Mesmas regras da foto programada.
+model AparenciaProgramada {
+  id             String   @id @default(cuid())
+  paginaId       String
+  pagina         Pagina   @relation(fields: [paginaId], references: [id], onDelete: Cascade)
+  corFundo       String
+  corTexto       String
+  corDestaque    String
+  corTextoBotao  String
+  fonte          String
+  estiloBotao    String
+  fundoTipo      String
+  fundoCorFim    String?
+  fundoImagemUrl String?
+  inicio         DateTime
+  fim            DateTime
+  criadoEm       DateTime @default(now())
+
+  @@index([paginaId, inicio])
 }
 
 /// Bloco da página. O `tipo` é o que dá o efeito Elementor:

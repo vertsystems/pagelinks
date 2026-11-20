@@ -19,7 +19,10 @@ export default async function LayoutGestao({ children }: { children: React.React
     <div className={estilos.tela} data-tema={tema}>
       <header className={estilos.topo}>
         <Link className={estilos.marca} href="/gestao">
-          <b>Page</b>Links <span>· gestão</span>
+          {/* a logo do PageLinks (20/11/2026), feita para fundo escuro como o do menu */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-pagelinks.png" alt="PageLinks" width={108} height={24} />
+          <span>· gestão</span>
         </Link>
         <div className={estilos.topoAcoes}>
           <BotaoTema inicial={tema} />

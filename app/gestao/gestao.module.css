@@ -2,17 +2,28 @@
 
 .tela { min-height: 100dvh; background: var(--g-fundo); color: var(--g-texto); }
 
+/* Menu do topo (20/11/2026, pedido do Bruno): flutuante, 10 px abaixo do topo, com cantos
+   arredondados e na largura do conteúdo (a do .env, 1400 px menos o respiro dos lados), para a
+   logo e os botões acompanharem as bordas da página. Cinza escuro de vidro nos dois temas, com
+   texto e botões no cinza claro do fundo do painel. */
 .topo {
-  position: sticky; top: 0; z-index: 30;
-  background: var(--g-topo); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--g-linha);
+  position: sticky; top: 10px; z-index: 30;
+  width: calc(100% - 48px); max-width: 1352px; margin: 10px auto 0;
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 14px 24px;
+  padding: 10px 10px 10px 20px; border-radius: 14px;
+  background: var(--g-topo); color: var(--g-topo-texto);
+  -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--g-topo-borda);
+  box-shadow: var(--g-topo-sombra);
 }
 .topoAcoes { display: flex; align-items: center; gap: 8px; }
-.marca { font-weight: 700; font-size: 16px; letter-spacing: -0.02em; text-decoration: none; color: var(--g-texto); }
-.marca b { color: var(--g-marca); }
-.marca span { color: var(--g-suave); font-weight: 500; }
+.topo .btnFantasma { color: var(--g-topo-texto); border-color: var(--g-topo-botao-borda); }
+.topo .btnFantasma:hover { color: var(--g-topo-texto); border-color: var(--g-topo-texto); background: var(--g-topo-hover); }
+.topo .btn:focus-visible { outline: 2px solid var(--g-topo-texto); outline-offset: 2px; }
+/* a logo do PageLinks (public/logo-pagelinks.png, "Page" em branco e "Links" em cinza: feita para fundo escuro) */
+.marca { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--g-topo-texto); }
+.marca img { display: block; height: 24px; width: auto; }
+.marca span { color: var(--g-topo-suave); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
 
 .env { max-width: 1400px; margin: 0 auto; padding: 28px 24px 64px; }
 
@@ -148,26 +159,69 @@
 .editor { display: grid; grid-template-columns: minmax(0,1fr) 420px; gap: 28px; align-items: start; }
 .coluna { min-width: 0; }
 .previa { position: sticky; top: 84px; }
-.previaMoldura {
-  background: var(--g-moldura); border: 1px solid var(--g-linha-forte); border-radius: 22px;
-  padding: 10px; box-shadow: var(--g-sombra);
-}
-.previaMoldura iframe { width: 100%; height: 660px; border: 0; border-radius: 14px; display: block; background: #fff; }
-.previaArea { overflow: hidden; border-radius: 14px; position: relative; }
 /* a versão nova da prévia carrega aqui, escondida atrás da que está à vista (Previa.tsx) */
 .previaProxima { position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; }
-
-/* modo computador: moldura de navegador e coluna da prévia mais larga */
-.molduraComputador { border-radius: 12px; padding: 0 0 8px; }
-.molduraComputador .previaArea { border-radius: 0 0 6px 6px; margin: 0 8px; }
-.molduraComputador iframe { border-radius: 0; }
-.navegador { display: flex; align-items: center; gap: 6px; padding: 9px 12px; }
-.navegador i { width: 9px; height: 9px; border-radius: 50%; background: rgb(255 255 255 / .28); }
-.navegador span {
-  flex: 1; margin-left: 8px; padding: 3px 10px; border-radius: 6px; background: rgb(255 255 255 / .12);
-  font-family: var(--g-mono); font-size: 11px; color: rgb(255 255 255 / .75);
+/* foto ou aparência programada à vista na prévia */
+.previaAviso {
+  margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; font-size: 12.5px; line-height: 1.45;
+  background: var(--g-pendente-fundo); border: 1px solid var(--g-pendente-borda); color: var(--g-texto);
 }
-.editor:has(.previaComputador) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+.previaAviso button { background: none; border: 0; padding: 0; font: inherit; color: var(--g-destaque); text-decoration: underline; cursor: pointer; }
+
+/* A prévia na silhueta do aparelho (20/11/2026, pedido do Bruno): celular, tablet e MacBook, na
+   largura da coluna, que não muda com a tela. Tablet e computador são desenhados no tamanho deles
+   e reduzidos para caber (Previa.tsx), na proporção da tela. Cores do aparelho por token. */
+.aparelho { position: relative; margin-inline: auto; }
+.aparelhoCorpo { position: relative; background: var(--g-aparelho); box-shadow: inset 0 0 0 1.5px var(--g-aparelho-aro), var(--g-sombra); }
+.aparelhoTela { position: relative; overflow: hidden; background: #fff; }
+.aparelhoTela iframe { display: block; border: 0; background: #fff; }
+
+/* celular: corpo bem arredondado, a ilha no alto da tela, botões de volume e de ligar nas laterais */
+.aparelho[data-tela="celular"] { width: 372px; max-width: 100%; }
+.aparelho[data-tela="celular"] .aparelhoCorpo { padding: 11px; border-radius: 54px; }
+.aparelho[data-tela="celular"] .aparelhoTela { height: 650px; border-radius: 44px; }
+.aparelho[data-tela="celular"] .aparelhoTela iframe { width: 100%; height: 100%; }
+.aparelho[data-tela="celular"] .aparelhoTela::after {
+  content: ""; position: absolute; z-index: 2; top: 10px; left: 50%; width: 94px; height: 27px; margin-left: -47px;
+  border-radius: 20px; background: var(--g-aparelho-ilha); pointer-events: none;
+}
+.aparelho[data-tela="celular"]::before, .aparelho[data-tela="celular"]::after {
+  content: ""; position: absolute; width: 3px; background: var(--g-aparelho); box-shadow: inset 0 0 0 1px var(--g-aparelho-aro);
+}
+.aparelho[data-tela="celular"]::before { left: -3px; top: 150px; height: 52px; border-radius: 2px 0 0 2px; }
+.aparelho[data-tela="celular"]::after { right: -3px; top: 190px; height: 78px; border-radius: 0 2px 2px 0; }
+
+/* tablet: borda fina por igual e a câmera no meio da borda de cima */
+.aparelho[data-tela="tablet"] { width: 100%; max-width: 460px; }
+.aparelho[data-tela="tablet"] .aparelhoCorpo { padding: 15px; border-radius: 30px; }
+.aparelho[data-tela="tablet"] .aparelhoTela { border-radius: 12px; }
+.aparelho[data-tela="tablet"] .aparelhoCorpo::before,
+.aparelho[data-tela="computador"] .aparelhoCorpo::before {
+  content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px;
+  border-radius: 50%; background: var(--g-aparelho-camera);
+}
+
+/* MacBook: a tampa um pouco mais estreita que a base, a barra do navegador no alto da tela e a
+   base de alumínio com o rebaixo de abrir a tampa */
+.aparelho[data-tela="computador"] { width: 100%; max-width: 520px; }
+.aparelho[data-tela="computador"] .aparelhoCorpo { width: 88%; margin-inline: auto; padding: 14px 9px 12px; border-radius: 16px 16px 3px 3px; }
+.aparelho[data-tela="computador"] .aparelhoCorpo::before { top: 5px; width: 4px; height: 4px; margin-left: -2px; }
+.navegador { display: flex; align-items: center; gap: 4px; padding: 5px 8px; background: var(--g-aparelho-barra); border-radius: 3px 3px 0 0; }
+.navegador i { width: 6px; height: 6px; border-radius: 50%; background: rgb(255 255 255 / .28); }
+.navegador span {
+  flex: 1; margin-left: 6px; padding: 2px 8px; border-radius: 4px; background: rgb(255 255 255 / .1);
+  font-family: var(--g-mono); font-size: 9px; color: rgb(255 255 255 / .7);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.aparelhoBase {
+  position: relative; height: 14px; border-radius: 2px 2px 14px 14px / 2px 2px 10px 10px;
+  background: linear-gradient(var(--g-aparelho-base), var(--g-aparelho-base-sombra));
+  box-shadow: var(--g-sombra);
+}
+.aparelhoBase::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: 16%; height: 5px; transform: translateX(-50%);
+  border-radius: 0 0 8px 8px; background: var(--g-aparelho-base-sombra);
+}
 
 /* tela que está sendo editada, quando não é o celular */
 .avisoTela {
@@ -266,6 +320,23 @@
 .programado .campo input { background: var(--g-card); }
 .programadoAcoes, .programadosRodape { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .programadoAcoes .btn:disabled { opacity: .5; cursor: default; filter: none; }
+
+/* aparência programada, no fim do bloco Aparência (AparenciasProgramadas.tsx) */
+.programacaoSecao { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--g-linha); }
+.programacaoSecao h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+.programacaoSecao h3 small { color: var(--g-suave); font-weight: 400; margin-left: 8px; font-size: 12.5px; }
+/* fora de um .campo, a dica precisa do próprio estilo (o .campo .dica não chega aqui) */
+.programacaoSecao .dica { font-size: 11.5px; color: var(--g-suave); }
+.aparenciaResumo .dica { font-size: 12.5px; }
+.programado .doisCampos { gap: 10px; }
+.programado .campo select { background: var(--g-card); }
+/* o resumo: o fundo, um "Aa" na cor do texto e um botão nas cores e no formato da aparência */
+.aparenciaResumo { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.aparenciaAmostra {
+  display: inline-flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px;
+  border: 1px solid var(--g-linha-forte); font-size: 13px; font-weight: 600;
+}
+.aparenciaBotao { padding: 4px 12px; font-size: 11.5px; font-weight: 600; }
 
 /* editor das unidades: uma por linha, foto ao lado dos campos */
 .unidadesEditor { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -423,12 +494,13 @@
 .erro { background: var(--g-perigo-fundo); border: 1px solid var(--g-perigo-borda); color: var(--g-perigo-texto); padding: 11px 14px; border-radius: 9px; font-size: 14px; margin-bottom: 14px; }
 
 @media (max-width: 1100px) {
-  .editor, .editor:has(.previaComputador) { grid-template-columns: 1fr; }
+  .editor { grid-template-columns: 1fr; }
   .previa { position: static; }
-  .previaMoldura iframe { height: 520px; }
+  .aparelho[data-tela="celular"] .aparelhoTela { height: 560px; }
 }
 @media (max-width: 640px) {
-  .topo { padding: 12px 16px; gap: 12px; }
+  .topo { width: calc(100% - 32px); padding: 8px 8px 8px 14px; gap: 12px; }
+  .marca img { height: 19px; }
   .topoAcoes { gap: 6px; }
   .marca span { display: none; }
   .topoAcoes .btn:not(.btnIcone) { padding: 9px 12px; }

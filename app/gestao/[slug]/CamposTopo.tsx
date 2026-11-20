@@ -6,6 +6,8 @@ import { naPrevia } from "./BarraAjuste";
 import CampoImagem from "./CampoImagem";
 import ControleAjuste from "./ControleAjuste";
 import FormatoFoto from "./FormatoFoto";
+import FotosProgramadas from "./FotosProgramadas";
+import type { FotoProgramadaDaPagina } from "../acoes";
 import estilos from "../gestao.module.css";
 
 /**
@@ -23,6 +25,8 @@ export default function CamposTopo({
   semTitulo: semTituloInicial,
   corFundo,
   ajustes,
+  fotosProgramadas,
+  agora,
 }: {
   paginaId: string;
   titulo: string;
@@ -35,6 +39,9 @@ export default function CamposTopo({
   corFundo: string;
   /** valores por tela dos ajustes do topo */
   ajustes: { avatar: ValoresTela; cabecalho: ValoresTela; topo: ValoresTela; titulo: ValoresTela; bio: ValoresTela };
+  /** fotos programadas que ainda não acabaram (lib/programacoes.ts) */
+  fotosProgramadas: FotoProgramadaDaPagina[];
+  agora: number;
 }) {
   const [comImagem, setComImagem] = useState(!!cabecalhoImagemUrl);
   const [semTitulo, setSemTitulo] = useState(semTituloInicial);
@@ -60,6 +67,14 @@ export default function CamposTopo({
         ajuste={{ chave: "avatar", valores: ajustes.avatar }}
       />
       {avatarUrl && <FormatoFoto paginaId={paginaId} formato={avatarFormato} />}
+      <FotosProgramadas
+        paginaId={paginaId}
+        programadas={fotosProgramadas}
+        agora={agora}
+        redonda={avatarFormato !== "livre"}
+        fundo={corFundo}
+        temFoto={!!avatarUrl}
+      />
       {/* tamanho da letra por tela; com a imagem no lugar dos dois, o texto nem aparece */}
       {!comImagem && (
         <div className={estilos.campo}>

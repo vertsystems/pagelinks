@@ -34,8 +34,23 @@
   --g-perigo-texto: #B42318;
   --g-perigo-fundo: #FDECEA;
   --g-perigo-borda: #F4C7C3;
-  --g-topo: rgba(255,255,255,.88);
-  --g-moldura: #395886;
+  /* menu do topo: cinza escuro de vidro, com texto no cinza claro do fundo (--g-fundo) */
+  --g-topo: rgb(22 24 28 / .84);
+  --g-topo-texto: #F0F3FA;
+  --g-topo-suave: rgb(240 243 250 / .62);
+  --g-topo-borda: rgb(255 255 255 / .08);
+  --g-topo-botao-borda: rgb(240 243 250 / .24);
+  --g-topo-hover: rgb(240 243 250 / .1);
+  --g-topo-sombra: 0 12px 32px rgb(28 46 74 / .22);
+  /* a prévia na silhueta do aparelho (Previa.tsx): grafite, com o aro um tom acima, e a base
+     de alumínio do MacBook */
+  --g-aparelho: #1C1C1F;
+  --g-aparelho-aro: #3C3C42;
+  --g-aparelho-ilha: #000;
+  --g-aparelho-camera: #3A3F4A;
+  --g-aparelho-barra: #2A2A2E;
+  --g-aparelho-base: #D9DDE3;
+  --g-aparelho-base-sombra: #A9AFB8;
   --g-pendente: #F5B700;
   --g-pendente-borda: #B88A00;
   --g-ok: #16A34A;
@@ -80,8 +95,22 @@
   --g-perigo-texto: #FCA5A5;
   --g-perigo-fundo: rgba(248,113,113,.1);
   --g-perigo-borda: rgba(248,113,113,.3);
-  --g-topo: rgba(11,15,13,.92);
-  --g-moldura: #000;
+  /* menu do topo: um cinza acima do fundo, para não sumir nele, com o texto claro do tema */
+  --g-topo: rgb(40 44 42 / .72);
+  --g-topo-texto: #E8EDEA;
+  --g-topo-suave: rgb(232 237 234 / .6);
+  --g-topo-borda: rgb(255 255 255 / .1);
+  --g-topo-botao-borda: rgb(232 237 234 / .22);
+  --g-topo-hover: rgb(232 237 234 / .08);
+  --g-topo-sombra: 0 12px 32px rgb(0 0 0 / .45);
+  /* aparelho da prévia: o aro mais claro, para o grafite não sumir no fundo escuro */
+  --g-aparelho: #1C1C1F;
+  --g-aparelho-aro: #4A4A52;
+  --g-aparelho-ilha: #000;
+  --g-aparelho-camera: #3A3F4A;
+  --g-aparelho-barra: #2A2A2E;
+  --g-aparelho-base: #9EA3AB;
+  --g-aparelho-base-sombra: #6B7079;
   --g-pendente: #FACC15;
   --g-pendente-borda: #CA9A04;
   --g-ok: #22C55E;
